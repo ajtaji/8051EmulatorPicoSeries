@@ -1,5 +1,5 @@
 # Build by-products (the compiler writes these next to each output)
-*.asm
+*.uf2.asm
 *.dbg
 *.sym
 *.sym.meta
