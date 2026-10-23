@@ -1,0 +1,16 @@
+8051 verification untimed asm-tail vectors=7680
+API checks failures=0 PASS
+single-instruction vectors passed=7680 failed=0 us=1171146 PASS
+program fibcrc instructions=881562+1/881563 results=3 window-run us=163499 instructions/s=5443458 PASS
+program i8051_array instructions=3481+1/3482 results=9 window-run us=1855 instructions/s=5390835 PASS
+program i8051_basic instructions=596+1/597 results=12 window-run us=1810 instructions/s=5524861 PASS
+program i8051_flow instructions=1216+1/1217 results=3 window-run us=1819 instructions/s=5497526 PASS
+program primes instructions=933050+1/933051 results=3 window-run us=187915 instructions/s=5002261 PASS
+program sort instructions=527400+1/527401 results=4 window-run us=106480 instructions/s=4977460 PASS
+compiled 8051 programs failed=0 PASS
+asm irq_order instructions=71+1/72 interrupts=6/6 serial-bytes=0 PASS
+asm irq_nest instructions=40+1/41 interrupts=3/3 serial-bytes=0 PASS
+asm timers skipped: it counts machine cycles, this build counts instructions
+asm serial skipped: it counts machine cycles, this build counts instructions
+interrupt/timer/serial programs failed=0 PASS
+verification complete

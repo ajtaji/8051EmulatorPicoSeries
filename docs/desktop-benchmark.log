@@ -1,0 +1,5 @@
+8051 desktop core, timed build, 50 million machine cycles per mix
+register/branch DJNZ                    573.9 M machine cycles/s = 574x a 12 MHz 8051
+arithmetic ADD/ADDC/XRL/RLC/SUBB        499.5 M machine cycles/s = 499x a 12 MHz 8051
+internal-memory MOV/@R0/dir,dir/CJNE    582.1 M machine cycles/s = 582x a 12 MHz 8051
+external-memory MOVX/INC DPTR/CJNE      779.0 M machine cycles/s = 779x a 12 MHz 8051

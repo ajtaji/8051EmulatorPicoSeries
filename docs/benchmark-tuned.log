@@ -1,0 +1,54 @@
+8051 PureMetal clk_sys kHz=200000 untimed asm-tail
+sum test A=55 R0=0 PC=7 PASS
+register/branch DJNZ instructions=1000000 us=229579 instructions/s=4355799
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241701 instructions/s=4137343
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215830 instructions/s=4633276
+register/branch DJNZ instructions=1000000 us=229576 instructions/s=4355856
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241701 instructions/s=4137343
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215830 instructions/s=4633276
+register/branch DJNZ instructions=1000000 us=229576 instructions/s=4355856
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241702 instructions/s=4137326
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229575 instructions/s=4355874
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241701 instructions/s=4137343
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229575 instructions/s=4355874
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241702 instructions/s=4137326
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229576 instructions/s=4355856
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241702 instructions/s=4137326
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229576 instructions/s=4355856
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241701 instructions/s=4137343
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229575 instructions/s=4355874
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241701 instructions/s=4137343
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229575 instructions/s=4355874
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241702 instructions/s=4137326
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229576 instructions/s=4355856
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241701 instructions/s=4137343
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229575 instructions/s=4355874
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241702 instructions/s=4137326
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229576 instructions/s=4355856
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241701 instructions/s=4137343
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215831 instructions/s=4633254
+register/branch DJNZ instructions=1000000 us=229575 instructions/s=4355874
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=255837 instructions/s=3908738
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=241701 instructions/s=4137343
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=215830 instructions/s=4633276
