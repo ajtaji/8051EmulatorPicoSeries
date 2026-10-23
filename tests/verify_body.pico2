@@ -1,5 +1,6 @@
-; Board verification: API checks and the single-instruction vectors.
-; Shared by verify*.picow (RP2040); verify_body.pico2 is the RP2350 copy.
+; Verification: API checks, single-instruction vectors, compiled programs and
+; interrupt/timer/serial programs. Shared by the board builds (verify*.picow,
+; with verify_main.pico) and the desktop program, which includes it as PureBasic.
 Global Cursor.i, CaseIndex.i, Failures.i, CaseFail.i, Shown.i, PassCount.i
 Global VSeed.i, VPC.i, VLen.i, VAcc.i, VB.i, VPsw.i, VSP.i, VDpl.i, VDph.i
 Global EPC.i, EAcc.i, EB.i, EPsw.i, ESP.i, EDpl.i, EDph.i, ECycles.i
@@ -8,6 +9,9 @@ Global ApiFailures.i
 Global Dim Expect.a(256)
 Global Dim ExtraSfr.i(9)
 Global Dim ExtraExpect.i(9)
+Global Dim RamPokeAdr.i(8)
+Global Dim RamPokeVal.i(8)
+Global RamPokes.i
 
 Procedure.i ByteIn()
   Protected b.i
@@ -30,7 +34,7 @@ EndProcedure
 Procedure FillFromSeed(seed.i)
   Lcg = seed
   For Index = 0 To 255
-    Lcg = (Lcg * 1103515245) + 12345
+    Lcg = ((Lcg * 1103515245) + 12345) & $FFFFFFFF
     Expect(Index) = (Lcg >> 16) & 255
   Next
 EndProcedure
@@ -128,15 +132,23 @@ Procedure VectorTests()
     Next
     VAcc = ByteIn() : VB = ByteIn() : VPsw = ByteIn() : VSP = ByteIn() : VDpl = ByteIn() : VDph = ByteIn()
     Count = ByteIn()
+    RamPokes = 0
     For Index = 1 To Count
       Space = ByteIn() : Adr = WordIn() : Val = ByteIn()
       If Space = 0
         M51Code(Adr) = Val
-      Else
+      ElseIf Space = 1
         M51XData(Adr) = Val
+      Else
+        RamPokeAdr(RamPokes) = Adr
+        RamPokeVal(RamPokes) = Val
+        RamPokes = RamPokes + 1
       EndIf
     Next
     FillFromSeed(VSeed)
+    For Index = 0 To RamPokes - 1
+      Expect(RamPokeAdr(Index)) = RamPokeVal(Index)
+    Next
     For Index = 0 To 255
       M51IRam(Index) = Expect(Index)
     Next
@@ -296,7 +308,7 @@ Procedure ProgramTests()
     Wend
     PUs = Micros() - StartTime
     UsbSerialTask() : SafetyPet()
-    Say("program ") : Say(PName)
+    Say("program ") : SayAt(PName)
     Say(" instructions=") : Num(PSteps) : Say("+1/") : Num(PInst)
     CompilerIf #M51_TIMING = 1
       Say(" cycles=") : Num(PCyc1) : Say("+2/") : Num(PCycles)
@@ -329,7 +341,7 @@ Procedure ProgramTests()
 EndProcedure
 
 ; Interrupt, timer and serial programs (tests/asm), against uCsim's end state.
-Global AFlags.i, AIram.i, ASent.i, AGot.i
+Global AFlags.i, AIram.i, ASent.i, AGot.i, AInts.i
 Procedure AsmTests()
   Protected p.i, k.i
   Cursor = ?AsmData
@@ -339,12 +351,13 @@ Procedure AsmTests()
     While ByteIn() <> 0
     Wend
     AFlags = ByteIn() : PLen = WordIn() : PTrap = WordIn() : PInst = LongIn() : PCycles = LongIn()
+    AInts = WordIn()
     PCode = Cursor
     Cursor = Cursor + PLen
     AIram = Cursor
-    Cursor = Cursor + $50
+    Cursor = Cursor + $30
     ASent = ByteIn()
-    Say("asm ") : Say(PName)
+    Say("asm ") : SayAt(PName)
     CompilerIf #M51_TIMING = 0
       If AFlags & 2
         Say(" skipped: it counts machine cycles, this build counts instructions") : Eol()
@@ -365,8 +378,10 @@ Procedure AsmTests()
     If M51PC <> PTrap
       PFail = 1
     EndIf
+    ; Each interrupt entry is one M51Run(1) call that runs no instruction.
+    PSteps = PSteps - M51IntCount
     If AFlags & 1
-      If PSteps + 1 <> PInst
+      If PSteps + 1 <> PInst Or M51IntCount <> AInts
         PFail = PFail | 2
       EndIf
       CompilerIf #M51_TIMING = 1
@@ -375,7 +390,7 @@ Procedure AsmTests()
         EndIf
       CompilerEndIf
     EndIf
-    For k = 0 To $4F
+    For k = 0 To $2F
       If M51IRam($30 + k) <> (PeekA(AIram + k) & 255)
         If (PFail & 8) = 0
           Say(" iram $") : Hex2($30 + k) : Say("=$") : Hex2(M51IRam($30 + k))
@@ -400,6 +415,7 @@ Procedure AsmTests()
     CompilerIf #M51_TIMING = 1
       Say(" cycles=") : Num(M51Cycles) : Say("+2/") : Num(PCycles)
     CompilerEndIf
+    Say(" interrupts=") : Num(M51IntCount) : Say("/") : Num(AInts)
     Say(" serial-bytes=") : Num(ASent)
     If PFail
       Say(" FAIL code=") : Num(PFail)
@@ -418,38 +434,3 @@ Procedure AsmTests()
   Eol()
 EndProcedure
 
-Procedure Main()
-  SafetyBoot()
-  ClockInitKhz(#CLOCK_KHZ)
-  TimerInit()
-  UsbSerialInit()
-  WaitStart = Micros()
-  While UsbSerialReady() = 0
-    UsbSerialTask() : SafetyPet()
-    If Micros() - WaitStart > 30000000
-      Break
-    EndIf
-  Wend
-  WaitUs(300000)
-  Say("8051 verification")
-  CompilerIf #M51_TIMING = 1
-    Say(" timed")
-  CompilerElse
-    Say(" untimed")
-  CompilerEndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    Say(" asm-tail")
-  CompilerElse
-    Say(" goto-tail")
-  CompilerEndIf
-  Say(" vectors=") : Num(#VECTOR_COUNT)
-  Eol()
-  ApiTests()
-  VectorTests()
-  ProgramTests()
-  AsmTests()
-  Say("verification complete") : Eol()
-  Repeat
-    WaitUs(100000)
-  ForEver
-EndProcedure

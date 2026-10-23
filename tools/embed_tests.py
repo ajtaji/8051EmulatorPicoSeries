@@ -34,6 +34,6 @@ if __name__ == '__main__':
     (TESTS / 'test_counts.pico2').write_text((TESTS / 'test_counts.pico').read_text(), newline='\n')
     # The RP2350 builds include .pico2 files: their copies of the shared
     # bodies are made here, never edited by hand.
-    for rel in ('tests/verify_body', 'src/demo_body', 'src/io'):
+    for rel in ('tests/verify_body', 'tests/verify_main', 'src/demo_body', 'src/io'):
         (ROOT / f'{rel}.pico2').write_text((ROOT / f'{rel}.pico').read_text(), newline='\n')
     print('vectors and programs embedded; .pico2 copies refreshed')

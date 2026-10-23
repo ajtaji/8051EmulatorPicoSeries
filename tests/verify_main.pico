@@ -1,0 +1,36 @@
+; The board's entry point for the verification builds.
+Procedure Main()
+  SafetyBoot()
+  ClockInitKhz(#CLOCK_KHZ)
+  TimerInit()
+  UsbSerialInit()
+  WaitStart = Micros()
+  While UsbSerialReady() = 0
+    UsbSerialTask() : SafetyPet()
+    If Micros() - WaitStart > 30000000
+      Break
+    EndIf
+  Wend
+  WaitUs(300000)
+  Say("8051 verification")
+  CompilerIf #M51_TIMING = 1
+    Say(" timed")
+  CompilerElse
+    Say(" untimed")
+  CompilerEndIf
+  CompilerIf #M51_ASM_TAIL = 1
+    Say(" asm-tail")
+  CompilerElse
+    Say(" goto-tail")
+  CompilerEndIf
+  Say(" vectors=") : Num(#VECTOR_COUNT)
+  Eol()
+  ApiTests()
+  VectorTests()
+  ProgramTests()
+  AsmTests()
+  Say("verification complete") : Eol()
+  Repeat
+    WaitUs(100000)
+  ForEver
+EndProcedure

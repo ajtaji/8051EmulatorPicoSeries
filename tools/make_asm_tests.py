@@ -2,12 +2,20 @@
 
 Each tests/asm/<name>.asm is assembled with SDCC's sdas8051 and linked with
 sdld, then run in uCsim (8052) until its final jump-to-self. Recorded for the
-board: the code image, internal RAM $30-$7F, the bytes the serial port sent,
-and uCsim's instruction and machine-cycle counts.
+board: the code image, internal RAM $30-$5F (the stack starts above it), the
+bytes the serial port sent, uCsim's instruction and machine-cycle counts, and
+the number of interrupts the program takes by design.
 
-  flags bit 0: compare cycles and instructions (not for serial.asm, whose
-               wait loops depend on the frame time the core does not model)
+  flags bit 0: compare instructions, cycles and the interrupt count (not for
+               serial.asm, whose wait loops depend on the frame time the core
+               does not model, nor timers.asm, whose wait loop length depends
+               on interrupt timing - its results are built not to)
   flags bit 1: timed builds only (timer results count machine cycles)
+
+Oracle correction: uCsim charges ONE machine cycle for the hardware call to an
+interrupt vector. The MCS-51 User's Manual (interrupt response time): "The
+call itself takes two cycles". Each expected cycle count therefore adds one
+cycle per interrupt taken.
 
 Run from the repository root:  py -3 tools/make_asm_tests.py
 """
@@ -19,7 +27,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ASM = ROOT / 'tests' / 'asm'
 BIN = Path(r'C:\PMFBuild\downloads\sdcc\extract\bin')
-TESTS = [('irq_order', 1), ('irq_nest', 1), ('timers', 3), ('serial', 2)]
+# (name, flags, interrupts the program takes by design)
+TESTS = [('irq_order', 1, 6), ('irq_nest', 1, 3), ('timers', 2, 0), ('serial', 2, 0)]
 
 
 def assemble(name):
@@ -72,20 +81,20 @@ def run_ucsim(name):
     pc = int(re.search(r'PC= 0x([0-9a-fA-F]+)', state).group(1), 16)
     inst = int(re.search(r'Inst= (\d+)', state).group(1))
     clks = int(re.search(r'Total time since last reset= [0-9.]+ sec \((\d+) clks\)', state).group(1))
-    iram = bytearray(0x50)
+    iram = bytearray(0x30)
     for line in out[out.index('\n@@I'):out.index('\n@@END')].splitlines():
         tok = line.split()
         if len(tok) > 1 and tok[0].startswith('0x') and not line.startswith('dump'):
             base = int(tok[0], 16)
             for i in range(16):
-                if 1 + i < len(tok) and re.fullmatch(r'[0-9a-f]{2}', tok[1 + i]) and 0x30 <= base + i < 0x80:
+                if 1 + i < len(tok) and re.fullmatch(r'[0-9a-f]{2}', tok[1 + i]) and 0x30 <= base + i < 0x60:
                     iram[base + i - 0x30] = int(tok[1 + i], 16)
     return pc, inst, clks, bytes(iram), sent
 
 
 def main():
     blob = bytearray()
-    for name, flags in TESTS:
+    for name, flags, interrupts in TESTS:
         code = assemble(name)
         pc, inst, clks, iram, sent = run_ucsim(name)
         if name == 'irq_order':
@@ -104,9 +113,9 @@ def main():
         if clks % 12:
             raise SystemExit(f'{name}: {clks} clocks is not whole machine cycles')
         print(f'{name}: {len(code)} bytes, stops at PC=${pc:04X} after {inst} instructions, {clks // 12} cycles; '
-              f'iram $30-$5F: {iram[:0x30].hex(" ")}; serial {sent!r}')
+              f'iram $30-$5F: {iram.hex(" ")}; serial {sent!r}')
         blob += name.encode() + b'\0'
-        blob += struct.pack('<BHHII', flags, len(code), pc, inst, clks // 12)
+        blob += struct.pack('<BHHIIH', flags, len(code), pc, inst, clks // 12 + interrupts, interrupts)
         blob += code
         blob += iram
         blob += bytes([len(sent)]) + sent

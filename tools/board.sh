@@ -17,8 +17,8 @@ mkdir -p $LEASE_DIR
 set -o noclobber
 until echo "cg-8051 $(date -Iseconds) upload+capture $secs s" > $LEASE 2>/dev/null; do
   age=$(( $(date +%s) - $(stat -c %Y $LEASE 2>/dev/null || date +%s) ))
-  echo "lease held ($age s): $(cat $LEASE 2>/dev/null)"
-  sleep 30
+  [ $((age % 60)) -lt 3 ] && echo "lease held ($age s): $(cat $LEASE 2>/dev/null)"
+  sleep 3
 done
 set +o noclobber
 trap 'rm -f $LEASE' EXIT

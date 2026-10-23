@@ -38,7 +38,7 @@ Global M51Budget.i, M51Stolen.i, M51Ready.i, M51Stopped.i, M51BadOpcode.i
 Global M51Cycles.i, M51SliceBase.i, M51TimerCycle.i
 Global M51IntActive.i, M51IntHold.i, M51Idle.i, M51PowerDown.i
 Global M51SbufRx.i, M51Int0Pin.i, M51Int1Pin.i, M51T2ExPin.i
-Global M51TxHead.i, M51TxTail.i, M51TxLost.i, M51InitIndex.i, M51PinsReady.i
+Global M51TxHead.i, M51TxTail.i, M51TxLost.i, M51InitIndex.i, M51PinsReady.i, M51IntCount.i
 Global M51Table.i
 ReserveRegister M51PC = r4, M51A = r9, M51Res = r10, M51Left = r11, M51RB = r8, M51Table = r6
 
@@ -615,6 +615,7 @@ ProcedureRAM.i M51IntPoll()
   M51Push(M51PC >> 8)
   M51PC = 3 + (8 * n)
   M51IntActive = M51IntActive | lvl
+  M51IntCount = M51IntCount + 1
   If M51Idle
     M51Idle = 0
     M51Sfr($07) = M51Sfr($07) & $FE
@@ -1504,7 +1505,7 @@ Op10: ; $10 JBC bit,rel, 2 cycles
   M51PC = (M51PC + 1) & $FFFF
   If M51BitReadLatch(M51Tmp)
     M51BitWrite(M51Tmp, 0)
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
   Else
     M51PC = (M51PC + 1) & $FFFF
   EndIf
@@ -2108,44 +2109,78 @@ Op20: ; $20 JB bit,rel, 2 cycles
   M51Tmp = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   If M51BitRead(M51Tmp)
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 Op21: ; $21 AJMP page1, 2 cycles
   M51Tmp = M51Code(M51PC)
   M51PC = ((M51PC + 1) & $F800) | 256 | M51Tmp
@@ -2760,44 +2795,78 @@ Op30: ; $30 JNB bit,rel, 2 cycles
   M51Tmp = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   If M51BitRead(M51Tmp) = 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 Op31: ; $31 ACALL page1, 2 cycles
   M51Tmp = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
@@ -3423,44 +3492,78 @@ Op3F: ; $3F ADDC A,R7, 1 cycle
   CompilerEndIf
 Op40: ; $40 JC rel, 2 cycles
   If (M51CyX & $100) <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 Op41: ; $41 AJMP page2, 2 cycles
   M51Tmp = M51Code(M51PC)
   M51PC = ((M51PC + 1) & $F800) | 512 | M51Tmp
@@ -4028,44 +4131,78 @@ Op4F: ; $4F ORL A,R7, 1 cycle
   CompilerEndIf
 Op50: ; $50 JNC rel, 2 cycles
   If (M51CyX & $100) = 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 Op51: ; $51 ACALL page2, 2 cycles
   M51Tmp = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
@@ -4636,44 +4773,78 @@ Op5F: ; $5F ANL A,R7, 1 cycle
   CompilerEndIf
 Op60: ; $60 JZ rel, 2 cycles
   If M51A = 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 Op61: ; $61 AJMP page3, 2 cycles
   M51Tmp = M51Code(M51PC)
   M51PC = ((M51PC + 1) & $F800) | 768 | M51Tmp
@@ -5241,44 +5412,78 @@ Op6F: ; $6F XRL A,R7, 1 cycle
   CompilerEndIf
 Op70: ; $70 JNZ rel, 2 cycles
   If M51A <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 Op71: ; $71 ACALL page3, 2 cycles
   M51Tmp = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
@@ -5849,7 +6054,7 @@ Op7F: ; $7F MOV R7,#imm, 1 cycle
     Goto M51Dispatch(M51Tmp)
   CompilerEndIf
 Op80: ; $80 SJMP rel, 2 cycles
-  M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+  M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
   CompilerIf #M51_ASM_TAIL = 1
     CompilerIf #M51_TIMING = 1
       ASM Uses M51Left
@@ -7953,44 +8158,78 @@ OpB4: ; $B4 CJNE A,#imm,rel, 2 cycles
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51A - M51Val
   If M51A <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpB5: ; $B5 CJNE A,dir,rel, 2 cycles
   M51Ea = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
@@ -8001,484 +8240,858 @@ OpB5: ; $B5 CJNE A,dir,rel, 2 cycles
   EndIf
   M51CyX = M51A - M51Val
   If M51A <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpB6: ; $B6 CJNE @R0,#imm,rel, 2 cycles
   M51RdInd(M51Res, M51IRam(M51RB))
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpB7: ; $B7 CJNE @R1,#imm,rel, 2 cycles
   M51RdInd(M51Res, M51IRam(M51RB + 1))
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpB8: ; $B8 CJNE R0,#imm,rel, 2 cycles
   M51Res = M51IRam(M51RB)
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpB9: ; $B9 CJNE R1,#imm,rel, 2 cycles
   M51Res = M51IRam(M51RB + 1)
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpBA: ; $BA CJNE R2,#imm,rel, 2 cycles
   M51Res = M51IRam(M51RB + 2)
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpBB: ; $BB CJNE R3,#imm,rel, 2 cycles
   M51Res = M51IRam(M51RB + 3)
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpBC: ; $BC CJNE R4,#imm,rel, 2 cycles
   M51Res = M51IRam(M51RB + 4)
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpBD: ; $BD CJNE R5,#imm,rel, 2 cycles
   M51Res = M51IRam(M51RB + 5)
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpBE: ; $BE CJNE R6,#imm,rel, 2 cycles
   M51Res = M51IRam(M51RB + 6)
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpBF: ; $BF CJNE R7,#imm,rel, 2 cycles
   M51Res = M51IRam(M51RB + 7)
   M51Val = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
   M51CyX = M51Res - M51Val
   If M51Res <> M51Val
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpC0: ; $C0 PUSH dir, 2 cycles
   M51Ea = M51Code(M51PC)
   M51PC = (M51PC + 1) & $FFFF
@@ -9332,44 +9945,78 @@ OpD5: ; $D5 DJNZ dir,rel, 2 cycles
     M51SfrWrite(M51Ea, M51Val)
   EndIf
   If M51Val <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpD6: ; $D6 XCHD A,@R0, 1 cycle
   M51Tmp = M51IRam(M51RB)
   M51RdInd(M51Val, M51Tmp)
@@ -9454,338 +10101,610 @@ OpD8: ; $D8 DJNZ R0,rel, 2 cycles
   M51Res = (M51IRam(M51RB) - 1) & 255
   M51IRam(M51RB) = M51Res
   If M51Res <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpD9: ; $D9 DJNZ R1,rel, 2 cycles
   M51Res = (M51IRam(M51RB + 1) - 1) & 255
   M51IRam(M51RB + 1) = M51Res
   If M51Res <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpDA: ; $DA DJNZ R2,rel, 2 cycles
   M51Res = (M51IRam(M51RB + 2) - 1) & 255
   M51IRam(M51RB + 2) = M51Res
   If M51Res <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpDB: ; $DB DJNZ R3,rel, 2 cycles
   M51Res = (M51IRam(M51RB + 3) - 1) & 255
   M51IRam(M51RB + 3) = M51Res
   If M51Res <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpDC: ; $DC DJNZ R4,rel, 2 cycles
   M51Res = (M51IRam(M51RB + 4) - 1) & 255
   M51IRam(M51RB + 4) = M51Res
   If M51Res <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpDD: ; $DD DJNZ R5,rel, 2 cycles
   M51Res = (M51IRam(M51RB + 5) - 1) & 255
   M51IRam(M51RB + 5) = M51Res
   If M51Res <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpDE: ; $DE DJNZ R6,rel, 2 cycles
   M51Res = (M51IRam(M51RB + 6) - 1) & 255
   M51IRam(M51RB + 6) = M51Res
   If M51Res <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpDF: ; $DF DJNZ R7,rel, 2 cycles
   M51Res = (M51IRam(M51RB + 7) - 1) & 255
   M51IRam(M51RB + 7) = M51Res
   If M51Res <> 0
-    M51PC = (M51PC + 1 + ((M51Code(M51PC) ! 128) - 128)) & $FFFF
+    M51PC = (M51PC + 1 + PeekB(@M51Code(0) + M51PC)) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   Else
     M51PC = (M51PC + 1) & $FFFF
+    CompilerIf #M51_ASM_TAIL = 1
+      CompilerIf #M51_TIMING = 1
+        ASM Uses M51Left
+          subs.w r11, r11, #2
+          ble __ul_m51slice_done
+        EndASM
+      CompilerElse
+        ASM Uses M51Left
+          subs.w r11, r11, #1
+          ble __ul_m51slice_done
+        EndASM
+      CompilerEndIf
+      ASM Uses M51PC, M51Table
+        ldr r1, =global_m51code
+        ldrb r2, [r1, r4]
+        adds r4, #1
+        uxth r4, r4
+        lsls r2, r2, #2
+        ldr r1, [r6, r2]
+        bx r1
+      EndASM
+    CompilerElse
+      CompilerIf #M51_TIMING = 1
+        M51Left = M51Left - 2
+      CompilerElse
+        M51Left = M51Left - 1
+      CompilerEndIf
+      If M51Left <= 0
+        Goto Done
+      EndIf
+      M51Tmp = M51Code(M51PC)
+      M51PC = (M51PC + 1) & $FFFF
+      Goto M51Dispatch(M51Tmp)
+    CompilerEndIf
   EndIf
-  CompilerIf #M51_ASM_TAIL = 1
-    CompilerIf #M51_TIMING = 1
-      ASM Uses M51Left
-        subs.w r11, r11, #2
-        ble __ul_m51slice_done
-      EndASM
-    CompilerElse
-      ASM Uses M51Left
-        subs.w r11, r11, #1
-        ble __ul_m51slice_done
-      EndASM
-    CompilerEndIf
-    ASM Uses M51PC, M51Table
-      ldr r1, =global_m51code
-      ldrb r2, [r1, r4]
-      adds r4, #1
-      uxth r4, r4
-      lsls r2, r2, #2
-      ldr r1, [r6, r2]
-      bx r1
-    EndASM
-  CompilerElse
-    CompilerIf #M51_TIMING = 1
-      M51Left = M51Left - 2
-    CompilerElse
-      M51Left = M51Left - 1
-    CompilerEndIf
-    If M51Left <= 0
-      Goto Done
-    EndIf
-    M51Tmp = M51Code(M51PC)
-    M51PC = (M51PC + 1) & $FFFF
-    Goto M51Dispatch(M51Tmp)
-  CompilerEndIf
 OpE0: ; $E0 MOVX A,@DPTR, 2 cycles
   M51XRd(M51A, M51DPTR)
   CompilerIf #M51_ASM_TAIL = 1
@@ -11006,6 +11925,7 @@ Procedure M51Reset()
   M51Cycles = 0 : M51SliceBase = 0 : M51TimerCycle = 0
   M51Budget = 0 : M51Stolen = 0 : M51Left = 0
   M51TxHead = 0 : M51TxTail = 0 : M51TxLost = 0
+  M51IntCount = 0
 EndProcedure
 
 Procedure.i M51Psw()

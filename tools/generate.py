@@ -135,7 +135,7 @@ Global M51Budget.i, M51Stolen.i, M51Ready.i, M51Stopped.i, M51BadOpcode.i
 Global M51Cycles.i, M51SliceBase.i, M51TimerCycle.i
 Global M51IntActive.i, M51IntHold.i, M51Idle.i, M51PowerDown.i
 Global M51SbufRx.i, M51Int0Pin.i, M51Int1Pin.i, M51T2ExPin.i
-Global M51TxHead.i, M51TxTail.i, M51TxLost.i, M51InitIndex.i, M51PinsReady.i
+Global M51TxHead.i, M51TxTail.i, M51TxLost.i, M51InitIndex.i, M51PinsReady.i, M51IntCount.i
 @@TABLE_GLOBAL@@@@RESERVE@@
 
 ; ---- flags -----------------------------------------------------------------
@@ -711,6 +711,7 @@ ProcedureRAM.i M51IntPoll()
   M51Push(M51PC >> 8)
   M51PC = 3 + (8 * n)
   M51IntActive = M51IntActive | lvl
+  M51IntCount = M51IntCount + 1
   If M51Idle
     M51Idle = 0
     M51Sfr($07) = M51Sfr($07) & $FE
@@ -757,6 +758,7 @@ Procedure M51Reset()
   M51Cycles = 0 : M51SliceBase = 0 : M51TimerCycle = 0
   M51Budget = 0 : M51Stolen = 0 : M51Left = 0
   M51TxHead = 0 : M51TxTail = 0 : M51TxLost = 0
+  M51IntCount = 0
 EndProcedure
 
 Procedure.i M51Psw()

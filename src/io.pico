@@ -9,6 +9,10 @@ Procedure Say(*text.i)
     c = PeekA(p) & 255
   Wend
 EndProcedure
+; The zero-terminated ASCII text at an address (a name in a DataSection).
+Procedure SayAt(p.i)
+  Say(p)
+EndProcedure
 Procedure Num(v.i)
   Protected d.i
   If v < 0

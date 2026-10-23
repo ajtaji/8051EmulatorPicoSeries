@@ -143,12 +143,20 @@ def make_case(op):
             body[1] = iram[bank + (op & 7)]
         else:
             body[1] = iram[iram[bank + (op & 1)]]
+    pokes = []          # (space 0 code / 1 xdata / 2 internal RAM, address, value)
+    # A forced internal-RAM byte is a poke applied after the seeded fill: the
+    # board regenerates the fill from the seed alone.
     if 0xD8 <= op <= 0xDF and rng.random() < 0.3:
-        iram[bank + (op & 7)] = 1
+        pokes.append((2, bank + (op & 7), 1))
     if op == 0xD5 and body[1] < 0x80 and rng.random() < 0.3:
-        iram[body[1]] = 1
+        pokes.append((2, body[1], 1))
+    for space, addr, v in pokes:
+        iram[addr] = v
+    # Make the 16-bit address sums of MOVC / JMP @A+ carry past $FFFF often.
+    if op in (0x93, 0x73) and rng.random() < 0.3:
+        dph, dpl = 0xFF, rng.randrange(0x80, 0x100)
+        acc = rng.randrange(0x80, 0x100)
     psw |= parity(acc)
-    pokes = []          # (space 0 code / 1 xdata, address, value)
     xread = []          # XDATA addresses whose final value is expected
     length = len(body)
     code_addrs = {(pc + i) & 0xFFFF for i in range(length)}
@@ -158,12 +166,17 @@ def make_case(op):
         tgt = (acc + (dptr if op == 0x93 else after)) & 0xFFFF
         if tgt not in code_addrs:
             pokes.append((0, tgt, rng.randrange(256)))
+        code = {(pc + i) & 0xFFFF: v for i, v in enumerate(body)}
+        code.update({a: v for sp_, a, v in pokes if sp_ == 0})
+        movc = (tgt, code[tgt], acc + (dptr if op == 0x93 else after) > 0xFFFF)
+    else:
+        movc = None
     if op in (0xE0, 0xF0, 0xE2, 0xE3, 0xF2, 0xF3):
         addr = dptr if op in (0xE0, 0xF0) else (0xFF << 8) | iram[bank + (op & 1)]
         pokes.append((1, addr, rng.randrange(256)))
         xread.append(addr)
     return dict(seed=seed, iram=iram, pc=pc, body=body, acc=acc, b=b, psw=psw, sp=sp, dpl=dpl, dph=dph,
-                pokes=pokes, xread=xread)
+                pokes=pokes, xread=xread, movc=movc, jmp_wrap=(op == 0x73 and acc + dptr > 0xFFFF))
 
 
 def ucsim_script(cases):
@@ -177,7 +190,7 @@ def ucsim_script(cases):
         for i, v in enumerate(c['body']):
             lines.append(f'set mem rom {(c["pc"] + i) & 0xFFFF} {v}')
         for space, addr, v in c['pokes']:
-            lines.append(f'set mem {"rom" if space == 0 else "xram"} {addr} {v}')
+            lines.append(f'set mem {("rom", "xram", "iram")[space]} {addr} {v}')
         for adr, key in [(0xE0, 'acc'), (0xF0, 'b'), (0x81, 'sp'), (0x82, 'dpl'), (0x83, 'dph'), (0xD0, 'psw')]:
             lines.append(f'set mem sfr {adr} {c[key]}')
         lines.append(f'pc {c["pc"]}')
@@ -262,8 +275,32 @@ def main():
     blob = bytearray()
     parity_fixed = 0
     other_sfr = 0
+    wrap_fixed = 0
+    push_sp_fixed = 0
     for c, r in zip(cases, results):
         sfr = r['sfr']
+        # Oracle correction: uCsim does not wrap the 16-bit sum of MOVC
+        # A,@A+PC / @A+DPTR and JMP @A+DPTR (it reads past the end of code
+        # memory, getting 0, or jumps to a 17-bit address). The chip's address
+        # is 16 bits wide: the sum wraps to the bottom of code memory.
+        if c['movc'] and c['movc'][2]:
+            if sfr[0xE0 - 0x80] != c['movc'][1]:
+                sfr[0xE0 - 0x80] = c['movc'][1]
+                wrap_fixed += 1
+        # Oracle correction: PUSH SP. uCsim stores SP's value from BEFORE the
+        # increment. The MCS-51 User's Manual defines PUSH as (SP) <- (SP) + 1,
+        # ((SP)) <- (direct), so the byte pushed is the incremented SP (MAME's
+        # core agrees). Not settled on silicon here: no 8051 chip on the bench.
+        if c['body'][0] == 0xC0 and c['body'][1] == 0x81:
+            slot = (c['sp'] + 1) & 255
+            if r['iram'][slot] != slot:
+                r['iram'][slot] = slot
+                push_sp_fixed += 1
+        if c['jmp_wrap']:
+            want = (c['acc'] + ((c['dph'] << 8) | c['dpl'])) & 0xFFFF
+            if r['pc'] != want:
+                r['pc'] = want
+                wrap_fixed += 1
         f_acc, f_b, f_psw = sfr[0xE0 - 0x80], sfr[0xF0 - 0x80], sfr[0xD0 - 0x80]
         f_sp, f_dpl, f_dph = sfr[0x81 - 0x80], sfr[0x82 - 0x80], sfr[0x83 - 0x80]
         fixed = (f_psw & 0xFE) | parity(f_acc)
@@ -306,7 +343,7 @@ def main():
     OUT_BIN.write_bytes(blob)
     OUT_COUNT.write_text(f'#VECTOR_COUNT = {len(cases)}\n#VECTOR_BYTES = {len(blob)}\n')
     print(len(cases), 'vectors,', len(blob), 'bytes;', parity_fixed, 'PSW.P corrections;', other_sfr,
-          'timer-register writes')
+          'timer-register writes;', wrap_fixed, '@A+ address-wrap corrections;', push_sp_fixed, 'PUSH SP corrections')
 
 
 if __name__ == '__main__':
