@@ -1,0 +1,95 @@
+; Shared by demo.picow and demo.pico2w.
+Global LoadIndex.i, RunStart.i, RunElapsed.i, RunCount.i, WaitStart.i
+
+Procedure LoadProgram(*src.i, length.i)
+  For LoadIndex = 0 To length - 1
+    M51Code(LoadIndex) = PeekA(*src + LoadIndex) & 255
+  Next
+EndProcedure
+
+Procedure Bench(*name.i, *prog.i, length.i)
+  LoadProgram(*prog, length)
+  M51Reset()
+  RunStart = Micros()
+  RunCount = M51Run(1000000)
+  RunElapsed = Micros() - RunStart
+  Say(*name)
+  CompilerIf #M51_TIMING = 1
+    Say(" machine-cycles=")
+  CompilerElse
+    Say(" instructions=")
+  CompilerEndIf
+  Num(RunCount)
+  Say(" us=") : Num(RunElapsed)
+  CompilerIf #M51_TIMING = 1
+    Say(" machine-cycles/s=")
+  CompilerElse
+    Say(" instructions/s=")
+  CompilerEndIf
+  If RunElapsed > 0
+    Num(Rate(RunCount, RunElapsed))
+  EndIf
+  Eol()
+EndProcedure
+
+Procedure Main()
+  SafetyBoot()
+  ClockInitKhz(#CLOCK_KHZ)
+  TimerInit()
+  UsbSerialInit()
+  WaitStart = Micros()
+  While UsbSerialReady() = 0
+    UsbSerialTask() : SafetyPet()
+    If Micros() - WaitStart > 30000000
+      Break
+    EndIf
+  Wend
+  WaitUs(200000)
+  Say("8051 PureMetal clk_sys kHz=") : Num(ClockSysKhz())
+  CompilerIf #M51_TIMING = 1
+    Say(" timed")
+  CompilerElse
+    Say(" untimed")
+  CompilerEndIf
+  CompilerIf #M51_ASM_TAIL = 1
+    Say(" asm-tail")
+  CompilerElse
+    Say(" goto-tail")
+  CompilerEndIf
+  Eol()
+  ; MOV A,#0 / MOV R0,#10 / ADD A,R0 / DJNZ R0,-3 / SJMP $
+  LoadProgram(?ProgSum, 9)
+  M51Reset()
+  RunCount = M51Run(200)
+  Say("sum test A=") : Num(M51A) : Say(" R0=") : Num(M51IRam(0)) : Say(" PC=") : Num(M51PC)
+  If M51A = 55 And M51IRam(0) = 0 And M51PC = 7
+    Say(" PASS")
+  Else
+    Say(" FAIL")
+  EndIf
+  Eol()
+  Repeat
+    Bench("register/branch DJNZ", ?ProgDjnz, 4)
+    Bench("arithmetic ADD/ADDC/XRL/RLC/SUBB", ?ProgArith, 9)
+    Bench("internal-memory MOV/@R0/dir,dir/CJNE", ?ProgIram, 14)
+    Bench("external-memory MOVX/INC DPTR/CJNE", ?ProgXram, 14)
+    WaitUs(1000000)
+  ForEver
+EndProcedure
+
+DataSection
+ProgSum:
+  Data.a $74,$00, $78,$0A, $28, $D8,$FD, $80,$FE
+ProgDjnz:
+  ; DJNZ R7,$ / SJMP back
+  Data.a $DF,$FE, $80,$FC
+ProgArith:
+  ; ADD A,#1 / ADDC A,R1 / XRL A,#$55 / RLC A / SUBB A,R2 / SJMP 0
+  Data.a $24,$01, $39, $64,$55, $33, $9A, $80,$F7
+ProgIram:
+  ; MOV R0,#$30 / MOV A,@R0 / MOV $40,A / MOV $41,$40 / INC R0 / CJNE R0,#$50,2 / SJMP 0
+  Data.a $78,$30, $E6, $F5,$40, $85,$40,$41, $08, $B8,$50,$F6, $80,$F2
+ProgXram:
+  ; MOV DPTR,#$4000 / MOVX A,@DPTR / CPL A / MOVX @DPTR,A / INC DPTR / MOV A,DPH / CJNE A,#$48,3 / SJMP 0
+  Data.a $90,$40,$00, $E0, $F4, $F0, $A3, $E5,$83, $B4,$48,$F7, $80,$F2
+EndDataSection

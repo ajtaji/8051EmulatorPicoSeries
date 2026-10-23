@@ -1,0 +1,115 @@
+; Array and structure codegen test.
+;
+; DELIBERATELY IDENTICAL on all six classic 8-bit targets, the same way
+; z80_byte / m6809_byte are, so a divergence between two of them is the backend
+; and not the program.
+;
+; Every check here is a VALUE read back out of RAM after execution. A test that
+; only compiles proves nothing about an address calculation: a wrong element
+; scale or a wrong base still assembles perfectly and writes to the wrong
+; place. That is the whole reason this file exists rather than a build check.
+;
+; What each block pins, and why it is here rather than something simpler:
+;   aw[]    CONSTANT and VARIABLE index on the same array. The variable index
+;           is what exercises the multiply-by-element-size and the add; a
+;           constant index can be right while the variable path is broken.
+;   loop    the index arriving from a live loop counter - the shape a real
+;           program uses, and the one that first exposes a base address
+;           clobbered between the GET_ADDRESS and the load.
+;   ab[]    a ONE-byte element, the width whose address arithmetic does NOT
+;           have to scale, so it fails independently of the .w case.
+;   al[]    a FOUR-byte element: scale 4, and the element move is the 32-bit
+;           one. A backend can pass every .w case with a broken scale.
+;   p\      a structure field, which reaches the same store through the
+;           compile-time "#Z@name+offset" address form rather than a computed
+;           one. Two different address paths, one instruction.
+;   guard   the variable declared straight after the arrays. If an array
+;           overruns its storage - which it did on every one of these backends
+;           until slots were sized from the symbol table - this is what dies,
+;           and it dies silently unless something reads it.
+EnableExplicit
+
+Structure Pt
+  x.w
+  y.w
+EndStructure
+
+Global r_const.w
+Global r_var.w
+Global r_sum.w
+Global r_last.w
+Global r_byte.w
+Global r_longlo.w
+Global r_fx.w
+Global r_fsum.w
+Global r_neigh.w
+
+Dim aw.w[5]
+Dim ab.b[4]
+Dim al.l[3]
+Global p.Pt
+Global guard.w
+
+Procedure Main()
+  Define i.w
+  Define s.w
+
+  guard = 1234
+
+  aw[0] = 11
+  aw[1] = 22
+  aw[2] = 33
+  aw[3] = 44
+  aw[4] = -5
+
+  r_const = aw[2] + aw[3]      ; 77   - both indices are constants
+  i = 1
+  r_var = aw[i] * 10           ; 220  - the index is a VARIABLE
+
+  s = 0
+  i = 0
+  While i < 5
+    s = s + aw[i]
+    i = i + 1
+  Wend
+  r_sum = s                    ; 105  = 11+22+33+44-5
+
+  i = 4
+  r_last = aw[i]               ; -5   - a negative element via a variable index
+
+  ab[0] = 100
+  ab[1] = 100
+  i = 1
+  ab[2] = ab[0] + ab[i]        ; 200 in a signed byte, i.e. -56
+  ab[3] = 0 - ab[2]            ; 56, negated at BYTE width
+  r_byte = ab[3]               ; 56
+                               ; DELIBERATELY NOT "r_byte = ab[2]". That reads
+                               ; a NEGATIVE .b element into a .w, and the
+                               ; shared frontend zero-extends it (200) rather
+                               ; than sign-extending it (-56) - on every
+                               ; target, the AVR included, because
+                               ; WidensUnsigned() resolves a type for an
+                               ; identifier and for #AST_ARRAY_ACCESS but not
+                               ; for the #AST_FIELD_ACCESS node an element read
+                               ; actually produces, so it falls to the untyped
+                               ; "unsigned" default. That is a frontend defect;
+                               ; pinning it here would pin the wrong layer.
+                               ; Negating at byte width gives a POSITIVE
+                               ; result, which both extensions agree on, and
+                               ; still proves the element held 0xC8.
+
+  al[0] = 100000
+  i = 2
+  al[i] = al[0] + 7
+  r_longlo = al[2] - 100000    ; 7 - a four-byte element, scale 4, narrowed to
+                               ; a .w only so this file can be checked by a
+                               ; 16-bit harness
+
+  p\x = 10
+  p\y = 32
+  r_fx = p\x                   ; 10
+  r_fsum = p\x + p\y           ; 42
+
+  r_neigh = guard              ; 1234 if nothing wrote past an array's end
+EndProcedure
+Main()

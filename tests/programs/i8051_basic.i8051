@@ -1,0 +1,44 @@
+EnableExplicit
+Define a.w
+Define b.w
+Define r1.w
+Define r2.w
+Define r3.w
+Define r4.w
+Define r5.w
+Define r6.w
+Define r7.w
+Define r8.w
+Define r9.w
+Define r10.w
+a = 10
+b = 3
+r1 = a + b
+r2 = a - b
+r3 = a * b
+r4 = 123 * 45
+r5 = (5 + 3) * 2 - 6
+
+; Division, which the 8080 and 6809 backends do not have at all. The Z80 has
+; enough shift support for a restoring divide, so these are real.
+r6 = 100 / 7
+r7 = 100 % 7
+
+; Signed cases. The core loop is unsigned and the signs are reapplied after, so
+; these are what catches a missing sign fixup. Truncation is toward zero, so
+; -100 / 7 is -14 (not -15) and the remainder takes the DIVIDEND's sign.
+r8 = -100 / 7
+r9 = -100 % 7
+r10 = 100 / -7
+
+; Divide by zero. Deliberately no special case: with a zero divisor the
+; "remainder < divisor" test is never true, so every quotient bit gets set and
+; the routine returns -1 with the remainder equal to the dividend. That is
+; exactly what the AVR backend was MEASURED to do on silicon, so the two targets
+; agree by construction. Going through a variable so the frontend cannot fold it.
+Define z.w
+Define r11.w
+Define r12.w
+z = 0
+r11 = 100 / z
+r12 = 100 % z

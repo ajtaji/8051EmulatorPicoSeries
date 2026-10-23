@@ -1,0 +1,45 @@
+; Bubble sort of 48 pseudo-random words, then a weighted checksum and an order check.
+EnableExplicit
+Global check.w
+Global ordered.w
+Global first.w
+Global last.w
+Dim v.w[48]
+Define i.w
+Define j.w
+Define t.w
+Define seed.w
+seed = 12345
+i = 0
+While i < 48
+  seed = (seed * 25173) + 13849
+  v[i] = seed & $3FFF
+  i = i + 1
+Wend
+i = 0
+While i < 47
+  j = 0
+  While j < 47 - i
+    If v[j] > v[j + 1]
+      t = v[j]
+      v[j] = v[j + 1]
+      v[j + 1] = t
+    EndIf
+    j = j + 1
+  Wend
+  i = i + 1
+Wend
+check = 0
+ordered = 1
+i = 0
+While i < 48
+  check = check + ((i + 1) * v[i])
+  If i > 0
+    If v[i - 1] > v[i]
+      ordered = 0
+    EndIf
+  EndIf
+  i = i + 1
+Wend
+first = v[0]
+last = v[47]

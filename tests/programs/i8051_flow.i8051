@@ -1,0 +1,25 @@
+EnableExplicit
+Define n.w
+Define i.w
+Define acc.w
+Define r1.w
+Define r2.w
+Define r3.w
+n = 10
+If n > 5
+  r1 = 1
+Else
+  r1 = 99
+EndIf
+i = 0
+While i < 5
+  i = i + 1
+Wend
+r2 = i
+i = 1
+acc = 0
+While i < 6
+  acc = acc + i
+  i = i + 1
+Wend
+r3 = acc

@@ -1,0 +1,47 @@
+; Fibonacci in 32 bits, and a bitwise CRC-16/CCITT-FALSE over the bytes 0..255.
+EnableExplicit
+Global fib30.l
+Global crc.w
+Global gcdv.w
+Define a.l
+Define b.l
+Define t.l
+Define n.w
+Define k.w
+Define c.l
+Define x.w
+Define y.w
+a = 0
+b = 1
+n = 0
+While n < 30
+  t = a + b
+  a = b
+  b = t
+  n = n + 1
+Wend
+fib30 = a
+c = $FFFF
+n = 0
+While n < 256
+  c = c ! (n << 8)
+  k = 0
+  While k < 8
+    If c & $8000
+      c = ((c << 1) ! $1021) & $FFFF
+    Else
+      c = (c << 1) & $FFFF
+    EndIf
+    k = k + 1
+  Wend
+  n = n + 1
+Wend
+crc = c
+x = 27720
+y = 17160
+While y <> 0
+  t = x % y
+  x = y
+  y = t
+Wend
+gcdv = x

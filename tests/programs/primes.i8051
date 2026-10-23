@@ -1,0 +1,22 @@
+; Sieve of Eratosthenes below 2000: how many primes, their sum, the largest.
+EnableExplicit
+Global count.w
+Global sum.l
+Global largest.w
+Dim composite.b[2000]
+Define i.w
+Define j.w
+i = 2
+While i < 2000
+  If composite[i] = 0
+    count = count + 1
+    sum = sum + i
+    largest = i
+    j = i + i
+    While j < 2000
+      composite[j] = 1
+      j = j + i
+    Wend
+  EndIf
+  i = i + 1
+Wend

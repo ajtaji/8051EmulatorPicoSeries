@@ -1,0 +1,18 @@
+# Build by-products (the compiler writes these next to each output)
+*.asm
+*.dbg
+*.sym
+*.sym.meta
+*.cycles.txt
+*.build.log
+*.stderr.log
+*.tmp
+# Diagnostic images are rebuilt from tests/; only the demo firmware is kept
+firmware/verify*.uf2
+# Intermediate outputs of tools/make_programs.py and tools/make_asm_tests.py
+tests/programs/*.bin
+tests/programs/*.hex
+tests/programs/*.hex.asm
+tests/programs/*.slots.txt
+tests/asm/*.ihx
+tests/asm/*.lst

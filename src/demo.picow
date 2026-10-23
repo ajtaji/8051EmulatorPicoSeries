@@ -1,0 +1,18 @@
+; Pico W demo: a smoke test, then four instruction mixes measured over and over.
+#CLOCK_KHZ = 200000
+#M51_TIMING = 0
+#M51_ASM_TAIL = 1
+#M51_8052 = 1
+#M51_SFR_HOOK = 0
+#M51_XDATA_HOOK = 0
+#M51_CODE_HOOK = 0
+#M51_SERIAL_HOOK = 0
+EnableExplicit
+XIncludeFile "RP2040/Lib/clocks.pico"
+XIncludeFile "RP2040/Lib/timer.pico"
+XIncludeFile "RP2040/Lib/uart.pico"
+XIncludeFile "RP2040/Lib/usb_serial.pico"
+XIncludeFile "RP2040/Lib/safety.pico"
+XIncludeFile "mcs51.pico"
+XIncludeFile "io.pico"
+XIncludeFile "demo_body.pico"

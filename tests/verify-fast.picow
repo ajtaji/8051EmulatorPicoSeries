@@ -1,0 +1,21 @@
+; Board verification: timing=0, assembly tail=1.
+#CLOCK_KHZ = 200000
+#M51_TIMING = 0
+#M51_ASM_TAIL = 1
+#M51_8052 = 1
+#M51_SFR_HOOK = 0
+#M51_XDATA_HOOK = 0
+#M51_CODE_HOOK = 0
+#M51_SERIAL_HOOK = 0
+EnableExplicit
+XIncludeFile "RP2040/Lib/clocks.pico"
+XIncludeFile "RP2040/Lib/timer.pico"
+XIncludeFile "RP2040/Lib/uart.pico"
+XIncludeFile "RP2040/Lib/usb_serial.pico"
+XIncludeFile "RP2040/Lib/safety.pico"
+XIncludeFile "../src/mcs51.pico"
+XIncludeFile "../src/io.pico"
+XIncludeFile "test_counts.pico"
+XIncludeFile "program_data.pico"
+XIncludeFile "test_data.pico"
+XIncludeFile "verify_body.pico"
