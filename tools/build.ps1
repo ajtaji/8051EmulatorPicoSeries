@@ -36,7 +36,7 @@ if ($outputPath.EndsWith('.uf2')) {
     'Image end 0x{0:X8}' -f $imageEnd
 }
 if ($Port) {
-    # The board is shared: run this through tools/board.sh, which holds the lease.
+    # The board is shared: run this through tools/board.ps1, which holds the lease.
     Invoke-Compiler ('--compile "' + $sourcePath + '" -S -o "' + $outputPath + '" --port ' + $Port + ' --seconds ' + $Seconds)
     $transcript = Get-Content -Raw $stdoutPath
     foreach ($required in $Require) {

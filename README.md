@@ -221,9 +221,15 @@ comment in the shipped example `i8051_basic` still says -1 and the dividend.
 .\tools\build.ps1 -Source src/demo.pico2w -Output firmware/8051-pico2w.uf2
 ```
 
-On a shared board, take the lease from Bash with `tools/board.sh` or
-`tools/board_batch.sh`: they compile first, then upload and capture through the
-compiler (`--port`), holding `C:\PMFBuild\board-leases\COM7.lease` only for that.
+On a shared board use `tools/board.ps1`: it compiles every image first, then
+takes the board through the shared `C:\PMFBuild\board-leases\lease.ps1`
+(`Get-BoardLease` / `Release-BoardLease`), uploads and captures each image
+through the compiler (`--port`), and gives the board back:
+
+```powershell
+.\tools\board.ps1 -Port COM7 -Jobs 'tests/verify.picow:firmware/verify.uf2:45', 'src/demo.picow:firmware/8051-picow.uf2:25'
+```
+
 Images stay below flash $10050000 (the NES ROM store); the build script refuses
 one that does not.
 
