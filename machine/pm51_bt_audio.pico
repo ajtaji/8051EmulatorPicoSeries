@@ -45,14 +45,23 @@ Procedure.i PM51SaveKey()
   ProcedureReturn FlashRangeProgram(#PM51_KEY_SECTOR, @PM51KeyPage(0), 256)
 EndProcedure
 
-; Core 1: the radio, the encoder and the sender, as often as it can. From
-; SRAM, as the NES's core 1 runs: it keeps running while core 0 takes an
-; upload's reboot. (On 2026-10-24 a Pico W running this loop from flash left
-; USB entirely after the reboot that followed a speaker test; whether flash
-; execution was the cause is not proven.)
+; Core 1: the radio, the encoder and the sender, as often as it can, from SRAM
+; as the NES's core 1 runs. When an upload's reboot is pending (the 1200-baud
+; touch, seen through USB serial's flag), BtAudioPoll() disconnects the speaker;
+; core 1 then PARKS in this SRAM loop - no radio, no flash - so core 0 takes the
+; reboot with nothing else running. (2026-10-24: without the park, a Pico W
+; left USB entirely at the reboot after a speaker test and needed a replug.)
+Global PM51Core1Parked.i
 ProcedureRAM Core1Main()
   Repeat
     BtAudioPoll()
+    ; The flags themselves, not the getters: on the RP2040 the getters run
+    ; from flash, and a parked core 1 must not touch flash.
+    If (usbser_bootpend Or usbser_resetpend) And btaud_ending <> 0
+      PM51Core1Parked = 1
+      Repeat
+      ForEver
+    EndIf
   ForEver
 EndProcedure
 

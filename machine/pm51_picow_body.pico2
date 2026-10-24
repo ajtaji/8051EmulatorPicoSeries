@@ -94,6 +94,10 @@ Procedure PM51Render()
       PM51Strip(321 + (x * 2)) = c
     Next
     Tft796BlitRect(80, 32 + (y * 2), 320, 2, @PM51Strip(0))
+    ; A redraw takes ~70 ms: answer USB (an upload's touch) along the way.
+    If (y & 15) = 15
+      UsbSerialTask()
+    EndIf
   Next
 EndProcedure
 
