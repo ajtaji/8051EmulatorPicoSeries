@@ -13,6 +13,8 @@ slots with expected values, and uCsim's instruction and cycle counts.
 
 Run from the repository root:  py -3 tools/make_programs.py
 """
+import json
+import os
 import re
 import struct
 import subprocess
@@ -20,7 +22,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROGRAMS = ROOT / 'tests' / 'programs'
-COMPILER = Path(r'C:\Users\ajtaj\Desktop\Github\PureBasicCode\OpenGl Work\ArduinoBasic\PureMetalForge.exe')
+# PMF_COMPILER overrides it, to build with a compiler under test.
+COMPILER = Path(os.environ.get('PMF_COMPILER', r'C:\Users\ajtaj\Desktop\Github\PureBasicCode\OpenGl Work\ArduinoBasic\PureMetalForge.exe'))
 UCSIM = Path(r'C:\PMFBuild\downloads\sdcc\extract\bin\ucsim_51.exe')
 
 
@@ -75,6 +78,8 @@ EXPECTED = {
     'primes': primes(),
     'fibcrc': fibcrc(),
     'sort': sort(),
+    # Forum 1393 (16-bit unsigned compares): the compiler tool's own Python answers.
+    'ucmp1393': {k: (2, v) for k, v in json.loads((PROGRAMS / 'ucmp1393.expected.json').read_text()).items()},
 }
 
 
@@ -97,6 +102,10 @@ def run_ucsim(name):
     stdin = PROGRAMS / 'ucsim_stdin.tmp'
     script.write_text('\n'.join([
         f'file "{(PROGRAMS / (name + ".hex")).as_posix()}"',
+        # The board harness zeroes code, XDATA and internal RAM before each
+        # program; uCsim starts them random, which once made a run disagree.
+        'fill iram 0 0xff 0',
+        'fill xram 0 0xffff 0',
         'set option selfjump_stop 1',
         'run',
         'echo @@STATE',
@@ -135,7 +144,12 @@ def main():
             raise SystemExit(f'{name}: {clks} clocks is not whole machine cycles')
         checks = []
         for var, (width, value) in EXPECTED[name].items():
-            addr = slots['global_' + var]
+            if 'global_' + var in slots:
+                addr = slots['global_' + var]
+            else:
+                # An array element: name and index, two bytes an element (.w).
+                m = re.fullmatch(r'([a-z_]+?)(\d+)', var)
+                addr = slots['global_' + m.group(1)] + 2 * int(m.group(2))
             got = int.from_bytes(xram[addr:addr + width], 'little')
             want = value & ((1 << (8 * width)) - 1)
             if got != want:
