@@ -138,7 +138,7 @@ low for one cycle (a falling edge: IE0 when IT0 = 1).
 | $D200-$D33F | 320 | **Text colour**, one RGB332 byte per cell (the character's pixels; its background is transparent) |
 | $D400-$D43F | 64 | **Sprites**: 8 x 8 bytes - X, Y (top-left, in bitmap pixels; X 0-159, Y 0-127), PATTERN (0-15), FLAGS (bit 0 shown, bit 1 mirror X, bit 2 mirror Y), 4 spare |
 | $D800-$DBFF | 1,024 | **Sprite patterns**: 16 x 8x8 pixels, one RGB332 byte each, 0 = transparent |
-| $DC00-$DC7F | 128 | **Line colours**: bitmap pixel value 0 on line y is drawn in colour LINE[y] (rainbows and raster bars for 128 writes a frame) |
+| $DC00-$DC7F | 128 | **Line colours**: bitmap pixel value 0 on line y is drawn in colour LINE[(y + LINEOFS) & 127] (raster bars) |
 | $DD00-$EFFF | | RAM |
 | $F000-$F0FF | | **I/O registers** (below) |
 | $F100-$FFFF | | RAM |
@@ -153,6 +153,10 @@ low for one cycle (a falling edge: IE0 when IT0 = 1).
 | $F005 LAYERS | R/W | bit 0 bitmap, bit 1 text, bit 2 sprites (reset: 7) |
 | $F006 FILL | W | fills the whole bitmap with the value written (takes no CPU time) |
 | $F007 TEXTCLR | W | any value: clears the text layer |
+| $F008 BUTTONS | R | the buttons, 1 = pressed, in P1's bit order (for compiled programs, whose `PeekA` reaches XDATA, not ports) |
+| $F009-$F00D RX, RY, RW, RH, RCOLOUR | R/W | the **rectangle unit**: left, top, width, height, colour |
+| $F00E RECT | W | any value: fills that rectangle of the bitmap (clipped; takes no CPU time) |
+| $F00F LINEOFS | R/W | line y is drawn in LINE[(y + LINEOFS) & 127]: one write moves every raster bar |
 | $F010-$F01B TONE 0-2 | R/W | per voice, 4 bytes at $F010 + 4*n: FREQ low, FREQ high (Hz, 0 = silent), VOLUME (0-15), WAVE (0 square, 1 triangle, 2 sawtooth, 3 noise) |
 | $F01C MASTER | R/W | master volume 0-15 (reset: 12) |
 

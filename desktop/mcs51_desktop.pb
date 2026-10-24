@@ -9,6 +9,7 @@
 ;   --show-tests       run the test suites as soon as the window is up
 ;   --run              start the loaded program running
 ;   --screenshot <png> save the window's own picture after two seconds and close
+;   --shot-after <n>   ... after n window frames instead of 120
 ;
 ; Build with desktop/build.ps1 (x64, C back end, /DPIAWARE, /OPTIMIZER).
 
@@ -217,6 +218,39 @@ Procedure.i ConsoleMain()
     M51TestConsole = 1
     PM51Enabled = 0
     ProcedureReturn Bool(M51RunAllTests() <> 0)
+  ElseIf arg = "--frames"
+    ; --frames <n> <program> [--wav <file>] [--peek <hex address>]: runs n board
+    ; frames headless and reports; the sound of those frames goes to the WAV.
+    Protected n.i = Val(ProgramParameter(1)), k.i, wav.s, peek.i = -1, f.i, *pcm, t.q
+    OpenConsole()
+    For k = 3 To CountProgramParameters() - 1
+      If LCase(ProgramParameter(k)) = "--wav" : wav = ProgramParameter(k + 1) : EndIf
+      If LCase(ProgramParameter(k)) = "--peek" : peek = Val("$" + ProgramParameter(k + 1)) : EndIf
+    Next
+    If LoadProgram(ProgramParameter(2)) = 0
+      PrintN("cannot load " + ProgramParameter(2)) : ProcedureReturn 2
+    EndIf
+    *pcm = AllocateMemory(n * 882 * 2 + 16)
+    t = ElapsedMilliseconds()
+    For k = 0 To n - 1
+      PM51RunFrame()
+      PM51Mix(*pcm + (k * 882 * 2), 882, 44100)
+    Next
+    t = ElapsedMilliseconds() - t
+    PrintN("board frames=" + Str(PM51Frame) + " machine cycles=" + Str(M51Cycles) + " ms=" + Str(t) + " PC=" + H4(M51PC))
+    If peek >= 0
+      PrintN("XDATA " + H4(peek) + " = " + Str(M51XData(peek) | (M51XData(peek + 1) << 8)))
+    EndIf
+    If wav <> ""
+      f = CreateFile(#PB_Any, wav)
+      WriteString(f, "RIFF", #PB_Ascii) : WriteLong(f, 36 + n * 882 * 2) : WriteString(f, "WAVEfmt ", #PB_Ascii)
+      WriteLong(f, 16) : WriteWord(f, 1) : WriteWord(f, 1) : WriteLong(f, 44100) : WriteLong(f, 88200)
+      WriteWord(f, 2) : WriteWord(f, 16) : WriteString(f, "data", #PB_Ascii) : WriteLong(f, n * 882 * 2)
+      WriteData(f, *pcm, n * 882 * 2)
+      CloseFile(f)
+      PrintN("wrote " + wav)
+    EndIf
+    ProcedureReturn 0
   ElseIf arg = "--bench"
     OpenConsole()
     PrintN("8051 desktop core, timed build, 50 million machine cycles per mix")
@@ -239,7 +273,7 @@ Global RateCycles.d, RateShown.d, RateWindowCycles.i, RateWindowStart.q
 Global DisTop.i, MemTab.i, MemTop.i, LogTab.i, LogTop.i, SerialLog$
 Global Wheel.i, KeyCode.i, KeyChar.i
 Global TestsRun.i, TestsFailed.i, ShotPath$, ShotFrames.i
-Global Turbo.i, BoardFrames.i, BoardClock.q, ScreenSpr.GLSprite, *ScreenBuf
+Global ShotAfter.i = 120, Turbo.i, BoardFrames.i, BoardClock.q, ScreenSpr.GLSprite, *ScreenBuf
 
 Procedure DrainSerial()
   Protected w.i
@@ -690,7 +724,7 @@ Procedure Frame()
   Neon_ChromeEndFrame()
   If ShotPath$ <> ""
     ShotFrames + 1
-    If ShotFrames = 120
+    If ShotFrames = ShotAfter
       SaveShot(pw, ph)
     EndIf
   EndIf
@@ -774,6 +808,9 @@ For argi = 0 To CountProgramParameters() - 1
   ElseIf LCase(arg$) = "--screenshot"
     argi + 1
     ShotPath$ = ProgramParameter(argi)
+  ElseIf LCase(arg$) = "--shot-after"
+    argi + 1
+    ShotAfter = Val(ProgramParameter(argi))
   ElseIf LoadProgram(arg$)
     Status$ = "Loaded " + LoadedName$ + " (" + Str(LoadedTop) + " bytes)."
   EndIf

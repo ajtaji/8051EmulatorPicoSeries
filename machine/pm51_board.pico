@@ -30,8 +30,29 @@ Procedure.i M51HookXRead(adr.i)
     v = PM51Status
     PM51Status = 0
     ProcedureReturn v
+  ElseIf adr = $F008
+    ProcedureReturn PM51Buttons & 255
   EndIf
   ProcedureReturn M51XData(adr)
+EndProcedure
+
+; The rectangle unit: X, Y, W, H, COLOUR, clipped to the 160x128 bitmap.
+Procedure PM51Rect(x.i, y.i, w.i, h.i, colour.i)
+  Protected r.i, c.i, x1.i, y1.i, a.i
+  x1 = x + w
+  y1 = y + h
+  If x1 > 160
+    x1 = 160
+  EndIf
+  If y1 > 128
+    y1 = 128
+  EndIf
+  For r = y To y1 - 1
+    a = $8000 + (r * 160)
+    For c = x To x1 - 1
+      M51XData(a + c) = colour
+    Next
+  Next
 EndProcedure
 
 Procedure M51HookXWrite(adr.i, v.i)
@@ -47,6 +68,8 @@ Procedure M51HookXWrite(adr.i, v.i)
     For i = $D000 To $D13F
       M51XData(i) = 0
     Next
+  ElseIf adr = $F00E
+    PM51Rect(M51XData($F009), M51XData($F00A), M51XData($F00B), M51XData($F00C), M51XData($F00D))
   EndIf
 EndProcedure
 
@@ -88,7 +111,7 @@ Procedure PM51ComposeLine(y.i)
   Protected trow.i, gy.i, col.i, ch.i, bits.i, colour.i, px.i
   Protected s.i, sa.i, sy.i, sxp.i, fl.i, pat.i, r.i, c.i, cc.i
   layers = M51XData($F005)
-  line0 = M51XData($DC00 + y)
+  line0 = M51XData($DC00 + ((y + M51XData($F00F)) & 127))
   If layers & 1
     sx = M51XData($F002)
     row = (y + M51XData($F003)) % 128
