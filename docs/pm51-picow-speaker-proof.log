@@ -1,0 +1,17 @@
+my-pm51-speaker-test.uf2.build.log:> [NATIVE UPLOADER] Sending BOOTSEL reset command to COM7 (the 1200-baud touch)...
+my-pm51-speaker-test.uf2.build.log:> [NATIVE UPLOADER] Waiting for matching BOOTSEL drive: RPI-RP2 (RP2040)...
+my-pm51-speaker-test.uf2.build.log:> [NATIVE UPLOADER] Found BOOTSEL drive at H:\
+my-pm51-speaker-test.uf2.build.log:> [NATIVE UPLOADER] FLASH COMPLETE! Board will reboot into the new firmware automatically.
+my-pm51-speaker-test.uf2.build.log:PM51 sound: connecting to the speaker
+my-pm51-speaker-test.uf2.build.log:bt_audio: reconnected with the stored key (no pairing)
+my-pm51-speaker-test.uf2.build.log:PM51 sound: BtAudioBegin=0
+my-pm51-speaker-test.uf2.build.log:board frames=245 panel frames in the last 5 s=37 emulation us=2342900 panel us=2707141 interrupts=244 bt_packets=626 bt_underruns=41 buttons=0
+my-pm51-speaker-test.uf2.build.log:board frames=497 panel frames in the last 5 s=36 emulation us=2414966 panel us=2625647 interrupts=496 bt_packets=1256 bt_underruns=43 buttons=0
+my-pm51-speaker-test.uf2.build.log:board frames=749 panel frames in the last 5 s=36 emulation us=2422144 panel us=2625232 interrupts=748 bt_packets=1887 bt_underruns=45 buttons=0
+my-pm51-speaker-test.uf2.build.log:board frames=1002 panel frames in the last 5 s=36 emulation us=2426833 panel us=2625469 interrupts=1001 bt_packets=2518 bt_underruns=45 buttons=0
+pm51-picow.uf2.build.log:> [NATIVE UPLOADER] Sending BOOTSEL reset command to COM7 (the 1200-baud touch)...
+pm51-picow.uf2.build.log:> [NATIVE UPLOADER] Waiting for matching BOOTSEL drive: RPI-RP2 (RP2040)...
+pm51-picow.uf2.build.log:> [NATIVE UPLOADER] Found BOOTSEL drive at H:\
+pm51-picow.uf2.build.log:> [NATIVE UPLOADER] FLASH COMPLETE! Board will reboot into the new firmware automatically.
+pm51-picow.uf2.build.log:PM51 sound: no speaker named (a private wrapper names it); silent
+pm51-picow.uf2.build.log:board frames=248 panel frames in the last 5 s=52 emulation us=1339711 panel us=3718898 interrupts=247 buttons=0

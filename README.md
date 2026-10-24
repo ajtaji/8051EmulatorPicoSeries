@@ -169,9 +169,18 @@ On the Pico W (`machine/pm51_picow.picow`; `pm51_pico2w.pico2w` for the
 Pico 2 W) the picture is drawn on the LAFVIN ST7796 panel at twice the size
 (320x256, centred), and the LAFVIN controls are the buttons: the stick is
 up/down/left/right, BTN1 (GP15) is A, BTN2 (GP14) is B, both together are
-start. The Pico build is **silent for now**: its sound would go to the
-Bluetooth speaker the NES uses, whose address lives in a private wrapper this
-repository does not have. On the desktop the picture is drawn in the window,
+start. Sound goes to a Bluetooth speaker (A2DP), the NES's way: core 0 mixes
+each frame's 960 samples (48 kHz) into a ring that core 1's radio loop reads
+(`machine/pm51_bt_audio.pico`). The published firmware names no speaker and is
+silent; a private, git-ignored `machine/my-*.picow` wrapper names it
+(`PM51SetSpeaker(?MySpeaker)` before `Main()`), and the link key is the shared
+"BTK1" record at flash $1FF000. On the Pico W: about 126 packets a second,
+~40 underruns while the stream starts and then almost none, 50 board frames a
+second (the panel then redraws ~7 times a second). For an upload, core 1 parks
+in SRAM once the speaker is disconnected, and core 0 answers USB during the
+panel redraw: the 1200-baud touch reaches boot mode with the stream playing
+(`tools/speaker_test.ps1` runs a short test and flashes the silent firmware
+back). On the desktop the picture is drawn in the window,
 the keyboard is the buttons (arrows, Z = A, X = B, Enter = start, Space =
 select) and the sound plays through Windows.
 
