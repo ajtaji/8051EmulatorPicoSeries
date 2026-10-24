@@ -1,5 +1,5 @@
-PM51 board on the Pico W: running pm51_demo, 31741 bytes
-board frames=249 panel frames in the last 5 s=52 emulation us=1367869 panel us=3717051 buttons=0
-board frames=504 panel frames in the last 5 s=52 emulation us=1387822 panel us=3706955 buttons=0
-board frames=758 panel frames in the last 5 s=52 emulation us=1382429 panel us=3706895 buttons=0
-board frames=1013 panel frames in the last 5 s=52 emulation us=1387877 panel us=3706680 buttons=0
+PM51 board on the Pico W: running pm51_demo, 21040 bytes
+board frames=247 panel frames in the last 5 s=52 emulation us=1328338 panel us=3716679 interrupts=246 buttons=0
+board frames=500 panel frames in the last 5 s=52 emulation us=1347317 panel us=3707119 interrupts=499 buttons=0
+board frames=752 panel frames in the last 5 s=52 emulation us=1341985 panel us=3707046 interrupts=751 buttons=0
+board frames=1005 panel frames in the last 5 s=52 emulation us=1347351 panel us=3706600 interrupts=1004 buttons=0

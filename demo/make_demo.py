@@ -1,6 +1,6 @@
 """Writes demo/pm51_demo.pm51: the PM51 board demo, a PureMetal program for
 PureMetal Forge's PM51 display board (an 8052 target, extension .pm51). The 8051 target has no DataSection, so the
-music and the tables are written into XDATA by InitTables(), one PokeA a byte.
+tables go in a DataSection (code memory, read with MOVC) that InitTables() copies into XDATA.
 
 The tune is original (written for this demo): four bars in A minor,
 Am - F - C - G, lead on a square voice, bass on a triangle, drums on noise.
@@ -76,11 +76,16 @@ def main():
         data[T_RAINBOW + i] = rainbow(i)
     for i, ch in enumerate(MESSAGE):
         data[T_MSG + i] = ord(ch)
-    lines = [f'  PokeA(${a:04X}, {v})' for a, v in sorted(data.items()) if v != 0]
+    # The DataSection, in InitTables' order: lead, bass, drums, the 256-byte
+    # frequency table, the rainbow, the message.
+    blob = []
+    for base, n in ((T_LEAD, 64), (T_BASS, 64), (T_DRUM, 64), (T_FREQ, 256), (T_RAINBOW, 32), (T_MSG, len(MESSAGE))):
+        blob += [data.get(base + i, 0) for i in range(n)]
+    lines = ['  Data.a ' + ','.join(str(v) for v in blob[i:i + 32]) for i in range(0, len(blob), 32)]
     src = (HERE / 'pm51_demo.template').read_text()
     src = src.replace('@@MSGLEN@@', str(len(MESSAGE))).replace('@@TABLES@@', '\n'.join(lines))
     (HERE / 'pm51_demo.pm51').write_text(src, newline='\n')
-    print('demo/pm51_demo.pm51 written,', len(lines), 'table bytes')
+    print('demo/pm51_demo.pm51 written,', len(blob), 'table bytes')
 
 
 if __name__ == '__main__':

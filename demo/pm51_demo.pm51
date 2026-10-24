@@ -4,13 +4,14 @@
 ;
 ; The board (README, "The PM51 display board"): bitmap $8000, text $D000,
 ; text colour $D200, sprites $D400, sprite patterns $D800, line colours $DC00,
-; I/O $F000. Everything is polled: the 8051 target has no interrupt handlers.
+; I/O $F000. The frame starts with INT0 (ProcedureInterrupt EXT0); the tables
+; are a DataSection in code memory, copied into XDATA by Read at start.
 EnableExplicit
 
 Global frame.w, steps.w, tick.w, i.w, x.w, y.w, c.w, v.w, a.w, k.w
 Global buttons.w, lastButtons.w, direction.w, muted.w, scroll.w, scrollPos.w
-Global leadVol.w, bassVol.w, drumVol.w, drumKind.w, textColour.w
-; The tables, in XDATA RAM (written by InitTables): notes as MIDI numbers
+Global leadVol.w, bassVol.w, drumVol.w, drumKind.w, b.a, frameReady.a
+; The tables, in XDATA RAM (copied there by InitTables): notes as MIDI numbers
 ; (0 hold, 1 rest), a frequency for each MIDI note, drums, colours, the message.
 #T_LEAD = $E000
 #T_BASS = $E040
@@ -23,392 +24,30 @@ Dim by.w[8]
 Dim bdx.w[8]
 Dim bdy.w[8]
 
+; Copies n bytes of the DataSection, from where Read is, to XDATA at dst.
+Procedure CopyData(dst.w, n.w)
+  k = 0
+  While k < n
+    Read.a b
+    PokeA(dst + k, b)
+    k = k + 1
+  Wend
+EndProcedure
+
 Procedure InitTables()
-  ; The tables' memory is cleared at power-on by the board.
-  PokeA($E000, 69)
-  PokeA($E002, 72)
-  PokeA($E004, 76)
-  PokeA($E006, 74)
-  PokeA($E007, 72)
-  PokeA($E008, 71)
-  PokeA($E00A, 69)
-  PokeA($E00E, 64)
-  PokeA($E010, 65)
-  PokeA($E012, 69)
-  PokeA($E014, 72)
-  PokeA($E016, 71)
-  PokeA($E017, 69)
-  PokeA($E018, 67)
-  PokeA($E01A, 65)
-  PokeA($E01E, 72)
-  PokeA($E020, 76)
-  PokeA($E022, 79)
-  PokeA($E024, 76)
-  PokeA($E026, 74)
-  PokeA($E027, 72)
-  PokeA($E028, 74)
-  PokeA($E02A, 76)
-  PokeA($E02E, 67)
-  PokeA($E030, 74)
-  PokeA($E032, 71)
-  PokeA($E034, 67)
-  PokeA($E036, 69)
-  PokeA($E037, 71)
-  PokeA($E038, 74)
-  PokeA($E03A, 72)
-  PokeA($E03C, 71)
-  PokeA($E03E, 1)
-  PokeA($E040, 45)
-  PokeA($E042, 57)
-  PokeA($E044, 45)
-  PokeA($E046, 57)
-  PokeA($E048, 45)
-  PokeA($E04A, 57)
-  PokeA($E04C, 40)
-  PokeA($E04E, 43)
-  PokeA($E050, 41)
-  PokeA($E052, 53)
-  PokeA($E054, 41)
-  PokeA($E056, 53)
-  PokeA($E058, 41)
-  PokeA($E05A, 53)
-  PokeA($E05C, 48)
-  PokeA($E05E, 52)
-  PokeA($E060, 48)
-  PokeA($E062, 60)
-  PokeA($E064, 48)
-  PokeA($E066, 60)
-  PokeA($E068, 48)
-  PokeA($E06A, 60)
-  PokeA($E06C, 43)
-  PokeA($E06E, 47)
-  PokeA($E070, 43)
-  PokeA($E072, 55)
-  PokeA($E074, 43)
-  PokeA($E076, 55)
-  PokeA($E078, 43)
-  PokeA($E07A, 55)
-  PokeA($E07C, 50)
-  PokeA($E07E, 47)
-  PokeA($E080, 1)
-  PokeA($E081, 3)
-  PokeA($E083, 3)
-  PokeA($E084, 2)
-  PokeA($E085, 3)
-  PokeA($E087, 3)
-  PokeA($E088, 1)
-  PokeA($E089, 3)
-  PokeA($E08B, 3)
-  PokeA($E08C, 2)
-  PokeA($E08D, 3)
-  PokeA($E08F, 3)
-  PokeA($E090, 1)
-  PokeA($E091, 3)
-  PokeA($E093, 3)
-  PokeA($E094, 2)
-  PokeA($E095, 3)
-  PokeA($E097, 3)
-  PokeA($E098, 1)
-  PokeA($E099, 3)
-  PokeA($E09B, 3)
-  PokeA($E09C, 2)
-  PokeA($E09D, 3)
-  PokeA($E09F, 3)
-  PokeA($E0A0, 1)
-  PokeA($E0A1, 3)
-  PokeA($E0A3, 3)
-  PokeA($E0A4, 2)
-  PokeA($E0A5, 3)
-  PokeA($E0A7, 3)
-  PokeA($E0A8, 1)
-  PokeA($E0A9, 3)
-  PokeA($E0AB, 3)
-  PokeA($E0AC, 2)
-  PokeA($E0AD, 3)
-  PokeA($E0AF, 3)
-  PokeA($E0B0, 1)
-  PokeA($E0B1, 3)
-  PokeA($E0B3, 3)
-  PokeA($E0B4, 2)
-  PokeA($E0B5, 3)
-  PokeA($E0B7, 3)
-  PokeA($E0B8, 1)
-  PokeA($E0B9, 3)
-  PokeA($E0BB, 3)
-  PokeA($E0BC, 2)
-  PokeA($E0BD, 3)
-  PokeA($E0BF, 3)
-  PokeA($E150, 82)
-  PokeA($E152, 87)
-  PokeA($E156, 98)
-  PokeA($E15A, 110)
-  PokeA($E15E, 123)
-  PokeA($E160, 131)
-  PokeA($E164, 147)
-  PokeA($E168, 165)
-  PokeA($E16A, 175)
-  PokeA($E16E, 196)
-  PokeA($E172, 220)
-  PokeA($E178, 6)
-  PokeA($E179, 1)
-  PokeA($E180, 74)
-  PokeA($E181, 1)
-  PokeA($E182, 93)
-  PokeA($E183, 1)
-  PokeA($E186, 136)
-  PokeA($E187, 1)
-  PokeA($E18A, 184)
-  PokeA($E18B, 1)
-  PokeA($E18E, 238)
-  PokeA($E18F, 1)
-  PokeA($E190, 11)
-  PokeA($E191, 2)
-  PokeA($E194, 75)
-  PokeA($E195, 2)
-  PokeA($E198, 147)
-  PokeA($E199, 2)
-  PokeA($E19E, 16)
-  PokeA($E19F, 3)
-  PokeA($E200, 224)
-  PokeA($E201, 228)
-  PokeA($E202, 232)
-  PokeA($E203, 240)
-  PokeA($E204, 244)
-  PokeA($E205, 252)
-  PokeA($E206, 220)
-  PokeA($E207, 188)
-  PokeA($E208, 124)
-  PokeA($E209, 92)
-  PokeA($E20A, 28)
-  PokeA($E20B, 28)
-  PokeA($E20C, 28)
-  PokeA($E20D, 29)
-  PokeA($E20E, 30)
-  PokeA($E20F, 31)
-  PokeA($E210, 31)
-  PokeA($E211, 27)
-  PokeA($E212, 19)
-  PokeA($E213, 15)
-  PokeA($E214, 7)
-  PokeA($E215, 3)
-  PokeA($E216, 3)
-  PokeA($E217, 67)
-  PokeA($E218, 99)
-  PokeA($E219, 163)
-  PokeA($E21A, 195)
-  PokeA($E21B, 227)
-  PokeA($E21C, 226)
-  PokeA($E21D, 226)
-  PokeA($E21E, 225)
-  PokeA($E21F, 224)
-  PokeA($E300, 32)
-  PokeA($E301, 32)
-  PokeA($E302, 32)
-  PokeA($E303, 32)
-  PokeA($E304, 32)
-  PokeA($E305, 80)
-  PokeA($E306, 85)
-  PokeA($E307, 82)
-  PokeA($E308, 69)
-  PokeA($E309, 77)
-  PokeA($E30A, 69)
-  PokeA($E30B, 84)
-  PokeA($E30C, 65)
-  PokeA($E30D, 76)
-  PokeA($E30E, 32)
-  PokeA($E30F, 56)
-  PokeA($E310, 48)
-  PokeA($E311, 53)
-  PokeA($E312, 49)
-  PokeA($E313, 32)
-  PokeA($E314, 79)
-  PokeA($E315, 78)
-  PokeA($E316, 32)
-  PokeA($E317, 84)
-  PokeA($E318, 72)
-  PokeA($E319, 69)
-  PokeA($E31A, 32)
-  PokeA($E31B, 80)
-  PokeA($E31C, 77)
-  PokeA($E31D, 53)
-  PokeA($E31E, 49)
-  PokeA($E31F, 32)
-  PokeA($E320, 66)
-  PokeA($E321, 79)
-  PokeA($E322, 65)
-  PokeA($E323, 82)
-  PokeA($E324, 68)
-  PokeA($E325, 32)
-  PokeA($E326, 46)
-  PokeA($E327, 46)
-  PokeA($E328, 46)
-  PokeA($E329, 32)
-  PokeA($E32A, 67)
-  PokeA($E32B, 79)
-  PokeA($E32C, 77)
-  PokeA($E32D, 80)
-  PokeA($E32E, 73)
-  PokeA($E32F, 76)
-  PokeA($E330, 69)
-  PokeA($E331, 68)
-  PokeA($E332, 32)
-  PokeA($E333, 66)
-  PokeA($E334, 89)
-  PokeA($E335, 32)
-  PokeA($E336, 80)
-  PokeA($E337, 85)
-  PokeA($E338, 82)
-  PokeA($E339, 69)
-  PokeA($E33A, 77)
-  PokeA($E33B, 69)
-  PokeA($E33C, 84)
-  PokeA($E33D, 65)
-  PokeA($E33E, 76)
-  PokeA($E33F, 32)
-  PokeA($E340, 70)
-  PokeA($E341, 79)
-  PokeA($E342, 82)
-  PokeA($E343, 71)
-  PokeA($E344, 69)
-  PokeA($E345, 44)
-  PokeA($E346, 32)
-  PokeA($E347, 82)
-  PokeA($E348, 85)
-  PokeA($E349, 78)
-  PokeA($E34A, 32)
-  PokeA($E34B, 66)
-  PokeA($E34C, 89)
-  PokeA($E34D, 32)
-  PokeA($E34E, 65)
-  PokeA($E34F, 32)
-  PokeA($E350, 67)
-  PokeA($E351, 79)
-  PokeA($E352, 77)
-  PokeA($E353, 80)
-  PokeA($E354, 85)
-  PokeA($E355, 84)
-  PokeA($E356, 69)
-  PokeA($E357, 68)
-  PokeA($E358, 45)
-  PokeA($E359, 71)
-  PokeA($E35A, 79)
-  PokeA($E35B, 84)
-  PokeA($E35C, 79)
-  PokeA($E35D, 32)
-  PokeA($E35E, 77)
-  PokeA($E35F, 67)
-  PokeA($E360, 83)
-  PokeA($E361, 45)
-  PokeA($E362, 53)
-  PokeA($E363, 49)
-  PokeA($E364, 32)
-  PokeA($E365, 67)
-  PokeA($E366, 79)
-  PokeA($E367, 82)
-  PokeA($E368, 69)
-  PokeA($E369, 32)
-  PokeA($E36A, 79)
-  PokeA($E36B, 78)
-  PokeA($E36C, 32)
-  PokeA($E36D, 65)
-  PokeA($E36E, 32)
-  PokeA($E36F, 82)
-  PokeA($E370, 65)
-  PokeA($E371, 83)
-  PokeA($E372, 80)
-  PokeA($E373, 66)
-  PokeA($E374, 69)
-  PokeA($E375, 82)
-  PokeA($E376, 82)
-  PokeA($E377, 89)
-  PokeA($E378, 32)
-  PokeA($E379, 80)
-  PokeA($E37A, 73)
-  PokeA($E37B, 32)
-  PokeA($E37C, 80)
-  PokeA($E37D, 73)
-  PokeA($E37E, 67)
-  PokeA($E37F, 79)
-  PokeA($E380, 32)
-  PokeA($E381, 46)
-  PokeA($E382, 46)
-  PokeA($E383, 46)
-  PokeA($E384, 32)
-  PokeA($E385, 65)
-  PokeA($E386, 82)
-  PokeA($E387, 82)
-  PokeA($E388, 79)
-  PokeA($E389, 87)
-  PokeA($E38A, 83)
-  PokeA($E38B, 32)
-  PokeA($E38C, 83)
-  PokeA($E38D, 84)
-  PokeA($E38E, 69)
-  PokeA($E38F, 69)
-  PokeA($E390, 82)
-  PokeA($E391, 32)
-  PokeA($E392, 84)
-  PokeA($E393, 72)
-  PokeA($E394, 69)
-  PokeA($E395, 32)
-  PokeA($E396, 70)
-  PokeA($E397, 73)
-  PokeA($E398, 82)
-  PokeA($E399, 83)
-  PokeA($E39A, 84)
-  PokeA($E39B, 32)
-  PokeA($E39C, 66)
-  PokeA($E39D, 65)
-  PokeA($E39E, 76)
-  PokeA($E39F, 76)
-  PokeA($E3A0, 44)
-  PokeA($E3A1, 32)
-  PokeA($E3A2, 65)
-  PokeA($E3A3, 32)
-  PokeA($E3A4, 84)
-  PokeA($E3A5, 85)
-  PokeA($E3A6, 82)
-  PokeA($E3A7, 78)
-  PokeA($E3A8, 83)
-  PokeA($E3A9, 32)
-  PokeA($E3AA, 84)
-  PokeA($E3AB, 72)
-  PokeA($E3AC, 69)
-  PokeA($E3AD, 32)
-  PokeA($E3AE, 83)
-  PokeA($E3AF, 67)
-  PokeA($E3B0, 82)
-  PokeA($E3B1, 79)
-  PokeA($E3B2, 76)
-  PokeA($E3B3, 76)
-  PokeA($E3B4, 44)
-  PokeA($E3B5, 32)
-  PokeA($E3B6, 66)
-  PokeA($E3B7, 32)
-  PokeA($E3B8, 77)
-  PokeA($E3B9, 85)
-  PokeA($E3BA, 84)
-  PokeA($E3BB, 69)
-  PokeA($E3BC, 83)
-  PokeA($E3BD, 32)
-  PokeA($E3BE, 84)
-  PokeA($E3BF, 72)
-  PokeA($E3C0, 69)
-  PokeA($E3C1, 32)
-  PokeA($E3C2, 77)
-  PokeA($E3C3, 85)
-  PokeA($E3C4, 83)
-  PokeA($E3C5, 73)
-  PokeA($E3C6, 67)
-  PokeA($E3C7, 32)
-  PokeA($E3C8, 46)
-  PokeA($E3C9, 46)
-  PokeA($E3CA, 46)
-  PokeA($E3CB, 32)
-  PokeA($E3CC, 32)
-  PokeA($E3CD, 32)
-  PokeA($E3CE, 32)
-  PokeA($E3CF, 32)
+; INT0 edge-triggered and enabled (SFRs are reached from an ASM block), then EA.
+ASM
+  setb it0
+  setb ex0
+EndASM
+EnableInterrupts
+  Restore DemoTables
+  CopyData(#T_LEAD, 64)
+  CopyData(#T_BASS, 64)
+  CopyData(#T_DRUM, 64)
+  CopyData(#T_FREQ, 256)
+  CopyData(#T_RAINBOW, 32)
+  CopyData(#T_MSG, 208)
 EndProcedure
 
 Procedure.w Rainbow(n.w)
@@ -419,9 +58,15 @@ Procedure.w NoteHz(m.w)
   ProcedureReturn PeekA(#T_FREQ + (m * 2)) | (PeekA(#T_FREQ + (m * 2) + 1) << 8)
 EndProcedure
 
+; The board pulls INT0 low at every frame start (edge-triggered: IT0).
+ProcedureInterrupt EXT0()
+  frameReady = 1
+EndProcedure
+
 Procedure WaitFrame()
-  While PeekA($F001) = 0
+  While frameReady = 0
   Wend
+  frameReady = 0
 EndProcedure
 
 ; Voice n (0-2): frequency in Hz, volume 0-15, wave 0 square 1 triangle 2 saw 3 noise.
@@ -433,22 +78,21 @@ Procedure Voice(n.w, freq.w, vol.w, wave.w)
   PokeA(a + 3, wave)
 EndProcedure
 
-; Text at row r, column col, from msg[) starting at index from, n characters,
-; in textColour (the 8051 target passes at most four arguments).
-Procedure TextFromMsg(r.w, col.w, from.w, n.w)
+; Text at row r, column col, from the message starting at index from, n
+; characters, in a colour.
+Procedure TextFromMsg(r.w, col.w, from.w, n.w, colour.w)
   a = $D000 + (r * 20) + col
   k = 0
   While k < n
     PokeA(a + k, PeekA(#T_MSG + from + k))
-    PokeA(a + k + $200, textColour)
+    PokeA(a + k + $200, colour)
     k = k + 1
   Wend
 EndProcedure
 
 Procedure Title(colour.w)
   ; "PUREMETAL 8051" is message characters 5-18.
-  textColour = colour
-  TextFromMsg(1, 3, 5, 14)
+  TextFromMsg(1, 3, 5, 14, colour)
 EndProcedure
 
 ; The bitmap: a tunnel of 16 nested rectangles from the board's rectangle
@@ -618,6 +262,12 @@ PokeA($F006, 0)
 PokeA($F007, 0)
 PokeA($F004, 0)
 InitTables()
+; INT0 edge-triggered and enabled (SFRs are reached from an ASM block), then EA.
+ASM
+  setb it0
+  setb ex0
+EndASM
+EnableInterrupts
 DrawBitmap()
 DrawBalls()
 PokeA($F01C, 12)
@@ -644,8 +294,7 @@ Repeat
   EndIf
   ; The scroller on row 14: one character every 8 frames.
   If (frame & 7) = 0
-    textColour = $FF
-    TextFromMsg(14, 0, scrollPos, 20)
+    TextFromMsg(14, 0, scrollPos, 20, $FF)
     scrollPos = scrollPos + 1
     If scrollPos > 208 - 20
       scrollPos = 0
@@ -654,3 +303,29 @@ Repeat
   MoveBalls()
   Music()
 ForEver
+
+DataSection
+DemoTables:
+  Data.a 69,0,72,0,76,0,74,72,71,0,69,0,0,0,64,0,65,0,69,0,72,0,71,69,67,0,65,0,0,0,72,0
+  Data.a 76,0,79,0,76,0,74,72,74,0,76,0,0,0,67,0,74,0,71,0,67,0,69,71,74,0,72,0,71,0,1,0
+  Data.a 45,0,57,0,45,0,57,0,45,0,57,0,40,0,43,0,41,0,53,0,41,0,53,0,41,0,53,0,48,0,52,0
+  Data.a 48,0,60,0,48,0,60,0,48,0,60,0,43,0,47,0,43,0,55,0,43,0,55,0,43,0,55,0,50,0,47,0
+  Data.a 1,3,0,3,2,3,0,3,1,3,0,3,2,3,0,3,1,3,0,3,2,3,0,3,1,3,0,3,2,3,0,3
+  Data.a 1,3,0,3,2,3,0,3,1,3,0,3,2,3,0,3,1,3,0,3,2,3,0,3,1,3,0,3,2,3,0,3
+  Data.a 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  Data.a 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  Data.a 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,82,0,87,0,0,0,98,0,0,0,110,0,0,0,123,0
+  Data.a 131,0,0,0,147,0,0,0,165,0,175,0,0,0,196,0,0,0,220,0,0,0,0,0,6,1,0,0,0,0,0,0
+  Data.a 74,1,93,1,0,0,136,1,0,0,184,1,0,0,238,1,11,2,0,0,75,2,0,0,147,2,0,0,0,0,16,3
+  Data.a 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  Data.a 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  Data.a 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  Data.a 224,228,232,240,244,252,220,188,124,92,28,28,28,29,30,31,31,27,19,15,7,3,3,67,99,163,195,227,226,226,225,224
+  Data.a 32,32,32,32,32,80,85,82,69,77,69,84,65,76,32,56,48,53,49,32,79,78,32,84,72,69,32,80,77,53,49,32
+  Data.a 66,79,65,82,68,32,46,46,46,32,67,79,77,80,73,76,69,68,32,66,89,32,80,85,82,69,77,69,84,65,76,32
+  Data.a 70,79,82,71,69,44,32,82,85,78,32,66,89,32,65,32,67,79,77,80,85,84,69,68,45,71,79,84,79,32,77,67
+  Data.a 83,45,53,49,32,67,79,82,69,32,79,78,32,65,32,82,65,83,80,66,69,82,82,89,32,80,73,32,80,73,67,79
+  Data.a 32,46,46,46,32,65,82,82,79,87,83,32,83,84,69,69,82,32,84,72,69,32,70,73,82,83,84,32,66,65,76,76
+  Data.a 44,32,65,32,84,85,82,78,83,32,84,72,69,32,83,67,82,79,76,76,44,32,66,32,77,85,84,69,83,32,84,72
+  Data.a 69,32,77,85,83,73,67,32,46,46,46,32,32,32,32,32
+EndDataSection

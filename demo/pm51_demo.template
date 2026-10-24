@@ -4,13 +4,14 @@
 ;
 ; The board (README, "The PM51 display board"): bitmap $8000, text $D000,
 ; text colour $D200, sprites $D400, sprite patterns $D800, line colours $DC00,
-; I/O $F000. Everything is polled: the 8051 target has no interrupt handlers.
+; I/O $F000. The frame starts with INT0 (ProcedureInterrupt EXT0); the tables
+; are a DataSection in code memory, copied into XDATA by Read at start.
 EnableExplicit
 
 Global frame.w, steps.w, tick.w, i.w, x.w, y.w, c.w, v.w, a.w, k.w
 Global buttons.w, lastButtons.w, direction.w, muted.w, scroll.w, scrollPos.w
-Global leadVol.w, bassVol.w, drumVol.w, drumKind.w, textColour.w
-; The tables, in XDATA RAM (written by InitTables): notes as MIDI numbers
+Global leadVol.w, bassVol.w, drumVol.w, drumKind.w, b.a, frameReady.a
+; The tables, in XDATA RAM (copied there by InitTables): notes as MIDI numbers
 ; (0 hold, 1 rest), a frequency for each MIDI note, drums, colours, the message.
 #T_LEAD = $E000
 #T_BASS = $E040
@@ -23,9 +24,30 @@ Dim by.w[8]
 Dim bdx.w[8]
 Dim bdy.w[8]
 
+; Copies n bytes of the DataSection, from where Read is, to XDATA at dst.
+Procedure CopyData(dst.w, n.w)
+  k = 0
+  While k < n
+    Read.a b
+    PokeA(dst + k, b)
+    k = k + 1
+  Wend
+EndProcedure
+
 Procedure InitTables()
-  ; The tables' memory is cleared at power-on by the board.
-@@TABLES@@
+; INT0 edge-triggered and enabled (SFRs are reached from an ASM block), then EA.
+ASM
+  setb it0
+  setb ex0
+EndASM
+EnableInterrupts
+  Restore DemoTables
+  CopyData(#T_LEAD, 64)
+  CopyData(#T_BASS, 64)
+  CopyData(#T_DRUM, 64)
+  CopyData(#T_FREQ, 256)
+  CopyData(#T_RAINBOW, 32)
+  CopyData(#T_MSG, @@MSGLEN@@)
 EndProcedure
 
 Procedure.w Rainbow(n.w)
@@ -36,9 +58,15 @@ Procedure.w NoteHz(m.w)
   ProcedureReturn PeekA(#T_FREQ + (m * 2)) | (PeekA(#T_FREQ + (m * 2) + 1) << 8)
 EndProcedure
 
+; The board pulls INT0 low at every frame start (edge-triggered: IT0).
+ProcedureInterrupt EXT0()
+  frameReady = 1
+EndProcedure
+
 Procedure WaitFrame()
-  While PeekA($F001) = 0
+  While frameReady = 0
   Wend
+  frameReady = 0
 EndProcedure
 
 ; Voice n (0-2): frequency in Hz, volume 0-15, wave 0 square 1 triangle 2 saw 3 noise.
@@ -50,22 +78,21 @@ Procedure Voice(n.w, freq.w, vol.w, wave.w)
   PokeA(a + 3, wave)
 EndProcedure
 
-; Text at row r, column col, from msg[) starting at index from, n characters,
-; in textColour (the 8051 target passes at most four arguments).
-Procedure TextFromMsg(r.w, col.w, from.w, n.w)
+; Text at row r, column col, from the message starting at index from, n
+; characters, in a colour.
+Procedure TextFromMsg(r.w, col.w, from.w, n.w, colour.w)
   a = $D000 + (r * 20) + col
   k = 0
   While k < n
     PokeA(a + k, PeekA(#T_MSG + from + k))
-    PokeA(a + k + $200, textColour)
+    PokeA(a + k + $200, colour)
     k = k + 1
   Wend
 EndProcedure
 
 Procedure Title(colour.w)
   ; "PUREMETAL 8051" is message characters 5-18.
-  textColour = colour
-  TextFromMsg(1, 3, 5, 14)
+  TextFromMsg(1, 3, 5, 14, colour)
 EndProcedure
 
 ; The bitmap: a tunnel of 16 nested rectangles from the board's rectangle
@@ -235,6 +262,12 @@ PokeA($F006, 0)
 PokeA($F007, 0)
 PokeA($F004, 0)
 InitTables()
+; INT0 edge-triggered and enabled (SFRs are reached from an ASM block), then EA.
+ASM
+  setb it0
+  setb ex0
+EndASM
+EnableInterrupts
 DrawBitmap()
 DrawBalls()
 PokeA($F01C, 12)
@@ -261,8 +294,7 @@ Repeat
   EndIf
   ; The scroller on row 14: one character every 8 frames.
   If (frame & 7) = 0
-    textColour = $FF
-    TextFromMsg(14, 0, scrollPos, 20)
+    TextFromMsg(14, 0, scrollPos, 20, $FF)
     scrollPos = scrollPos + 1
     If scrollPos > @@MSGLEN@@ - 20
       scrollPos = 0
@@ -271,3 +303,8 @@ Repeat
   MoveBalls()
   Music()
 ForEver
+
+DataSection
+DemoTables:
+@@TABLES@@
+EndDataSection

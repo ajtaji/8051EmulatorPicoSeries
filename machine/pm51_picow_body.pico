@@ -153,6 +153,7 @@ Procedure Main()
       Say("board frames=") : Num(PM51Done)
       Say(" panel frames in the last 5 s=") : Num(PM51Shown - PM51ShownLast)
       Say(" emulation us=") : Num(PM51EmuUs) : Say(" panel us=") : Num(PM51RenderUs)
+      Say(" interrupts=") : Num(M51IntCount)
       Say(" buttons=") : Num(PM51Buttons) : Eol()
       PM51EmuUs = 0 : PM51RenderUs = 0
       PM51ShownLast = PM51Shown

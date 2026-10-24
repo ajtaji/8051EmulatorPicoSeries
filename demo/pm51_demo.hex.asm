@@ -293,6 +293,11 @@ __i8051_main:
   mov dptr,#$52
   movx @dptr,a
   mov a,#$00
+  mov dptr,#$52
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
   mov dptr,#$53
   movx @dptr,a
   mov dptr,#$52
@@ -301,47 +306,42 @@ __i8051_main:
   movx @dptr,a
   mov dptr,#$53
   movx a,@dptr
+  mov dptr,#$54
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
   mov dptr,#$55
   movx @dptr,a
-  mov a,#$10
-  mov $58,a
   mov a,#$00
-  mov $59,a
   mov dptr,#$56
-__i51_zm_42:
-  clr a
   movx @dptr,a
-  inc dptr
-  mov a,$58
-  jnz __i51_zm_42_nb
-  dec $59
-__i51_zm_42_nb:
-  dec $58
-  mov a,$58
-  orl a,$59
-  jnz __i51_zm_42
+  mov a,#$00
+  mov dptr,#$56
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$57
+  movx @dptr,a
+  mov dptr,#$56
+  movx a,@dptr
+  mov dptr,#$58
+  movx @dptr,a
+  mov dptr,#$57
+  movx a,@dptr
+  mov dptr,#$58
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$59
+  movx @dptr,a
   mov a,#$10
   mov $58,a
   mov a,#$00
   mov $59,a
-  mov dptr,#$66
-__i51_zm_43:
-  clr a
-  movx @dptr,a
-  inc dptr
-  mov a,$58
-  jnz __i51_zm_43_nb
-  dec $59
-__i51_zm_43_nb:
-  dec $58
-  mov a,$58
-  orl a,$59
-  jnz __i51_zm_43
-  mov a,#$10
-  mov $58,a
-  mov a,#$00
-  mov $59,a
-  mov dptr,#$76
+  mov dptr,#$5A
 __i51_zm_44:
   clr a
   movx @dptr,a
@@ -358,7 +358,7 @@ __i51_zm_44_nb:
   mov $58,a
   mov a,#$00
   mov $59,a
-  mov dptr,#$86
+  mov dptr,#$6A
 __i51_zm_45:
   clr a
   movx @dptr,a
@@ -371,41 +371,41 @@ __i51_zm_45_nb:
   mov a,$58
   orl a,$59
   jnz __i51_zm_45
+  mov a,#$10
+  mov $58,a
+  mov a,#$00
+  mov $59,a
+  mov dptr,#$7A
+__i51_zm_46:
+  clr a
+  movx @dptr,a
+  inc dptr
+  mov a,$58
+  jnz __i51_zm_46_nb
+  dec $59
+__i51_zm_46_nb:
+  dec $58
+  mov a,$58
+  orl a,$59
+  jnz __i51_zm_46
+  mov a,#$10
+  mov $58,a
+  mov a,#$00
+  mov $59,a
+  mov dptr,#$8A
+__i51_zm_47:
+  clr a
+  movx @dptr,a
+  inc dptr
+  mov a,$58
+  jnz __i51_zm_47_nb
+  dec $59
+__i51_zm_47_nb:
+  dec $58
+  mov a,$58
+  orl a,$59
+  jnz __i51_zm_47
   mov a,#$07
-  mov dptr,#$96
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$96
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$97
-  movx @dptr,a
-  mov dptr,#$96
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F005
-  mov a,$58
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$98
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$98
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$99
-  movx @dptr,a
-  mov dptr,#$98
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F006
-  mov a,$58
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$9A
   movx @dptr,a
   mov a,#$00
@@ -419,7 +419,7 @@ __i51_zm_45_nb:
   mov dptr,#$9A
   movx a,@dptr
   mov $58,a
-  mov dptr,#$F007
+  mov dptr,#$F005
   mov a,$58
   movx @dptr,a
   mov a,#$00
@@ -436,13 +436,10 @@ __i51_zm_45_nb:
   mov dptr,#$9C
   movx a,@dptr
   mov $58,a
-  mov dptr,#$F004
+  mov dptr,#$F006
   mov a,$58
   movx @dptr,a
-  lcall inittables
-  lcall drawbitmap
-  lcall drawballs
-  mov a,#$0C
+  mov a,#$00
   mov dptr,#$9E
   movx @dptr,a
   mov a,#$00
@@ -456,34 +453,74 @@ __i51_zm_45_nb:
   mov dptr,#$9E
   movx a,@dptr
   mov $58,a
+  mov dptr,#$F007
+  mov a,$58
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$A0
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$A0
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$A1
+  movx @dptr,a
+  mov dptr,#$A0
+  movx a,@dptr
+  mov $58,a
+  mov dptr,#$F004
+  mov a,$58
+  movx @dptr,a
+  lcall inittables
+  setb it0
+  setb ex0
+  setb ea
+  lcall drawbitmap
+  lcall drawballs
+  mov a,#$0C
+  mov dptr,#$A2
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$A2
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$A3
+  movx @dptr,a
+  mov dptr,#$A2
+  movx a,@dptr
+  mov $58,a
   mov dptr,#$F01C
   mov a,$58
   movx @dptr,a
   mov a,#$01
-  mov dptr,#$A0
+  mov dptr,#$A4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$A1
+  mov dptr,#$A5
   movx @dptr,a
-  mov dptr,#$A0
+  mov dptr,#$A4
   movx a,@dptr
   mov dptr,#$34
   movx @dptr,a
-  mov dptr,#$A1
+  mov dptr,#$A5
   movx a,@dptr
   mov dptr,#$35
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$A2
+  mov dptr,#$A6
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$A3
+  mov dptr,#$A7
   movx @dptr,a
-  mov dptr,#$A2
+  mov dptr,#$A6
   movx a,@dptr
   mov dptr,#$04
   movx @dptr,a
-  mov dptr,#$A3
+  mov dptr,#$A7
   movx a,@dptr
   mov dptr,#$05
   movx @dptr,a
@@ -491,40 +528,40 @@ L1:
   lcall waitframe
   mov dptr,#$04
   movx a,@dptr
-  mov dptr,#$A4
+  mov dptr,#$A8
   movx @dptr,a
   mov dptr,#$05
   movx a,@dptr
-  mov dptr,#$A5
+  mov dptr,#$A9
   movx @dptr,a
   mov a,#$01
-  mov dptr,#$A6
+  mov dptr,#$AA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$A7
+  mov dptr,#$AB
   movx @dptr,a
-  mov dptr,#$A6
+  mov dptr,#$AA
   movx a,@dptr
   mov $30,a
-  mov dptr,#$A4
+  mov dptr,#$A8
   movx a,@dptr
   clr c
   addc a,$30
-  mov dptr,#$A4
+  mov dptr,#$A8
   movx @dptr,a
-  mov dptr,#$A7
+  mov dptr,#$AB
   movx a,@dptr
   mov $30,a
-  mov dptr,#$A5
+  mov dptr,#$A9
   movx a,@dptr
   addc a,$30
-  mov dptr,#$A5
+  mov dptr,#$A9
   movx @dptr,a
-  mov dptr,#$A4
+  mov dptr,#$A8
   movx a,@dptr
   mov dptr,#$04
   movx @dptr,a
-  mov dptr,#$A5
+  mov dptr,#$A9
   movx a,@dptr
   mov dptr,#$05
   movx @dptr,a
@@ -532,90 +569,90 @@ L1:
   movx a,@dptr
   mov $58,a
   mov a,$58
-  mov dptr,#$A8
+  mov dptr,#$AC
   movx @dptr,a
-  mov dptr,#$A8
+  mov dptr,#$AC
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$A9
+  mov dptr,#$AD
   movx @dptr,a
-  mov dptr,#$A8
+  mov dptr,#$AC
   movx a,@dptr
-  mov dptr,#$AA
+  mov dptr,#$AE
   movx @dptr,a
   clr a
-  mov dptr,#$AB
+  mov dptr,#$AF
   movx @dptr,a
-  mov dptr,#$AA
+  mov dptr,#$AE
   movx a,@dptr
   mov dptr,#$2C
   movx @dptr,a
-  mov dptr,#$AB
+  mov dptr,#$AF
   movx a,@dptr
   mov dptr,#$2D
   movx @dptr,a
   mov dptr,#$2C
   movx a,@dptr
-  mov dptr,#$AC
-  movx @dptr,a
-  mov dptr,#$2D
-  movx a,@dptr
-  mov dptr,#$AD
-  movx @dptr,a
-  mov a,#$10
-  mov dptr,#$AE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$AF
-  movx @dptr,a
-  mov dptr,#$AE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$AC
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$AC
-  movx @dptr,a
-  mov dptr,#$AF
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$AD
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$AD
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$B0
   movx @dptr,a
+  mov dptr,#$2D
+  movx a,@dptr
+  mov dptr,#$B1
+  movx @dptr,a
+  mov a,#$10
+  mov dptr,#$B2
+  movx @dptr,a
   mov a,#$00
+  mov dptr,#$B3
+  movx @dptr,a
+  mov dptr,#$B2
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$B0
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$B0
+  movx @dptr,a
+  mov dptr,#$B3
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$B1
+  movx a,@dptr
+  anl a,$30
   mov dptr,#$B1
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$B2
+  mov dptr,#$B4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$B2
+  mov dptr,#$B5
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$B6
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$B6
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$B3
+  mov dptr,#$B7
   movx @dptr,a
-  mov dptr,#$B0
+  mov dptr,#$B4
   movx a,@dptr
   mov $30,a
-  mov dptr,#$AC
+  mov dptr,#$B0
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$B1
+  mov dptr,#$B5
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$AD
+  mov dptr,#$B1
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -626,34 +663,34 @@ L1:
   ljmp L6
 __i51_cond_1:
   mov a,#$01
-  mov dptr,#$B2
+  mov dptr,#$B6
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$B2
+  mov dptr,#$B6
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$B3
+  mov dptr,#$B7
   movx @dptr,a
 L6:
   mov a,#$00
-  mov dptr,#$B4
+  mov dptr,#$B8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$B4
+  mov dptr,#$B8
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$B5
+  mov dptr,#$B9
   movx @dptr,a
-  mov dptr,#$B2
+  mov dptr,#$B6
   movx a,@dptr
   clr c
   subb a,#$00
   mov $50,a
-  mov dptr,#$B3
+  mov dptr,#$B7
   movx a,@dptr
   xrl a,#$80
   subb a,#$80
@@ -665,64 +702,64 @@ L6:
 __i51_cond_2:
   mov dptr,#$30
   movx a,@dptr
-  mov dptr,#$B6
+  mov dptr,#$BA
   movx @dptr,a
   mov dptr,#$31
   movx a,@dptr
-  mov dptr,#$B7
+  mov dptr,#$BB
   movx @dptr,a
   mov a,#$10
-  mov dptr,#$B8
+  mov dptr,#$BC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$B9
+  mov dptr,#$BD
   movx @dptr,a
-  mov dptr,#$B8
+  mov dptr,#$BC
   movx a,@dptr
   mov $30,a
-  mov dptr,#$B6
+  mov dptr,#$BA
   movx a,@dptr
   anl a,$30
-  mov dptr,#$B6
-  movx @dptr,a
-  mov dptr,#$B9
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$B7
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$B7
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$BA
   movx @dptr,a
-  mov a,#$00
+  mov dptr,#$BD
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$BB
+  movx a,@dptr
+  anl a,$30
   mov dptr,#$BB
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$BC
+  mov dptr,#$BE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$BC
+  mov dptr,#$BF
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$C0
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$C0
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$BD
+  mov dptr,#$C1
   movx @dptr,a
-  mov dptr,#$BA
+  mov dptr,#$BE
   movx a,@dptr
   mov $30,a
-  mov dptr,#$B6
+  mov dptr,#$BA
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$BB
+  mov dptr,#$BF
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$B7
+  mov dptr,#$BB
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -733,23 +770,23 @@ __i51_cond_2:
   ljmp L7
 __i51_cond_3:
   mov a,#$01
-  mov dptr,#$BC
+  mov dptr,#$C0
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$BC
+  mov dptr,#$C0
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$BD
+  mov dptr,#$C1
   movx @dptr,a
 L7:
-  mov dptr,#$BC
+  mov dptr,#$C0
   movx a,@dptr
   clr c
   subb a,#$00
   mov $50,a
-  mov dptr,#$BD
+  mov dptr,#$C1
   movx a,@dptr
   xrl a,#$80
   subb a,#$80
@@ -760,41 +797,41 @@ L7:
   ljmp L5
 __i51_cond_4:
   mov a,#$01
-  mov dptr,#$B4
+  mov dptr,#$B8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$B4
+  mov dptr,#$B8
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$B5
+  mov dptr,#$B9
   movx @dptr,a
 L5:
   mov a,#$00
-  mov dptr,#$BE
+  mov dptr,#$C2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$BE
+  mov dptr,#$C2
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$BF
+  mov dptr,#$C3
   movx @dptr,a
-  mov dptr,#$BE
+  mov dptr,#$C2
   movx a,@dptr
   mov $30,a
-  mov dptr,#$B4
+  mov dptr,#$B8
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$BF
+  mov dptr,#$C3
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$B5
+  mov dptr,#$B9
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -805,41 +842,41 @@ L5:
   ljmp L3
 __i51_cond_5:
   mov a,#$00
-  mov dptr,#$C0
+  mov dptr,#$C4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$C1
+  mov dptr,#$C5
   movx @dptr,a
   mov dptr,#$34
   movx a,@dptr
-  mov dptr,#$C2
+  mov dptr,#$C6
   movx @dptr,a
   mov dptr,#$35
   movx a,@dptr
-  mov dptr,#$C3
+  mov dptr,#$C7
   movx @dptr,a
-  mov dptr,#$C2
+  mov dptr,#$C6
   movx a,@dptr
   mov $30,a
-  mov dptr,#$C0
+  mov dptr,#$C4
   movx a,@dptr
   clr c
   subb a,$30
-  mov dptr,#$C0
+  mov dptr,#$C4
   movx @dptr,a
-  mov dptr,#$C3
+  mov dptr,#$C7
   movx a,@dptr
   mov $30,a
-  mov dptr,#$C1
+  mov dptr,#$C5
   movx a,@dptr
   subb a,$30
-  mov dptr,#$C1
+  mov dptr,#$C5
   movx @dptr,a
-  mov dptr,#$C0
+  mov dptr,#$C4
   movx a,@dptr
   mov dptr,#$34
   movx @dptr,a
-  mov dptr,#$C1
+  mov dptr,#$C5
   movx a,@dptr
   mov dptr,#$35
   movx @dptr,a
@@ -848,64 +885,64 @@ L3:
 L4:
   mov dptr,#$2C
   movx a,@dptr
-  mov dptr,#$C4
+  mov dptr,#$C8
   movx @dptr,a
   mov dptr,#$2D
   movx a,@dptr
-  mov dptr,#$C5
+  mov dptr,#$C9
   movx @dptr,a
   mov a,#$20
-  mov dptr,#$C6
+  mov dptr,#$CA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$C7
+  mov dptr,#$CB
   movx @dptr,a
-  mov dptr,#$C6
+  mov dptr,#$CA
   movx a,@dptr
   mov $30,a
-  mov dptr,#$C4
+  mov dptr,#$C8
   movx a,@dptr
   anl a,$30
-  mov dptr,#$C4
-  movx @dptr,a
-  mov dptr,#$C7
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$C5
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$C5
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$C8
   movx @dptr,a
-  mov a,#$00
+  mov dptr,#$CB
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$C9
+  movx a,@dptr
+  anl a,$30
   mov dptr,#$C9
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$CA
+  mov dptr,#$CC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$CA
+  mov dptr,#$CD
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$CE
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$CE
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$CB
+  mov dptr,#$CF
   movx @dptr,a
-  mov dptr,#$C8
+  mov dptr,#$CC
   movx a,@dptr
   mov $30,a
-  mov dptr,#$C4
+  mov dptr,#$C8
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$C9
+  mov dptr,#$CD
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$C5
+  mov dptr,#$C9
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -916,34 +953,34 @@ L4:
   ljmp L11
 __i51_cond_6:
   mov a,#$01
-  mov dptr,#$CA
+  mov dptr,#$CE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$CA
+  mov dptr,#$CE
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$CB
+  mov dptr,#$CF
   movx @dptr,a
 L11:
   mov a,#$00
-  mov dptr,#$CC
+  mov dptr,#$D0
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$CC
+  mov dptr,#$D0
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$CD
+  mov dptr,#$D1
   movx @dptr,a
-  mov dptr,#$CA
+  mov dptr,#$CE
   movx a,@dptr
   clr c
   subb a,#$00
   mov $50,a
-  mov dptr,#$CB
+  mov dptr,#$CF
   movx a,@dptr
   xrl a,#$80
   subb a,#$80
@@ -955,64 +992,64 @@ L11:
 __i51_cond_7:
   mov dptr,#$30
   movx a,@dptr
-  mov dptr,#$CE
+  mov dptr,#$D2
   movx @dptr,a
   mov dptr,#$31
   movx a,@dptr
-  mov dptr,#$CF
+  mov dptr,#$D3
   movx @dptr,a
   mov a,#$20
-  mov dptr,#$D0
+  mov dptr,#$D4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$D1
+  mov dptr,#$D5
   movx @dptr,a
-  mov dptr,#$D0
+  mov dptr,#$D4
   movx a,@dptr
   mov $30,a
-  mov dptr,#$CE
+  mov dptr,#$D2
   movx a,@dptr
   anl a,$30
-  mov dptr,#$CE
-  movx @dptr,a
-  mov dptr,#$D1
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$CF
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$CF
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$D2
   movx @dptr,a
-  mov a,#$00
+  mov dptr,#$D5
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$D3
+  movx a,@dptr
+  anl a,$30
   mov dptr,#$D3
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$D4
+  mov dptr,#$D6
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$D4
+  mov dptr,#$D7
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$D8
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$D8
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$D5
+  mov dptr,#$D9
   movx @dptr,a
-  mov dptr,#$D2
+  mov dptr,#$D6
   movx a,@dptr
   mov $30,a
-  mov dptr,#$CE
+  mov dptr,#$D2
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$D3
+  mov dptr,#$D7
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$CF
+  mov dptr,#$D3
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -1023,23 +1060,23 @@ __i51_cond_7:
   ljmp L12
 __i51_cond_8:
   mov a,#$01
-  mov dptr,#$D4
+  mov dptr,#$D8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$D4
+  mov dptr,#$D8
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$D5
+  mov dptr,#$D9
   movx @dptr,a
 L12:
-  mov dptr,#$D4
+  mov dptr,#$D8
   movx a,@dptr
   clr c
   subb a,#$00
   mov $50,a
-  mov dptr,#$D5
+  mov dptr,#$D9
   movx a,@dptr
   xrl a,#$80
   subb a,#$80
@@ -1050,41 +1087,41 @@ L12:
   ljmp L10
 __i51_cond_9:
   mov a,#$01
-  mov dptr,#$CC
+  mov dptr,#$D0
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$CC
+  mov dptr,#$D0
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$CD
+  mov dptr,#$D1
   movx @dptr,a
 L10:
   mov a,#$00
-  mov dptr,#$D6
+  mov dptr,#$DA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$D6
+  mov dptr,#$DA
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$D7
+  mov dptr,#$DB
   movx @dptr,a
-  mov dptr,#$D6
+  mov dptr,#$DA
   movx a,@dptr
   mov $30,a
-  mov dptr,#$CC
+  mov dptr,#$D0
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$D7
+  mov dptr,#$DB
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$CD
+  mov dptr,#$D1
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -1095,41 +1132,41 @@ L10:
   ljmp L8
 __i51_cond_10:
   mov a,#$01
-  mov dptr,#$D8
+  mov dptr,#$DC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$D9
+  mov dptr,#$DD
   movx @dptr,a
   mov dptr,#$38
   movx a,@dptr
-  mov dptr,#$DA
+  mov dptr,#$DE
   movx @dptr,a
   mov dptr,#$39
   movx a,@dptr
-  mov dptr,#$DB
+  mov dptr,#$DF
   movx @dptr,a
-  mov dptr,#$DA
+  mov dptr,#$DE
   movx a,@dptr
   mov $30,a
-  mov dptr,#$D8
+  mov dptr,#$DC
   movx a,@dptr
   clr c
   subb a,$30
-  mov dptr,#$D8
+  mov dptr,#$DC
   movx @dptr,a
-  mov dptr,#$DB
+  mov dptr,#$DF
   movx a,@dptr
   mov $30,a
-  mov dptr,#$D9
+  mov dptr,#$DD
   movx a,@dptr
   subb a,$30
-  mov dptr,#$D9
+  mov dptr,#$DD
   movx @dptr,a
-  mov dptr,#$D8
+  mov dptr,#$DC
   movx a,@dptr
   mov dptr,#$38
   movx @dptr,a
-  mov dptr,#$D9
+  mov dptr,#$DD
   movx a,@dptr
   mov dptr,#$39
   movx @dptr,a
@@ -1138,92 +1175,92 @@ L8:
 L9:
   mov dptr,#$2C
   movx a,@dptr
-  mov dptr,#$DC
+  mov dptr,#$E0
   movx @dptr,a
   mov dptr,#$2D
   movx a,@dptr
-  mov dptr,#$DD
+  mov dptr,#$E1
   movx @dptr,a
-  mov dptr,#$DC
+  mov dptr,#$E0
   movx a,@dptr
   mov dptr,#$30
   movx @dptr,a
-  mov dptr,#$DD
+  mov dptr,#$E1
   movx a,@dptr
   mov dptr,#$31
   movx @dptr,a
   mov dptr,#$04
   movx a,@dptr
-  mov dptr,#$DE
+  mov dptr,#$E2
   movx @dptr,a
   mov dptr,#$05
   movx a,@dptr
-  mov dptr,#$DF
+  mov dptr,#$E3
   movx @dptr,a
   mov a,#$02
-  mov dptr,#$E0
+  mov dptr,#$E4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$E0
+  mov dptr,#$E4
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$E1
+  mov dptr,#$E5
   movx @dptr,a
   mov a,#$01
   mov $55,a
-__i8051_sh136:
+__i8051_sh141:
   mov a,$55
-  jz __i8051_shd136
-  mov dptr,#$DE
+  jz __i8051_shd141
+  mov dptr,#$E2
   movx a,@dptr
   clr c
   rlc a
-  mov dptr,#$DE
+  mov dptr,#$E2
   movx @dptr,a
-  mov dptr,#$DF
+  mov dptr,#$E3
   movx a,@dptr
   rlc a
-  mov dptr,#$DF
+  mov dptr,#$E3
   movx @dptr,a
   dec $55
-  sjmp __i8051_sh136
-__i8051_shd136:
+  sjmp __i8051_sh141
+__i8051_shd141:
   mov a,#$7F
-  mov dptr,#$E2
+  mov dptr,#$E6
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$E2
+  mov dptr,#$E6
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$E3
+  mov dptr,#$E7
   movx @dptr,a
   mov a,#$7F
-  mov dptr,#$E4
+  mov dptr,#$E8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$E5
+  mov dptr,#$E9
   movx @dptr,a
-  mov dptr,#$E4
+  mov dptr,#$E8
   movx a,@dptr
   mov $30,a
-  mov dptr,#$DE
+  mov dptr,#$E2
   movx a,@dptr
   anl a,$30
-  mov dptr,#$DE
+  mov dptr,#$E2
   movx @dptr,a
-  mov dptr,#$E5
+  mov dptr,#$E9
   movx a,@dptr
   mov $30,a
-  mov dptr,#$DF
+  mov dptr,#$E3
   movx a,@dptr
   anl a,$30
-  mov dptr,#$DF
+  mov dptr,#$E3
   movx @dptr,a
-  mov dptr,#$DE
+  mov dptr,#$E2
   movx a,@dptr
   mov $58,a
   mov dptr,#$F00F
@@ -1231,73 +1268,73 @@ __i8051_shd136:
   movx @dptr,a
   mov dptr,#$04
   movx a,@dptr
-  mov dptr,#$E6
+  mov dptr,#$EA
   movx @dptr,a
   mov dptr,#$05
   movx a,@dptr
-  mov dptr,#$E7
+  mov dptr,#$EB
   movx @dptr,a
   mov dptr,#$34
   movx a,@dptr
-  mov dptr,#$E8
+  mov dptr,#$EC
   movx @dptr,a
   mov dptr,#$35
   movx a,@dptr
-  mov dptr,#$E9
+  mov dptr,#$ED
   movx @dptr,a
-  mov dptr,#$E6
+  mov dptr,#$EA
   movx a,@dptr
   mov $40,a
-  mov dptr,#$E7
+  mov dptr,#$EB
   movx a,@dptr
   mov $41,a
-  mov dptr,#$E8
+  mov dptr,#$EC
   movx a,@dptr
   mov $42,a
-  mov dptr,#$E9
+  mov dptr,#$ED
   movx a,@dptr
   mov $43,a
   lcall __i8051_mul16
   mov a,$40
-  mov dptr,#$E6
+  mov dptr,#$EA
   movx @dptr,a
   mov a,$41
-  mov dptr,#$E7
+  mov dptr,#$EB
   movx @dptr,a
   mov a,#$FF
-  mov dptr,#$EA
+  mov dptr,#$EE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$EA
+  mov dptr,#$EE
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$EB
+  mov dptr,#$EF
   movx @dptr,a
   mov a,#$FF
-  mov dptr,#$EC
+  mov dptr,#$F0
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$ED
+  mov dptr,#$F1
   movx @dptr,a
-  mov dptr,#$EC
+  mov dptr,#$F0
   movx a,@dptr
   mov $30,a
-  mov dptr,#$E6
+  mov dptr,#$EA
   movx a,@dptr
   anl a,$30
-  mov dptr,#$E6
+  mov dptr,#$EA
   movx @dptr,a
-  mov dptr,#$ED
+  mov dptr,#$F1
   movx a,@dptr
   mov $30,a
-  mov dptr,#$E7
+  mov dptr,#$EB
   movx a,@dptr
   anl a,$30
-  mov dptr,#$E7
+  mov dptr,#$EB
   movx @dptr,a
-  mov dptr,#$E6
+  mov dptr,#$EA
   movx a,@dptr
   mov $58,a
   mov dptr,#$F002
@@ -1305,67 +1342,67 @@ __i8051_shd136:
   movx @dptr,a
   mov dptr,#$04
   movx a,@dptr
-  mov dptr,#$EE
+  mov dptr,#$F2
   movx @dptr,a
   mov dptr,#$05
   movx a,@dptr
-  mov dptr,#$EF
+  mov dptr,#$F3
   movx @dptr,a
   mov a,#$01
   mov $55,a
-__i8051_sh149:
+__i8051_sh154:
   mov a,$55
-  jz __i8051_shd149
-  mov dptr,#$EF
+  jz __i8051_shd154
+  mov dptr,#$F3
   movx a,@dptr
   rlc a
-  mov dptr,#$EF
+  mov dptr,#$F3
   movx a,@dptr
   rrc a
-  mov dptr,#$EF
+  mov dptr,#$F3
   movx @dptr,a
-  mov dptr,#$EE
+  mov dptr,#$F2
   movx a,@dptr
   rrc a
-  mov dptr,#$EE
+  mov dptr,#$F2
   movx @dptr,a
   dec $55
-  sjmp __i8051_sh149
-__i8051_shd149:
+  sjmp __i8051_sh154
+__i8051_shd154:
   mov a,#$7F
-  mov dptr,#$F0
+  mov dptr,#$F4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$F0
+  mov dptr,#$F4
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
-  mov dptr,#$F1
+  mov dptr,#$F5
   movx @dptr,a
   mov a,#$7F
-  mov dptr,#$F2
+  mov dptr,#$F6
   movx @dptr,a
   mov a,#$00
+  mov dptr,#$F7
+  movx @dptr,a
+  mov dptr,#$F6
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$F2
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$F2
+  movx @dptr,a
+  mov dptr,#$F7
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$F3
+  movx a,@dptr
+  anl a,$30
   mov dptr,#$F3
   movx @dptr,a
   mov dptr,#$F2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$EE
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$EE
-  movx @dptr,a
-  mov dptr,#$F3
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$EF
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$EF
-  movx @dptr,a
-  mov dptr,#$EE
   movx a,@dptr
   mov $58,a
   mov dptr,#$F003
@@ -1373,53 +1410,53 @@ __i8051_shd149:
   movx @dptr,a
   mov dptr,#$04
   movx a,@dptr
-  mov dptr,#$F4
+  mov dptr,#$F8
   movx @dptr,a
   mov dptr,#$05
   movx a,@dptr
-  mov dptr,#$F5
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$F6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$F7
-  movx @dptr,a
-  mov dptr,#$F6
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$F4
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$F4
-  movx @dptr,a
-  mov dptr,#$F7
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$F5
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$F5
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$F8
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$F9
   movx @dptr,a
-  mov dptr,#$F8
+  mov a,#$03
+  mov dptr,#$FA
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$FB
+  movx @dptr,a
+  mov dptr,#$FA
   movx a,@dptr
   mov $30,a
-  mov dptr,#$F4
+  mov dptr,#$F8
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$F8
+  movx @dptr,a
+  mov dptr,#$FB
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$F9
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$F9
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$FC
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$FD
+  movx @dptr,a
+  mov dptr,#$FC
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$F8
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$F9
+  mov dptr,#$FD
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$F5
+  mov dptr,#$F9
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -1431,79 +1468,79 @@ __i8051_shd149:
 __i51_cond_11:
   mov dptr,#$04
   movx a,@dptr
-  mov dptr,#$FA
+  mov dptr,#$FE
   movx @dptr,a
   mov dptr,#$05
   movx a,@dptr
-  mov dptr,#$FB
+  mov dptr,#$FF
   movx @dptr,a
   mov a,#$02
   mov $55,a
-__i8051_sh160:
+__i8051_sh165:
   mov a,$55
-  jz __i8051_shd160
-  mov dptr,#$FB
+  jz __i8051_shd165
+  mov dptr,#$FF
   movx a,@dptr
   rlc a
-  mov dptr,#$FB
+  mov dptr,#$FF
   movx a,@dptr
   rrc a
-  mov dptr,#$FB
+  mov dptr,#$FF
   movx @dptr,a
-  mov dptr,#$FA
+  mov dptr,#$FE
   movx a,@dptr
   rrc a
-  mov dptr,#$FA
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh160
-__i8051_shd160:
-  mov a,#$1F
-  mov dptr,#$FC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FD
-  movx @dptr,a
-  mov dptr,#$FC
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$FA
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$FA
-  movx @dptr,a
-  mov dptr,#$FD
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$FB
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$FB
-  movx @dptr,a
-  mov dptr,#$FA
-  movx a,@dptr
   mov dptr,#$FE
   movx @dptr,a
-  mov dptr,#$FB
+  dec $55
+  sjmp __i8051_sh165
+__i8051_shd165:
+  mov a,#$1F
+  mov dptr,#$0100
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0101
+  movx @dptr,a
+  mov dptr,#$0100
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$FE
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$FE
+  movx @dptr,a
+  mov dptr,#$0101
+  movx a,@dptr
+  mov $30,a
   mov dptr,#$FF
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$FF
+  movx @dptr,a
+  mov dptr,#$FE
+  movx a,@dptr
+  mov dptr,#$0102
+  movx @dptr,a
+  mov dptr,#$FF
+  movx a,@dptr
+  mov dptr,#$0103
   movx @dptr,a
   lcall rainbow
   mov dptr,#$00
   movx a,@dptr
-  mov dptr,#$0100
+  mov dptr,#$0104
   movx @dptr,a
   mov dptr,#$01
   movx a,@dptr
-  mov dptr,#$0101
+  mov dptr,#$0105
   movx @dptr,a
-  mov dptr,#$0100
+  mov dptr,#$0104
   movx a,@dptr
-  mov dptr,#$FE
+  mov dptr,#$0102
   movx @dptr,a
-  mov dptr,#$0101
+  mov dptr,#$0105
   movx a,@dptr
-  mov dptr,#$FF
+  mov dptr,#$0103
   movx @dptr,a
   lcall title
   ljmp L14
@@ -1511,53 +1548,53 @@ L13:
 L14:
   mov dptr,#$04
   movx a,@dptr
-  mov dptr,#$0102
+  mov dptr,#$0106
   movx @dptr,a
   mov dptr,#$05
   movx a,@dptr
-  mov dptr,#$0103
-  movx @dptr,a
-  mov a,#$07
-  mov dptr,#$0104
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0105
-  movx @dptr,a
-  mov dptr,#$0104
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0102
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0102
-  movx @dptr,a
-  mov dptr,#$0105
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0103
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0103
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0106
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$0107
   movx @dptr,a
-  mov dptr,#$0106
+  mov a,#$07
+  mov dptr,#$0108
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0109
+  movx @dptr,a
+  mov dptr,#$0108
   movx a,@dptr
   mov $30,a
-  mov dptr,#$0102
+  mov dptr,#$0106
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0106
+  movx @dptr,a
+  mov dptr,#$0109
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0107
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0107
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010A
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010B
+  movx @dptr,a
+  mov dptr,#$010A
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0106
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$0107
+  mov dptr,#$010B
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$0103
+  mov dptr,#$0107
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -1567,94 +1604,47 @@ L14:
   jz __i51_cond_12
   ljmp L15
 __i51_cond_12:
-  mov a,#$FF
-  mov dptr,#$0108
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0109
-  movx @dptr,a
-  mov dptr,#$0108
-  movx a,@dptr
-  mov dptr,#$54
-  movx @dptr,a
-  mov dptr,#$0109
-  movx a,@dptr
-  mov dptr,#$55
-  movx @dptr,a
   mov dptr,#$40
-  movx a,@dptr
-  mov dptr,#$010A
-  movx @dptr,a
-  mov dptr,#$41
-  movx a,@dptr
-  mov dptr,#$010B
-  movx @dptr,a
-  mov dptr,#$010A
   movx a,@dptr
   mov dptr,#$010C
   movx @dptr,a
-  mov dptr,#$010B
+  mov dptr,#$41
   movx a,@dptr
   mov dptr,#$010D
   movx @dptr,a
-  mov a,#$0E
-  mov dptr,#$FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FF
-  movx @dptr,a
-  mov a,#$00
+  mov dptr,#$010C
+  movx a,@dptr
   mov dptr,#$010E
   movx @dptr,a
-  mov a,#$00
+  mov dptr,#$010D
+  movx a,@dptr
   mov dptr,#$010F
   movx @dptr,a
-  mov a,#$14
+  mov a,#$0E
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$0110
   movx @dptr,a
   mov a,#$00
   mov dptr,#$0111
   movx @dptr,a
-  lcall textfrommsg
-  mov dptr,#$40
-  movx a,@dptr
+  mov a,#$14
   mov dptr,#$0112
   movx @dptr,a
-  mov dptr,#$41
-  movx a,@dptr
+  mov a,#$00
   mov dptr,#$0113
   movx @dptr,a
-  mov a,#$01
+  mov a,#$FF
   mov dptr,#$0114
   movx @dptr,a
   mov a,#$00
   mov dptr,#$0115
   movx @dptr,a
-  mov dptr,#$0114
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0112
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0112
-  movx @dptr,a
-  mov dptr,#$0115
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0113
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0113
-  movx @dptr,a
-  mov dptr,#$0112
-  movx a,@dptr
-  mov dptr,#$40
-  movx @dptr,a
-  mov dptr,#$0113
-  movx a,@dptr
-  mov dptr,#$41
-  movx @dptr,a
+  lcall textfrommsg
   mov dptr,#$40
   movx a,@dptr
   mov dptr,#$0116
@@ -1663,7 +1653,7 @@ __i51_cond_12:
   movx a,@dptr
   mov dptr,#$0117
   movx @dptr,a
-  mov a,#$BC
+  mov a,#$01
   mov dptr,#$0118
   movx @dptr,a
   mov a,#$00
@@ -1673,15 +1663,54 @@ __i51_cond_12:
   movx a,@dptr
   mov $30,a
   mov dptr,#$0116
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0116
+  movx @dptr,a
+  mov dptr,#$0119
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0117
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0117
+  movx @dptr,a
+  mov dptr,#$0116
+  movx a,@dptr
+  mov dptr,#$40
+  movx @dptr,a
+  mov dptr,#$0117
+  movx a,@dptr
+  mov dptr,#$41
+  movx @dptr,a
+  mov dptr,#$40
+  movx a,@dptr
+  mov dptr,#$011A
+  movx @dptr,a
+  mov dptr,#$41
+  movx a,@dptr
+  mov dptr,#$011B
+  movx @dptr,a
+  mov a,#$BC
+  mov dptr,#$011C
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$011D
+  movx @dptr,a
+  mov dptr,#$011C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$011A
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$0119
+  mov dptr,#$011D
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$0117
+  mov dptr,#$011B
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -1694,16 +1723,16 @@ __i51_cond_13_n:
   ljmp L17
 __i51_cond_13:
   mov a,#$00
-  mov dptr,#$011A
+  mov dptr,#$011E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$011B
+  mov dptr,#$011F
   movx @dptr,a
-  mov dptr,#$011A
+  mov dptr,#$011E
   movx a,@dptr
   mov dptr,#$40
   movx @dptr,a
-  mov dptr,#$011B
+  mov dptr,#$011F
   movx a,@dptr
   mov dptr,#$41
   movx @dptr,a
@@ -1717,166 +1746,123 @@ L16:
   lcall music
   ljmp L1
 L2:
+  ljmp L19
+DemoTables:
+.byte 69, 0, 72, 0, 76, 0, 74, 72, 71, 0, 69, 0, 0, 0, 64, 0, 65, 0, 69, 0, 72, 0, 71, 69, 67, 0, 65, 0, 0, 0, 72, 0
+.byte 76, 0, 79, 0, 76, 0, 74, 72, 74, 0, 76, 0, 0, 0, 67, 0, 74, 0, 71, 0, 67, 0, 69, 71, 74, 0, 72, 0, 71, 0, 1, 0
+.byte 45, 0, 57, 0, 45, 0, 57, 0, 45, 0, 57, 0, 40, 0, 43, 0, 41, 0, 53, 0, 41, 0, 53, 0, 41, 0, 53, 0, 48, 0, 52, 0
+.byte 48, 0, 60, 0, 48, 0, 60, 0, 48, 0, 60, 0, 43, 0, 47, 0, 43, 0, 55, 0, 43, 0, 55, 0, 43, 0, 55, 0, 50, 0, 47, 0
+.byte 1, 3, 0, 3, 2, 3, 0, 3, 1, 3, 0, 3, 2, 3, 0, 3, 1, 3, 0, 3, 2, 3, 0, 3, 1, 3, 0, 3, 2, 3, 0, 3
+.byte 1, 3, 0, 3, 2, 3, 0, 3, 1, 3, 0, 3, 2, 3, 0, 3, 1, 3, 0, 3, 2, 3, 0, 3, 1, 3, 0, 3, 2, 3, 0, 3
+.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 82, 0, 87, 0, 0, 0, 98, 0, 0, 0, 110, 0, 0, 0, 123, 0
+.byte 131, 0, 0, 0, 147, 0, 0, 0, 165, 0, 175, 0, 0, 0, 196, 0, 0, 0, 220, 0, 0, 0, 0, 0, 6, 1, 0, 0, 0, 0, 0, 0
+.byte 74, 1, 93, 1, 0, 0, 136, 1, 0, 0, 184, 1, 0, 0, 238, 1, 11, 2, 0, 0, 75, 2, 0, 0, 147, 2, 0, 0, 0, 0, 16, 3
+.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+.byte 224, 228, 232, 240, 244, 252, 220, 188, 124, 92, 28, 28, 28, 29, 30, 31, 31, 27, 19, 15, 7, 3, 3, 67, 99, 163, 195, 227, 226, 226, 225, 224
+.byte 32, 32, 32, 32, 32, 80, 85, 82, 69, 77, 69, 84, 65, 76, 32, 56, 48, 53, 49, 32, 79, 78, 32, 84, 72, 69, 32, 80, 77, 53, 49, 32
+.byte 66, 79, 65, 82, 68, 32, 46, 46, 46, 32, 67, 79, 77, 80, 73, 76, 69, 68, 32, 66, 89, 32, 80, 85, 82, 69, 77, 69, 84, 65, 76, 32
+.byte 70, 79, 82, 71, 69, 44, 32, 82, 85, 78, 32, 66, 89, 32, 65, 32, 67, 79, 77, 80, 85, 84, 69, 68, 45, 71, 79, 84, 79, 32, 77, 67
+.byte 83, 45, 53, 49, 32, 67, 79, 82, 69, 32, 79, 78, 32, 65, 32, 82, 65, 83, 80, 66, 69, 82, 82, 89, 32, 80, 73, 32, 80, 73, 67, 79
+.byte 32, 46, 46, 46, 32, 65, 82, 82, 79, 87, 83, 32, 83, 84, 69, 69, 82, 32, 84, 72, 69, 32, 70, 73, 82, 83, 84, 32, 66, 65, 76, 76
+.byte 44, 32, 65, 32, 84, 85, 82, 78, 83, 32, 84, 72, 69, 32, 83, 67, 82, 79, 76, 76, 44, 32, 66, 32, 77, 85, 84, 69, 83, 32, 84, 72
+.byte 69, 32, 77, 85, 83, 73, 67, 32, 46, 46, 46, 32, 32, 32, 32, 32
+L19:
 .L_End_Trap:
   ljmp .L_End_Trap
-InitTables:
-  mov a,#$45
-  mov dptr,#$011C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$011C
+CopyData:
+  mov dptr,#$0102
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$011D
-  movx @dptr,a
-  mov dptr,#$011C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E000
-  mov a,$58
-  movx @dptr,a
-  mov a,#$48
-  mov dptr,#$011E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$011E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$011F
-  movx @dptr,a
-  mov dptr,#$011E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E002
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4C
   mov dptr,#$0120
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0120
+  mov dptr,#$0103
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0121
   movx @dptr,a
-  mov dptr,#$0120
+  mov dptr,#$0110
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E004
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4A
   mov dptr,#$0122
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0122
+  mov dptr,#$0111
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0123
   movx @dptr,a
-  mov dptr,#$0122
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E006
-  mov a,$58
-  movx @dptr,a
-  mov a,#$48
+  mov a,#$00
   mov dptr,#$0124
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0124
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0125
   movx @dptr,a
   mov dptr,#$0124
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E007
-  mov a,$58
+  mov dptr,#$28
   movx @dptr,a
-  mov a,#$47
-  mov dptr,#$0126
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0126
+  mov dptr,#$0125
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$29
+  movx @dptr,a
+L20:
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0126
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$0127
   movx @dptr,a
-  mov dptr,#$0126
+  mov dptr,#$0122
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E008
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
   mov dptr,#$0128
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0128
+  mov dptr,#$0123
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0129
   movx @dptr,a
   mov dptr,#$0128
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E00A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$40
-  mov dptr,#$012A
-  movx @dptr,a
-  mov a,#$00
+  mov $30,a
+  mov dptr,#$0126
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0129
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0127
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_14
+  ljmp L21
+__i51_cond_14:
   mov dptr,#$012A
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$012C
+  movx @dptr,a
   mov dptr,#$012B
-  movx @dptr,a
-  mov dptr,#$012A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E00E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$41
-  mov dptr,#$012C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$012C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$012D
   movx @dptr,a
   mov dptr,#$012C
   movx a,@dptr
+  mov $56,a
+  mov dptr,#$012D
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  clr a
+  movc a,@a+dptr
   mov $58,a
-  mov dptr,#$E010
   mov a,$58
-  movx @dptr,a
-  mov a,#$45
   mov dptr,#$012E
   movx @dptr,a
-  mov a,#$00
   mov dptr,#$012E
   movx a,@dptr
   rlc a
@@ -1884,33 +1870,56 @@ InitTables:
   subb a,#$00
   mov dptr,#$012F
   movx @dptr,a
-  mov dptr,#$012E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E012
-  mov a,$58
-  movx @dptr,a
-  mov a,#$48
+  mov a,#$01
   mov dptr,#$0130
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0130
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0131
   movx @dptr,a
   mov dptr,#$0130
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E014
-  mov a,$58
+  mov $30,a
+  mov dptr,#$012C
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$012C
   movx @dptr,a
-  mov a,#$47
+  mov dptr,#$0131
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$012D
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$012D
+  movx @dptr,a
+  mov dptr,#$012C
+  movx a,@dptr
+  mov dptr,#$012A
+  movx @dptr,a
+  mov dptr,#$012D
+  movx a,@dptr
+  mov dptr,#$012B
+  movx @dptr,a
+  mov dptr,#$012E
+  movx a,@dptr
+  mov dptr,#$54
+  movx @dptr,a
+  mov dptr,#$012F
+  movx a,@dptr
+  mov dptr,#$54
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$55
+  movx @dptr,a
+  mov dptr,#$54
+  movx a,@dptr
   mov dptr,#$0132
   movx @dptr,a
-  mov a,#$00
+  mov dptr,#$55
+  movx a,@dptr
   mov dptr,#$0132
   movx a,@dptr
   rlc a
@@ -1918,169 +1927,271 @@ InitTables:
   subb a,#$00
   mov dptr,#$0133
   movx @dptr,a
-  mov dptr,#$0132
+  mov dptr,#$0120
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E016
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
   mov dptr,#$0134
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0134
+  mov dptr,#$0121
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0135
   movx @dptr,a
-  mov dptr,#$0134
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E017
-  mov a,$58
-  movx @dptr,a
-  mov a,#$43
   mov dptr,#$0136
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0136
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0137
   movx @dptr,a
   mov dptr,#$0136
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$0134
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0134
+  movx @dptr,a
+  mov dptr,#$0137
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0135
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0135
+  movx @dptr,a
+  mov dptr,#$0132
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E018
+  mov dptr,#$0134
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0135
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$41
+  mov dptr,#$28
+  movx a,@dptr
   mov dptr,#$0138
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0138
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0139
   movx @dptr,a
-  mov dptr,#$0138
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E01A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$48
+  mov a,#$01
   mov dptr,#$013A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$013A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$013B
   movx @dptr,a
   mov dptr,#$013A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E01E
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0138
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0138
   movx @dptr,a
-  mov a,#$4C
+  mov dptr,#$013B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0139
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0139
+  movx @dptr,a
+  mov dptr,#$0138
+  movx a,@dptr
+  mov dptr,#$28
+  movx @dptr,a
+  mov dptr,#$0139
+  movx a,@dptr
+  mov dptr,#$29
+  movx @dptr,a
+  ljmp L20
+L21:
+  ret
+InitTables:
+  setb it0
+  setb ex0
+  setb ea
+  mov dptr,#DemoTables
+  mov a,dpl
+  mov $30,a
+  mov a,dph
+  mov $31,a
   mov dptr,#$013C
+  mov a,$30
   movx @dptr,a
-  mov a,#$00
+  inc dptr
+  mov a,$31
+  movx @dptr,a
   mov dptr,#$013C
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$012A
+  movx @dptr,a
   mov dptr,#$013D
-  movx @dptr,a
-  mov dptr,#$013C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E020
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
-  mov dptr,#$013E
+  mov dptr,#$012B
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$013E
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$E0
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$40
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  lcall copydata
+  mov a,#$40
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$E0
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$40
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  lcall copydata
+  mov a,#$80
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$E0
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$40
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  lcall copydata
+  mov a,#$00
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$E1
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$01
+  mov dptr,#$0111
+  movx @dptr,a
+  lcall copydata
+  mov a,#$00
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$E2
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$20
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  lcall copydata
+  mov a,#$00
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$E3
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$D0
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  lcall copydata
+  ret
+Rainbow:
+  mov dptr,#$0102
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$013E
+  movx @dptr,a
+  mov dptr,#$0103
+  movx a,@dptr
   mov dptr,#$013F
   movx @dptr,a
-  mov dptr,#$013E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E022
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4C
-  mov dptr,#$0140
-  movx @dptr,a
   mov a,#$00
   mov dptr,#$0140
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$E2
   mov dptr,#$0141
   movx @dptr,a
-  mov dptr,#$0140
+  mov dptr,#$013E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E024
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4A
   mov dptr,#$0142
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0142
+  mov dptr,#$013F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0143
   movx @dptr,a
-  mov dptr,#$0142
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E026
-  mov a,$58
-  movx @dptr,a
-  mov a,#$48
+  mov a,#$1F
   mov dptr,#$0144
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0144
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0145
   movx @dptr,a
   mov dptr,#$0144
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E027
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0142
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0142
   movx @dptr,a
-  mov a,#$4A
+  mov dptr,#$0145
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0143
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0143
+  movx @dptr,a
+  mov dptr,#$0142
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0140
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0140
+  movx @dptr,a
+  mov dptr,#$0143
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0141
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0141
+  movx @dptr,a
+  mov dptr,#$0140
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0141
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  mov a,$58
   mov dptr,#$0146
   movx @dptr,a
-  mov a,#$00
   mov dptr,#$0146
   movx a,@dptr
   rlc a
@@ -2090,82 +2201,92 @@ InitTables:
   movx @dptr,a
   mov dptr,#$0146
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E028
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4C
   mov dptr,#$0148
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0148
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$0149
   movx @dptr,a
   mov dptr,#$0148
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E02A
-  mov a,$58
+  mov dptr,#$00
   movx @dptr,a
-  mov a,#$43
-  mov dptr,#$014A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$014A
+  mov dptr,#$0149
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$01
+  movx @dptr,a
+  ret
+NoteHz:
+  mov dptr,#$0102
+  movx a,@dptr
+  mov dptr,#$014A
+  movx @dptr,a
+  mov dptr,#$0103
+  movx a,@dptr
   mov dptr,#$014B
   movx @dptr,a
-  mov dptr,#$014A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E02E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4A
-  mov dptr,#$014C
-  movx @dptr,a
   mov a,#$00
   mov dptr,#$014C
+  movx @dptr,a
+  mov a,#$E1
+  mov dptr,#$014D
+  movx @dptr,a
+  mov dptr,#$014A
+  movx a,@dptr
+  mov dptr,#$014E
+  movx @dptr,a
+  mov dptr,#$014B
+  movx a,@dptr
+  mov dptr,#$014F
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh299:
+  mov a,$55
+  jz __i8051_shd299
+  mov dptr,#$014E
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$014E
+  movx @dptr,a
+  mov dptr,#$014F
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$014F
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh299
+__i8051_shd299:
+  mov dptr,#$014E
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$014C
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$014C
+  movx @dptr,a
+  mov dptr,#$014F
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$014D
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$014D
   movx @dptr,a
   mov dptr,#$014C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E030
-  mov a,$58
-  movx @dptr,a
-  mov a,#$47
-  mov dptr,#$014E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$014E
+  mov $56,a
+  mov dptr,#$014D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$014F
-  movx @dptr,a
-  mov dptr,#$014E
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E032
   mov a,$58
-  movx @dptr,a
-  mov a,#$43
   mov dptr,#$0150
   movx @dptr,a
-  mov a,#$00
   mov dptr,#$0150
   movx a,@dptr
   rlc a
@@ -2173,67 +2294,92 @@ InitTables:
   subb a,#$00
   mov dptr,#$0151
   movx @dptr,a
-  mov dptr,#$0150
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E034
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
-  mov dptr,#$0152
-  movx @dptr,a
   mov a,#$00
   mov dptr,#$0152
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$E1
   mov dptr,#$0153
   movx @dptr,a
-  mov dptr,#$0152
+  mov dptr,#$014A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E036
-  mov a,$58
-  movx @dptr,a
-  mov a,#$47
   mov dptr,#$0154
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0154
+  mov dptr,#$014B
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0155
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh304:
+  mov a,$55
+  jz __i8051_shd304
   mov dptr,#$0154
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E037
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$0154
   movx @dptr,a
-  mov a,#$4A
+  mov dptr,#$0155
+  movx a,@dptr
+  rlc a
+  mov dptr,#$0155
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh304
+__i8051_shd304:
+  mov dptr,#$0154
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0152
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0152
+  movx @dptr,a
+  mov dptr,#$0155
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0153
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0153
+  movx @dptr,a
+  mov a,#$01
   mov dptr,#$0156
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0156
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0157
   movx @dptr,a
   mov dptr,#$0156
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E038
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0152
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0152
   movx @dptr,a
-  mov a,#$48
+  mov dptr,#$0157
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0153
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0153
+  movx @dptr,a
+  mov dptr,#$0152
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0153
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  mov a,$58
   mov dptr,#$0158
   movx @dptr,a
-  mov a,#$00
   mov dptr,#$0158
   movx a,@dptr
   rlc a
@@ -2243,45 +2389,70 @@ InitTables:
   movx @dptr,a
   mov dptr,#$0158
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E03A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$47
   mov dptr,#$015A
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$015A
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$015B
   movx @dptr,a
+  mov a,#$08
+  mov $55,a
+__i8051_sh310:
+  mov a,$55
+  jz __i8051_shd310
   mov dptr,#$015A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E03C
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$015A
   movx @dptr,a
-  mov a,#$01
-  mov dptr,#$015C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$015C
+  mov dptr,#$015B
   movx a,@dptr
   rlc a
+  mov dptr,#$015B
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh310
+__i8051_shd310:
+  mov dptr,#$0150
+  movx a,@dptr
+  mov dptr,#$015C
+  movx @dptr,a
   clr a
-  subb a,#$00
+  mov dptr,#$015D
+  movx @dptr,a
+  mov dptr,#$015A
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$015C
+  movx a,@dptr
+  orl a,$30
+  mov dptr,#$015C
+  movx @dptr,a
+  mov dptr,#$015B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$015D
+  movx a,@dptr
+  orl a,$30
   mov dptr,#$015D
   movx @dptr,a
   mov dptr,#$015C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E03E
-  mov a,$58
+  mov dptr,#$00
   movx @dptr,a
-  mov a,#$2D
+  mov dptr,#$015D
+  movx a,@dptr
+  mov dptr,#$01
+  movx @dptr,a
+  ret
+EXT0:
+; save what the handler uses that the main program may be in the middle of
+  push acc
+  push b
+  push psw
+  push dpl
+  push dph
+  mov a,#$01
   mov dptr,#$015E
   movx @dptr,a
   mov a,#$00
@@ -2294,14 +2465,32 @@ InitTables:
   movx @dptr,a
   mov dptr,#$015E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E040
-  mov a,$58
+  mov dptr,#$58
   movx @dptr,a
-  mov a,#$39
+  mov dptr,#$015F
+  movx a,@dptr
+  mov dptr,#$58
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$59
+  movx @dptr,a
+; put it back, then RETI
+  pop dph
+  pop dpl
+  pop psw
+  pop b
+  pop acc
+  reti
+WaitFrame:
+L22:
+  mov dptr,#$58
+  movx a,@dptr
   mov dptr,#$0160
   movx @dptr,a
-  mov a,#$00
+  mov dptr,#$59
+  movx a,@dptr
   mov dptr,#$0160
   movx a,@dptr
   rlc a
@@ -2309,13 +2498,7 @@ InitTables:
   subb a,#$00
   mov dptr,#$0161
   movx @dptr,a
-  mov dptr,#$0160
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E042
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2D
+  mov a,#$00
   mov dptr,#$0162
   movx @dptr,a
   mov a,#$00
@@ -2328,11 +2511,29 @@ InitTables:
   movx @dptr,a
   mov dptr,#$0162
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E044
-  mov a,$58
-  movx @dptr,a
-  mov a,#$39
+  mov $30,a
+  mov dptr,#$0160
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0163
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0161
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jz __i51_cond_15
+  ljmp L23
+__i51_cond_15:
+  ljmp L22
+L23:
+  mov a,#$00
   mov dptr,#$0164
   movx @dptr,a
   mov a,#$00
@@ -2345,592 +2546,610 @@ InitTables:
   movx @dptr,a
   mov dptr,#$0164
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E046
-  mov a,$58
+  mov dptr,#$58
   movx @dptr,a
-  mov a,#$2D
-  mov dptr,#$0166
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0166
+  mov dptr,#$0165
+  movx a,@dptr
+  mov dptr,#$58
   movx a,@dptr
   rlc a
   clr a
   subb a,#$00
+  mov dptr,#$59
+  movx @dptr,a
+  ret
+Voice:
+  mov dptr,#$0102
+  movx a,@dptr
+  mov dptr,#$0166
+  movx @dptr,a
+  mov dptr,#$0103
+  movx a,@dptr
   mov dptr,#$0167
   movx @dptr,a
-  mov dptr,#$0166
+  mov dptr,#$0110
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E048
-  mov a,$58
-  movx @dptr,a
-  mov a,#$39
   mov dptr,#$0168
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0168
+  mov dptr,#$0111
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0169
   movx @dptr,a
-  mov dptr,#$0168
+  mov dptr,#$010E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E04A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$28
   mov dptr,#$016A
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$016A
+  mov dptr,#$010F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$016B
   movx @dptr,a
-  mov dptr,#$016A
+  mov dptr,#$0112
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E04C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2B
   mov dptr,#$016C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$016C
+  mov dptr,#$0113
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$016D
   movx @dptr,a
-  mov dptr,#$016C
+  mov a,#$10
+  mov dptr,#$016E
+  movx @dptr,a
+  mov a,#$F0
+  mov dptr,#$016F
+  movx @dptr,a
+  mov dptr,#$0166
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E04E
-  mov a,$58
+  mov dptr,#$0170
   movx @dptr,a
-  mov a,#$29
-  mov dptr,#$016E
+  mov dptr,#$0167
+  movx a,@dptr
+  mov dptr,#$0171
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$016E
+  mov a,#$02
+  mov $55,a
+__i8051_sh335:
+  mov a,$55
+  jz __i8051_shd335
+  mov dptr,#$0170
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0170
+  movx @dptr,a
+  mov dptr,#$0171
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0171
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh335
+__i8051_shd335:
+  mov dptr,#$0170
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$016E
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$016E
+  movx @dptr,a
+  mov dptr,#$0171
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$016F
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$016F
   movx @dptr,a
   mov dptr,#$016E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E050
-  mov a,$58
+  mov dptr,#$24
   movx @dptr,a
-  mov a,#$35
-  mov dptr,#$0170
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0170
+  mov dptr,#$016F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0171
+  mov dptr,#$25
   movx @dptr,a
-  mov dptr,#$0170
+  mov dptr,#$0168
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E052
-  mov a,$58
-  movx @dptr,a
-  mov a,#$29
   mov dptr,#$0172
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0172
+  mov dptr,#$0169
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0173
   movx @dptr,a
-  mov dptr,#$0172
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E054
-  mov a,$58
-  movx @dptr,a
-  mov a,#$35
+  mov a,#$FF
   mov dptr,#$0174
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0174
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0175
   movx @dptr,a
   mov dptr,#$0174
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E056
-  mov a,$58
-  movx @dptr,a
-  mov a,#$29
-  mov dptr,#$0176
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0176
+  mov $30,a
+  mov dptr,#$0172
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  anl a,$30
+  mov dptr,#$0172
+  movx @dptr,a
+  mov dptr,#$0175
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0173
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0173
+  movx @dptr,a
+  mov dptr,#$24
+  movx a,@dptr
+  mov dptr,#$0176
+  movx @dptr,a
+  mov dptr,#$25
+  movx a,@dptr
   mov dptr,#$0177
   movx @dptr,a
-  mov dptr,#$0176
+  mov dptr,#$0172
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E058
+  mov dptr,#$0176
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0177
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$35
+  mov dptr,#$0168
+  movx a,@dptr
   mov dptr,#$0178
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0178
+  mov dptr,#$0169
+  movx a,@dptr
+  mov dptr,#$0179
+  movx @dptr,a
+  mov a,#$08
+  mov $55,a
+__i8051_sh344:
+  mov a,$55
+  jz __i8051_shd344
+  mov dptr,#$0179
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0179
+  movx a,@dptr
+  rrc a
   mov dptr,#$0179
   movx @dptr,a
   mov dptr,#$0178
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E05A
-  mov a,$58
+  rrc a
+  mov dptr,#$0178
   movx @dptr,a
-  mov a,#$30
+  dec $55
+  sjmp __i8051_sh344
+__i8051_shd344:
+  mov a,#$FF
   mov dptr,#$017A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$017A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$017B
   movx @dptr,a
   mov dptr,#$017A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E05C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$34
-  mov dptr,#$017C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$017C
+  mov $30,a
+  mov dptr,#$0178
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  anl a,$30
+  mov dptr,#$0178
+  movx @dptr,a
+  mov dptr,#$017B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0179
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0179
+  movx @dptr,a
+  mov dptr,#$24
+  movx a,@dptr
+  mov dptr,#$017C
+  movx @dptr,a
+  mov dptr,#$25
+  movx a,@dptr
   mov dptr,#$017D
   movx @dptr,a
-  mov dptr,#$017C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E05E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$30
+  mov a,#$01
   mov dptr,#$017E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$017E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$017F
   movx @dptr,a
   mov dptr,#$017E
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$017C
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$017C
+  movx @dptr,a
+  mov dptr,#$017F
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$017D
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$017D
+  movx @dptr,a
+  mov dptr,#$0178
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E060
+  mov dptr,#$017C
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$017D
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$3C
+  mov dptr,#$016A
+  movx a,@dptr
   mov dptr,#$0180
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0180
+  mov dptr,#$016B
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0181
   movx @dptr,a
-  mov dptr,#$0180
+  mov dptr,#$24
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E062
-  mov a,$58
-  movx @dptr,a
-  mov a,#$30
   mov dptr,#$0182
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0182
+  mov dptr,#$25
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0183
   movx @dptr,a
-  mov dptr,#$0182
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E064
-  mov a,$58
-  movx @dptr,a
-  mov a,#$3C
+  mov a,#$02
   mov dptr,#$0184
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0184
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0185
   movx @dptr,a
   mov dptr,#$0184
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$0182
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0182
+  movx @dptr,a
+  mov dptr,#$0185
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0183
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0183
+  movx @dptr,a
+  mov dptr,#$0180
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E066
+  mov dptr,#$0182
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0183
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$30
+  mov dptr,#$016C
+  movx a,@dptr
   mov dptr,#$0186
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0186
+  mov dptr,#$016D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0187
   movx @dptr,a
-  mov dptr,#$0186
+  mov dptr,#$24
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E068
-  mov a,$58
-  movx @dptr,a
-  mov a,#$3C
   mov dptr,#$0188
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0188
+  mov dptr,#$25
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0189
   movx @dptr,a
-  mov dptr,#$0188
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E06A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2B
+  mov a,#$03
   mov dptr,#$018A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$018A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$018B
   movx @dptr,a
   mov dptr,#$018A
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$0188
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0188
+  movx @dptr,a
+  mov dptr,#$018B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0189
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0189
+  movx @dptr,a
+  mov dptr,#$0186
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E06C
+  mov dptr,#$0188
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0189
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$2F
+  ret
+TextFromMsg:
+  mov dptr,#$0102
+  movx a,@dptr
   mov dptr,#$018C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$018C
+  mov dptr,#$0103
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$018D
   movx @dptr,a
-  mov dptr,#$018C
+  mov dptr,#$0110
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E06E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2B
   mov dptr,#$018E
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$018E
+  mov dptr,#$0111
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$018F
   movx @dptr,a
-  mov dptr,#$018E
+  mov dptr,#$010E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E070
-  mov a,$58
-  movx @dptr,a
-  mov a,#$37
   mov dptr,#$0190
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0190
+  mov dptr,#$010F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0191
   movx @dptr,a
-  mov dptr,#$0190
+  mov dptr,#$0112
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E072
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2B
   mov dptr,#$0192
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0192
+  mov dptr,#$0113
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0193
   movx @dptr,a
-  mov dptr,#$0192
+  mov dptr,#$0114
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E074
-  mov a,$58
-  movx @dptr,a
-  mov a,#$37
   mov dptr,#$0194
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0194
+  mov dptr,#$0115
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0195
   movx @dptr,a
-  mov dptr,#$0194
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E076
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2B
-  mov dptr,#$0196
-  movx @dptr,a
   mov a,#$00
   mov dptr,#$0196
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$D0
   mov dptr,#$0197
   movx @dptr,a
-  mov dptr,#$0196
+  mov dptr,#$018C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E078
-  mov a,$58
-  movx @dptr,a
-  mov a,#$37
   mov dptr,#$0198
+  movx @dptr,a
+  mov dptr,#$018D
+  movx a,@dptr
+  mov dptr,#$0199
+  movx @dptr,a
+  mov a,#$14
+  mov dptr,#$019A
   movx @dptr,a
   mov a,#$00
+  mov dptr,#$019B
+  movx @dptr,a
   mov dptr,#$0198
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $40,a
+  mov dptr,#$0199
+  movx a,@dptr
+  mov $41,a
+  mov dptr,#$019A
+  movx a,@dptr
+  mov $42,a
+  mov dptr,#$019B
+  movx a,@dptr
+  mov $43,a
+  lcall __i8051_mul16
+  mov a,$40
+  mov dptr,#$0198
+  movx @dptr,a
+  mov a,$41
   mov dptr,#$0199
   movx @dptr,a
   mov dptr,#$0198
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E07A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$32
-  mov dptr,#$019A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$019A
+  mov $30,a
+  mov dptr,#$0196
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$019B
+  clr c
+  addc a,$30
+  mov dptr,#$0196
   movx @dptr,a
-  mov dptr,#$019A
+  mov dptr,#$0199
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E07C
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0197
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0197
   movx @dptr,a
-  mov a,#$2F
+  mov dptr,#$018E
+  movx a,@dptr
   mov dptr,#$019C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$019C
+  mov dptr,#$018F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$019D
   movx @dptr,a
   mov dptr,#$019C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E07E
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0196
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0196
   movx @dptr,a
-  mov a,#$01
-  mov dptr,#$019E
+  mov dptr,#$019D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0197
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0197
+  movx @dptr,a
+  mov dptr,#$0196
+  movx a,@dptr
+  mov dptr,#$24
+  movx @dptr,a
+  mov dptr,#$0197
+  movx a,@dptr
+  mov dptr,#$25
   movx @dptr,a
   mov a,#$00
   mov dptr,#$019E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$019F
   movx @dptr,a
   mov dptr,#$019E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E080
-  mov a,$58
+  mov dptr,#$28
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01A0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01A0
+  mov dptr,#$019F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$29
+  movx @dptr,a
+L24:
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$01A0
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$01A1
   movx @dptr,a
-  mov dptr,#$01A0
+  mov dptr,#$0192
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E081
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01A2
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01A2
+  mov dptr,#$0193
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01A3
   movx @dptr,a
   mov dptr,#$01A2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E083
-  mov a,$58
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$01A4
-  movx @dptr,a
+  mov $30,a
+  mov dptr,#$01A0
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$01A3
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$01A1
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_16
+  ljmp L25
+__i51_cond_16:
   mov a,#$00
   mov dptr,#$01A4
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$E3
   mov dptr,#$01A5
   movx @dptr,a
-  mov dptr,#$01A4
+  mov dptr,#$0190
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E084
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01A6
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01A6
+  mov dptr,#$0191
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01A7
   movx @dptr,a
   mov dptr,#$01A6
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E085
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01A8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01A8
+  mov $30,a
+  mov dptr,#$01A4
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  addc a,$30
+  mov dptr,#$01A4
+  movx @dptr,a
+  mov dptr,#$01A7
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01A5
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$01A5
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$01A8
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$01A9
   movx @dptr,a
   mov dptr,#$01A8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E087
-  mov a,$58
+  mov $30,a
+  mov dptr,#$01A4
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$01A4
   movx @dptr,a
-  mov a,#$01
+  mov dptr,#$01A9
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01A5
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$01A5
+  movx @dptr,a
+  mov dptr,#$01A4
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$01A5
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  mov a,$58
   mov dptr,#$01AA
   movx @dptr,a
-  mov a,#$00
   mov dptr,#$01AA
   movx a,@dptr
   rlc a
@@ -2938,319 +3157,312 @@ InitTables:
   subb a,#$00
   mov dptr,#$01AB
   movx @dptr,a
-  mov dptr,#$01AA
+  mov dptr,#$24
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E088
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01AC
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01AC
+  mov dptr,#$25
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01AD
   movx @dptr,a
-  mov dptr,#$01AC
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E089
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01AE
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01AE
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01AF
   movx @dptr,a
   mov dptr,#$01AE
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$01AC
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$01AC
+  movx @dptr,a
+  mov dptr,#$01AF
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01AD
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$01AD
+  movx @dptr,a
+  mov dptr,#$01AA
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E08B
+  mov dptr,#$01AC
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$01AD
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$02
+  mov dptr,#$0194
+  movx a,@dptr
   mov dptr,#$01B0
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01B0
+  mov dptr,#$0195
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01B1
   movx @dptr,a
-  mov dptr,#$01B0
+  mov dptr,#$24
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E08C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01B2
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01B2
+  mov dptr,#$25
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01B3
   movx @dptr,a
-  mov dptr,#$01B2
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E08D
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01B4
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01B4
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01B5
   movx @dptr,a
   mov dptr,#$01B4
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E08F
-  mov a,$58
+  mov $30,a
+  mov dptr,#$01B2
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$01B2
   movx @dptr,a
-  mov a,#$01
-  mov dptr,#$01B6
+  mov dptr,#$01B5
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01B3
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$01B3
   movx @dptr,a
   mov a,#$00
   mov dptr,#$01B6
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$02
   mov dptr,#$01B7
   movx @dptr,a
   mov dptr,#$01B6
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$01B2
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$01B2
+  movx @dptr,a
+  mov dptr,#$01B7
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01B3
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$01B3
+  movx @dptr,a
+  mov dptr,#$01B0
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E090
+  mov dptr,#$01B2
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$01B3
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$03
+  mov dptr,#$28
+  movx a,@dptr
   mov dptr,#$01B8
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01B8
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01B9
   movx @dptr,a
-  mov dptr,#$01B8
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E091
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
+  mov a,#$01
   mov dptr,#$01BA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01BA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01BB
   movx @dptr,a
   mov dptr,#$01BA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E093
-  mov a,$58
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$01BC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01BC
+  mov $30,a
+  mov dptr,#$01B8
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  addc a,$30
+  mov dptr,#$01B8
+  movx @dptr,a
+  mov dptr,#$01BB
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01B9
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$01B9
+  movx @dptr,a
+  mov dptr,#$01B8
+  movx a,@dptr
+  mov dptr,#$28
+  movx @dptr,a
+  mov dptr,#$01B9
+  movx a,@dptr
+  mov dptr,#$29
+  movx @dptr,a
+  ljmp L24
+L25:
+  ret
+Title:
+  mov dptr,#$0102
+  movx a,@dptr
+  mov dptr,#$01BC
+  movx @dptr,a
+  mov dptr,#$0103
+  movx a,@dptr
   mov dptr,#$01BD
   movx @dptr,a
   mov dptr,#$01BC
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E094
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01BE
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01BE
+  mov dptr,#$01BD
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01BF
   movx @dptr,a
   mov dptr,#$01BE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E095
-  mov a,$58
+  mov dptr,#$0114
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01C0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01C0
+  mov dptr,#$01BF
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$01C1
-  movx @dptr,a
-  mov dptr,#$01C0
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E097
-  mov a,$58
+  mov dptr,#$0115
   movx @dptr,a
   mov a,#$01
-  mov dptr,#$01C2
+  mov dptr,#$0102
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01C2
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$03
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  mov a,#$05
+  mov dptr,#$010E
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010F
+  movx @dptr,a
+  mov a,#$0E
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall textfrommsg
+  ret
+Rect:
+  mov dptr,#$0102
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$01C0
+  movx @dptr,a
+  mov dptr,#$0103
+  movx a,@dptr
+  mov dptr,#$01C1
+  movx @dptr,a
+  mov dptr,#$0110
+  movx a,@dptr
+  mov dptr,#$01C2
+  movx @dptr,a
+  mov dptr,#$0111
+  movx a,@dptr
   mov dptr,#$01C3
   movx @dptr,a
-  mov dptr,#$01C2
+  mov dptr,#$010E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E098
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01C4
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01C4
+  mov dptr,#$010F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01C5
   movx @dptr,a
-  mov dptr,#$01C4
+  mov dptr,#$0112
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E099
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01C6
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01C6
+  mov dptr,#$0113
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01C7
   movx @dptr,a
-  mov dptr,#$01C6
+  mov dptr,#$01C0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E09B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$02
   mov dptr,#$01C8
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01C8
+  mov dptr,#$01C1
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01C9
   movx @dptr,a
   mov dptr,#$01C8
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E09C
+  mov dptr,#$F009
   mov a,$58
   movx @dptr,a
-  mov a,#$03
+  mov dptr,#$01C2
+  movx a,@dptr
   mov dptr,#$01CA
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01CA
+  mov dptr,#$01C3
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01CB
   movx @dptr,a
   mov dptr,#$01CA
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E09D
+  mov dptr,#$F00A
   mov a,$58
   movx @dptr,a
-  mov a,#$03
+  mov dptr,#$01C4
+  movx a,@dptr
   mov dptr,#$01CC
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01CC
+  mov dptr,#$01C5
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01CD
   movx @dptr,a
   mov dptr,#$01CC
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E09F
+  mov dptr,#$F00B
   mov a,$58
   movx @dptr,a
-  mov a,#$01
+  mov dptr,#$01C6
+  movx a,@dptr
   mov dptr,#$01CE
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01CE
+  mov dptr,#$01C7
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01CF
   movx @dptr,a
   mov dptr,#$01CE
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E0A0
+  mov dptr,#$F00C
   mov a,$58
   movx @dptr,a
-  mov a,#$03
+  mov a,#$01
   mov dptr,#$01D0
   movx @dptr,a
   mov a,#$00
@@ -3264,112 +3476,119 @@ InitTables:
   mov dptr,#$01D0
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E0A1
+  mov dptr,#$F00E
   mov a,$58
   movx @dptr,a
-  mov a,#$03
+  ret
+DrawBitmap:
+  mov a,#$00
   mov dptr,#$01D2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01D2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01D3
   movx @dptr,a
   mov dptr,#$01D2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0A3
-  mov a,$58
+  mov dptr,#$28
   movx @dptr,a
-  mov a,#$02
-  mov dptr,#$01D4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01D4
+  mov dptr,#$01D3
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$29
+  movx @dptr,a
+L26:
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$01D4
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$01D5
   movx @dptr,a
-  mov dptr,#$01D4
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0A4
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
+  mov a,#$10
   mov dptr,#$01D6
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01D6
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01D7
   movx @dptr,a
   mov dptr,#$01D6
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0A5
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01D8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01D8
+  mov $30,a
+  mov dptr,#$01D4
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$01D7
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$01D5
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_17
+  ljmp L27
+__i51_cond_17:
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$01D8
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$01D9
-  movx @dptr,a
-  mov dptr,#$01D8
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0A7
-  mov a,$58
   movx @dptr,a
   mov a,#$01
   mov dptr,#$01DA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01DA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01DB
   movx @dptr,a
   mov dptr,#$01DA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0A8
-  mov a,$58
+  mov $30,a
+  mov dptr,#$01D8
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$01D8
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01DC
+  mov dptr,#$01DB
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01D9
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$01D9
   movx @dptr,a
   mov a,#$00
   mov dptr,#$01DC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$01DD
   movx @dptr,a
   mov dptr,#$01DC
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0A9
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
+  mov $30,a
+  mov dptr,#$01D8
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$01DD
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$01D9
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_18
+  ljmp L28
+__i51_cond_18:
+  mov a,#$00
   mov dptr,#$01DE
   movx @dptr,a
   mov a,#$00
@@ -3383,877 +3602,1070 @@ InitTables:
   mov dptr,#$01DE
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E0AB
+  mov dptr,#$F00D
   mov a,$58
   movx @dptr,a
-  mov a,#$02
+  ljmp L29
+L28:
+  mov dptr,#$28
+  movx a,@dptr
   mov dptr,#$01E0
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01E0
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01E1
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh449:
+  mov a,$55
+  jz __i8051_shd449
   mov dptr,#$01E0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0AC
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$01E0
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01E2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01E2
+  mov dptr,#$01E1
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$01E1
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh449
+__i8051_shd449:
+  mov dptr,#$01E0
+  movx a,@dptr
+  mov dptr,#$0102
+  movx @dptr,a
+  mov dptr,#$01E1
+  movx a,@dptr
+  mov dptr,#$0103
+  movx @dptr,a
+  lcall rainbow
+  mov dptr,#$00
+  movx a,@dptr
+  mov dptr,#$01E2
+  movx @dptr,a
+  mov dptr,#$01
+  movx a,@dptr
+  mov dptr,#$01E3
+  movx @dptr,a
+  mov a,#$6D
+  mov dptr,#$01E4
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$01E5
+  movx @dptr,a
+  mov dptr,#$01E4
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01E2
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$01E2
+  movx @dptr,a
+  mov dptr,#$01E5
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01E3
+  movx a,@dptr
+  anl a,$30
   mov dptr,#$01E3
   movx @dptr,a
   mov dptr,#$01E2
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E0AD
+  mov dptr,#$F00D
   mov a,$58
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01E4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01E4
+L29:
+  mov dptr,#$28
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$01E5
-  movx @dptr,a
-  mov dptr,#$01E4
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0AF
-  mov a,$58
-  movx @dptr,a
-  mov a,#$01
   mov dptr,#$01E6
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01E6
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01E7
   movx @dptr,a
-  mov dptr,#$01E6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0B0
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
+  mov a,#$05
   mov dptr,#$01E8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01E8
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01E9
   movx @dptr,a
+  mov dptr,#$01E6
+  movx a,@dptr
+  mov $40,a
+  mov dptr,#$01E7
+  movx a,@dptr
+  mov $41,a
   mov dptr,#$01E8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0B1
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01EA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01EA
+  mov $42,a
+  mov dptr,#$01E9
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $43,a
+  lcall __i8051_mul16
+  mov a,$40
+  mov dptr,#$01E6
+  movx @dptr,a
+  mov a,$41
+  mov dptr,#$01E7
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$01EA
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$01EB
   movx @dptr,a
+  mov a,#$02
+  mov $55,a
+__i8051_sh460:
+  mov a,$55
+  jz __i8051_shd460
   mov dptr,#$01EA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0B3
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$01EA
   movx @dptr,a
-  mov a,#$02
+  mov dptr,#$01EB
+  movx a,@dptr
+  rlc a
+  mov dptr,#$01EB
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh460
+__i8051_shd460:
+  mov a,#$A0
   mov dptr,#$01EC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01EC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01ED
   movx @dptr,a
-  mov dptr,#$01EC
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0B4
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01EE
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$01EF
+  movx @dptr,a
+  mov a,#$0A
+  mov dptr,#$01F0
   movx @dptr,a
   mov a,#$00
+  mov dptr,#$01F1
+  movx @dptr,a
   mov dptr,#$01EE
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $40,a
+  mov dptr,#$01EF
+  movx a,@dptr
+  mov $41,a
+  mov dptr,#$01F0
+  movx a,@dptr
+  mov $42,a
+  mov dptr,#$01F1
+  movx a,@dptr
+  mov $43,a
+  lcall __i8051_mul16
+  mov a,$40
+  mov dptr,#$01EE
+  movx @dptr,a
+  mov a,$41
   mov dptr,#$01EF
   movx @dptr,a
   mov dptr,#$01EE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0B5
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01F0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01F0
+  mov $30,a
+  mov dptr,#$01EC
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$01F1
+  clr c
+  subb a,$30
+  mov dptr,#$01EC
   movx @dptr,a
-  mov dptr,#$01F0
+  mov dptr,#$01EF
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0B7
-  mov a,$58
+  mov $30,a
+  mov dptr,#$01ED
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$01ED
   movx @dptr,a
-  mov a,#$01
+  mov a,#$80
   mov dptr,#$01F2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01F2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01F3
   movx @dptr,a
-  mov dptr,#$01F2
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0B8
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$01F4
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01F4
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01F5
   movx @dptr,a
+  mov a,#$03
+  mov $55,a
+__i8051_sh468:
+  mov a,$55
+  jz __i8051_shd468
   mov dptr,#$01F4
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0B9
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$01F4
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01F6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01F6
+  mov dptr,#$01F5
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$01F5
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh468
+__i8051_shd468:
+  mov dptr,#$01F4
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01F2
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov dptr,#$01F2
+  movx @dptr,a
+  mov dptr,#$01F5
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01F3
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$01F3
+  movx @dptr,a
+  mov dptr,#$01E6
+  movx a,@dptr
+  mov dptr,#$0102
+  movx @dptr,a
+  mov dptr,#$01E7
+  movx a,@dptr
+  mov dptr,#$0103
+  movx @dptr,a
+  mov dptr,#$01EA
+  movx a,@dptr
+  mov dptr,#$0110
+  movx @dptr,a
+  mov dptr,#$01EB
+  movx a,@dptr
+  mov dptr,#$0111
+  movx @dptr,a
+  mov dptr,#$01EC
+  movx a,@dptr
+  mov dptr,#$010E
+  movx @dptr,a
+  mov dptr,#$01ED
+  movx a,@dptr
+  mov dptr,#$010F
+  movx @dptr,a
+  mov dptr,#$01F2
+  movx a,@dptr
+  mov dptr,#$0112
+  movx @dptr,a
+  mov dptr,#$01F3
+  movx a,@dptr
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall rect
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$01F6
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$01F7
   movx @dptr,a
-  mov dptr,#$01F6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0BB
-  mov a,$58
-  movx @dptr,a
-  mov a,#$02
+  mov a,#$01
   mov dptr,#$01F8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01F8
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01F9
   movx @dptr,a
   mov dptr,#$01F8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0BC
-  mov a,$58
+  mov $30,a
+  mov dptr,#$01F6
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$01F6
   movx @dptr,a
-  mov a,#$03
+  mov dptr,#$01F9
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$01F7
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$01F7
+  movx @dptr,a
+  mov dptr,#$01F6
+  movx a,@dptr
+  mov dptr,#$28
+  movx @dptr,a
+  mov dptr,#$01F7
+  movx a,@dptr
+  mov dptr,#$29
+  movx @dptr,a
+  ljmp L26
+L27:
+  mov a,#$00
   mov dptr,#$01FA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01FA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01FB
   movx @dptr,a
   mov dptr,#$01FA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0BD
-  mov a,$58
+  mov dptr,#$10
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$01FC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$01FC
+  mov dptr,#$01FB
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$11
+  movx @dptr,a
+L30:
+  mov dptr,#$10
+  movx a,@dptr
+  mov dptr,#$01FC
+  movx @dptr,a
+  mov dptr,#$11
+  movx a,@dptr
   mov dptr,#$01FD
   movx @dptr,a
-  mov dptr,#$01FC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E0BF
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
+  mov a,#$80
   mov dptr,#$01FE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$01FE
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$01FF
   movx @dptr,a
   mov dptr,#$01FE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E150
-  mov a,$58
-  movx @dptr,a
-  mov a,#$57
+  mov $30,a
+  mov dptr,#$01FC
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$01FF
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$01FD
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_19
+  ljmp L31
+__i51_cond_19:
+  mov dptr,#$10
+  movx a,@dptr
   mov dptr,#$0200
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0200
+  mov dptr,#$11
+  movx a,@dptr
+  mov dptr,#$0201
+  movx @dptr,a
+  mov a,#$02
+  mov $55,a
+__i8051_sh488:
+  mov a,$55
+  jz __i8051_shd488
+  mov dptr,#$0201
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0201
+  movx a,@dptr
+  rrc a
   mov dptr,#$0201
   movx @dptr,a
   mov dptr,#$0200
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E152
-  mov a,$58
+  rrc a
+  mov dptr,#$0200
   movx @dptr,a
-  mov a,#$62
-  mov dptr,#$0202
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0202
+  dec $55
+  sjmp __i8051_sh488
+__i8051_shd488:
+  mov dptr,#$0200
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0102
+  movx @dptr,a
+  mov dptr,#$0201
+  movx a,@dptr
+  mov dptr,#$0103
+  movx @dptr,a
+  lcall rainbow
+  mov dptr,#$00
+  movx a,@dptr
+  mov dptr,#$0202
+  movx @dptr,a
+  mov dptr,#$01
+  movx a,@dptr
   mov dptr,#$0203
   movx @dptr,a
-  mov dptr,#$0202
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E156
-  mov a,$58
-  movx @dptr,a
-  mov a,#$6E
-  mov dptr,#$0204
-  movx @dptr,a
   mov a,#$00
   mov dptr,#$0204
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$DC
   mov dptr,#$0205
   movx @dptr,a
-  mov dptr,#$0204
+  mov dptr,#$10
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E15A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$7B
   mov dptr,#$0206
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0206
+  mov dptr,#$11
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0207
   movx @dptr,a
   mov dptr,#$0206
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$0204
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0204
+  movx @dptr,a
+  mov dptr,#$0207
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0205
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0205
+  movx @dptr,a
+  mov dptr,#$0202
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E15E
+  mov dptr,#$0204
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0205
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$83
+  mov dptr,#$10
+  movx a,@dptr
   mov dptr,#$0208
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0208
+  mov dptr,#$11
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0209
   movx @dptr,a
-  mov dptr,#$0208
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E160
-  mov a,$58
-  movx @dptr,a
-  mov a,#$93
+  mov a,#$01
   mov dptr,#$020A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$020A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$020B
   movx @dptr,a
   mov dptr,#$020A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E164
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0208
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0208
   movx @dptr,a
-  mov a,#$A5
+  mov dptr,#$020B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0209
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0209
+  movx @dptr,a
+  mov dptr,#$0208
+  movx a,@dptr
+  mov dptr,#$10
+  movx @dptr,a
+  mov dptr,#$0209
+  movx a,@dptr
+  mov dptr,#$11
+  movx @dptr,a
+  ljmp L30
+L31:
+  ret
+DrawBalls:
+  mov a,#$00
   mov dptr,#$020C
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$020C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$020D
   movx @dptr,a
   mov dptr,#$020C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E168
-  mov a,$58
-  movx @dptr,a
-  mov a,#$AF
   mov dptr,#$020E
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$020E
+  mov dptr,#$020D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$020F
   movx @dptr,a
-  mov dptr,#$020E
+  mov dptr,#$020C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E16A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$C4
   mov dptr,#$0210
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0210
+  mov dptr,#$020D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0211
   movx @dptr,a
-  mov dptr,#$0210
+  mov dptr,#$020C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E16E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$DC
   mov dptr,#$0212
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0212
+  mov dptr,#$020D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0213
   movx @dptr,a
-  mov dptr,#$0212
+  mov dptr,#$020C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E172
-  mov a,$58
-  movx @dptr,a
-  mov a,#$06
   mov dptr,#$0214
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0214
+  mov dptr,#$020D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0215
   movx @dptr,a
-  mov dptr,#$0214
+  mov dptr,#$020C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E178
-  mov a,$58
-  movx @dptr,a
-  mov a,#$01
   mov dptr,#$0216
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0216
+  mov dptr,#$020D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0217
   movx @dptr,a
-  mov dptr,#$0216
+  mov dptr,#$020C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E179
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4A
   mov dptr,#$0218
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0218
+  mov dptr,#$020D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0219
   movx @dptr,a
+L32:
   mov dptr,#$0218
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E180
-  mov a,$58
-  movx @dptr,a
-  mov a,#$01
   mov dptr,#$021A
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$021A
+  mov dptr,#$0219
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$021B
   movx @dptr,a
-  mov dptr,#$021A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E181
-  mov a,$58
-  movx @dptr,a
-  mov a,#$5D
+  mov a,#$04
   mov dptr,#$021C
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$021C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$021D
   movx @dptr,a
   mov dptr,#$021C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E182
-  mov a,$58
-  movx @dptr,a
-  mov a,#$01
+  mov $30,a
+  mov dptr,#$021A
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$021D
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$021B
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_20
+  ljmp L33
+__i51_cond_20:
+  mov a,#$00
   mov dptr,#$021E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$021E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$021F
   movx @dptr,a
   mov dptr,#$021E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E183
-  mov a,$58
+  mov dptr,#$0216
   movx @dptr,a
-  mov a,#$88
-  mov dptr,#$0220
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0220
+  mov dptr,#$021F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0217
+  movx @dptr,a
+L34:
+  mov dptr,#$0216
+  movx a,@dptr
+  mov dptr,#$0220
+  movx @dptr,a
+  mov dptr,#$0217
+  movx a,@dptr
   mov dptr,#$0221
   movx @dptr,a
-  mov dptr,#$0220
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E186
-  mov a,$58
-  movx @dptr,a
-  mov a,#$01
+  mov a,#$08
   mov dptr,#$0222
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0222
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0223
   movx @dptr,a
   mov dptr,#$0222
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E187
-  mov a,$58
-  movx @dptr,a
-  mov a,#$B8
+  mov $30,a
+  mov dptr,#$0220
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0223
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0221
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_21
+  ljmp L35
+__i51_cond_21:
+  mov a,#$00
   mov dptr,#$0224
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0224
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0225
   movx @dptr,a
   mov dptr,#$0224
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E18A
-  mov a,$58
+  mov dptr,#$020E
   movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0226
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0226
+  mov dptr,#$0225
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$020F
+  movx @dptr,a
+L36:
+  mov dptr,#$020E
+  movx a,@dptr
+  mov dptr,#$0226
+  movx @dptr,a
+  mov dptr,#$020F
+  movx a,@dptr
   mov dptr,#$0227
   movx @dptr,a
-  mov dptr,#$0226
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E18B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$EE
+  mov a,#$08
   mov dptr,#$0228
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0228
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0229
   movx @dptr,a
   mov dptr,#$0228
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E18E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$022A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$022A
+  mov $30,a
+  mov dptr,#$0226
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0229
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0227
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_22
+  ljmp L37
+__i51_cond_22:
+  mov dptr,#$020E
+  movx a,@dptr
+  mov dptr,#$022A
+  movx @dptr,a
+  mov dptr,#$020F
+  movx a,@dptr
   mov dptr,#$022B
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh527:
+  mov a,$55
+  jz __i8051_shd527
   mov dptr,#$022A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E18F
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$022A
   movx @dptr,a
-  mov a,#$0B
+  mov dptr,#$022B
+  movx a,@dptr
+  rlc a
+  mov dptr,#$022B
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh527
+__i8051_shd527:
+  mov a,#$07
   mov dptr,#$022C
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$022C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$022D
   movx @dptr,a
   mov dptr,#$022C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E190
-  mov a,$58
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$022E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$022E
+  mov $30,a
+  mov dptr,#$022A
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  subb a,$30
+  mov dptr,#$022A
+  movx @dptr,a
+  mov dptr,#$022D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$022B
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$022B
+  movx @dptr,a
+  mov dptr,#$022A
+  movx a,@dptr
+  mov dptr,#$0212
+  movx @dptr,a
+  mov dptr,#$022B
+  movx a,@dptr
+  mov dptr,#$0213
+  movx @dptr,a
+  mov dptr,#$0216
+  movx a,@dptr
+  mov dptr,#$022E
+  movx @dptr,a
+  mov dptr,#$0217
+  movx a,@dptr
   mov dptr,#$022F
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh532:
+  mov a,$55
+  jz __i8051_shd532
   mov dptr,#$022E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E191
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$022E
   movx @dptr,a
-  mov a,#$4B
+  mov dptr,#$022F
+  movx a,@dptr
+  rlc a
+  mov dptr,#$022F
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh532
+__i8051_shd532:
+  mov a,#$07
   mov dptr,#$0230
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0230
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0231
   movx @dptr,a
   mov dptr,#$0230
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E194
-  mov a,$58
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$0232
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0232
+  mov $30,a
+  mov dptr,#$022E
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  subb a,$30
+  mov dptr,#$022E
+  movx @dptr,a
+  mov dptr,#$0231
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$022F
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$022F
+  movx @dptr,a
+  mov dptr,#$022E
+  movx a,@dptr
+  mov dptr,#$0214
+  movx @dptr,a
+  mov dptr,#$022F
+  movx a,@dptr
+  mov dptr,#$0215
+  movx @dptr,a
+  mov dptr,#$0212
+  movx a,@dptr
+  mov dptr,#$0232
+  movx @dptr,a
+  mov dptr,#$0213
+  movx a,@dptr
   mov dptr,#$0233
   movx @dptr,a
-  mov dptr,#$0232
+  mov dptr,#$0212
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E195
-  mov a,$58
-  movx @dptr,a
-  mov a,#$93
   mov dptr,#$0234
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0234
+  mov dptr,#$0213
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0235
   movx @dptr,a
+  mov dptr,#$0232
+  movx a,@dptr
+  mov $40,a
+  mov dptr,#$0233
+  movx a,@dptr
+  mov $41,a
   mov dptr,#$0234
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E198
-  mov a,$58
+  mov $42,a
+  mov dptr,#$0235
+  movx a,@dptr
+  mov $43,a
+  lcall __i8051_mul16
+  mov a,$40
+  mov dptr,#$0232
   movx @dptr,a
-  mov a,#$02
+  mov a,$41
+  mov dptr,#$0233
+  movx @dptr,a
+  mov dptr,#$0214
+  movx a,@dptr
   mov dptr,#$0236
   movx @dptr,a
-  mov a,#$00
+  mov dptr,#$0215
+  movx a,@dptr
+  mov dptr,#$0237
+  movx @dptr,a
+  mov dptr,#$0214
+  movx a,@dptr
+  mov dptr,#$0238
+  movx @dptr,a
+  mov dptr,#$0215
+  movx a,@dptr
+  mov dptr,#$0239
+  movx @dptr,a
   mov dptr,#$0236
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $40,a
+  mov dptr,#$0237
+  movx a,@dptr
+  mov $41,a
+  mov dptr,#$0238
+  movx a,@dptr
+  mov $42,a
+  mov dptr,#$0239
+  movx a,@dptr
+  mov $43,a
+  lcall __i8051_mul16
+  mov a,$40
+  mov dptr,#$0236
+  movx @dptr,a
+  mov a,$41
   mov dptr,#$0237
   movx @dptr,a
   mov dptr,#$0236
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E199
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0232
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0232
   movx @dptr,a
-  mov a,#$10
-  mov dptr,#$0238
+  mov dptr,#$0237
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0233
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0233
+  movx @dptr,a
+  mov dptr,#$0232
+  movx a,@dptr
+  mov dptr,#$0210
+  movx @dptr,a
+  mov dptr,#$0233
+  movx a,@dptr
+  mov dptr,#$0211
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0238
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0239
-  movx @dptr,a
-  mov dptr,#$0238
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E19E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$03
   mov dptr,#$023A
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$023A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov a,#$D8
   mov dptr,#$023B
   movx @dptr,a
-  mov dptr,#$023A
+  mov dptr,#$0218
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E19F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$E0
   mov dptr,#$023C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$023C
+  mov dptr,#$0219
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$023D
   movx @dptr,a
+  mov a,#$06
+  mov $55,a
+__i8051_sh546:
+  mov a,$55
+  jz __i8051_shd546
   mov dptr,#$023C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E200
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$023C
   movx @dptr,a
-  mov a,#$E4
-  mov dptr,#$023E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$023E
+  mov dptr,#$023D
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$023D
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh546
+__i8051_shd546:
+  mov dptr,#$023C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$023A
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$023A
+  movx @dptr,a
+  mov dptr,#$023D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$023B
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$023B
+  movx @dptr,a
+  mov dptr,#$0216
+  movx a,@dptr
+  mov dptr,#$023E
+  movx @dptr,a
+  mov dptr,#$0217
+  movx a,@dptr
   mov dptr,#$023F
   movx @dptr,a
+  mov a,#$03
+  mov $55,a
+__i8051_sh549:
+  mov a,$55
+  jz __i8051_shd549
   mov dptr,#$023E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E201
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$023E
   movx @dptr,a
-  mov a,#$E8
-  mov dptr,#$0240
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0240
+  mov dptr,#$023F
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$023F
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh549
+__i8051_shd549:
+  mov dptr,#$023E
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$023A
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$023A
+  movx @dptr,a
+  mov dptr,#$023F
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$023B
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$023B
+  movx @dptr,a
+  mov dptr,#$020E
+  movx a,@dptr
+  mov dptr,#$0240
+  movx @dptr,a
+  mov dptr,#$020F
+  movx a,@dptr
   mov dptr,#$0241
   movx @dptr,a
   mov dptr,#$0240
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E202
-  mov a,$58
-  movx @dptr,a
-  mov a,#$F0
-  mov dptr,#$0242
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0242
+  mov $30,a
+  mov dptr,#$023A
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  addc a,$30
+  mov dptr,#$023A
+  movx @dptr,a
+  mov dptr,#$0241
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$023B
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$023B
+  movx @dptr,a
+  mov dptr,#$023A
+  movx a,@dptr
+  mov dptr,#$24
+  movx @dptr,a
+  mov dptr,#$023B
+  movx a,@dptr
+  mov dptr,#$25
+  movx @dptr,a
+  mov dptr,#$0210
+  movx a,@dptr
+  mov dptr,#$0242
+  movx @dptr,a
+  mov dptr,#$0211
+  movx a,@dptr
   mov dptr,#$0243
   movx @dptr,a
-  mov dptr,#$0242
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E203
-  mov a,$58
-  movx @dptr,a
-  mov a,#$F4
+  mov a,#$38
   mov dptr,#$0244
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0244
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0245
   movx @dptr,a
   mov dptr,#$0244
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E204
-  mov a,$58
-  movx @dptr,a
-  mov a,#$FC
+  mov $30,a
+  mov dptr,#$0242
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0245
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0243
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_23_n
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_23
+__i51_cond_23_n:
+  ljmp L38
+__i51_cond_23:
+  mov a,#$00
   mov dptr,#$0246
   movx @dptr,a
   mov a,#$00
@@ -4264,64 +4676,44 @@ InitTables:
   subb a,#$00
   mov dptr,#$0247
   movx @dptr,a
+  mov dptr,#$24
+  movx a,@dptr
+  mov dptr,#$0248
+  movx @dptr,a
+  mov dptr,#$25
+  movx a,@dptr
+  mov dptr,#$0249
+  movx @dptr,a
   mov dptr,#$0246
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E205
-  mov a,$58
-  movx @dptr,a
-  mov a,#$DC
-  mov dptr,#$0248
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$0248
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $56,a
   mov dptr,#$0249
-  movx @dptr,a
-  mov dptr,#$0248
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E206
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$BC
+  ljmp L39
+L38:
+  mov dptr,#$0210
+  movx a,@dptr
   mov dptr,#$024A
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$024A
+  mov dptr,#$0211
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$024B
   movx @dptr,a
-  mov dptr,#$024A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E207
-  mov a,$58
-  movx @dptr,a
-  mov a,#$7C
+  mov a,#$0C
   mov dptr,#$024C
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$024C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$024D
   movx @dptr,a
-  mov dptr,#$024C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E208
-  mov a,$58
-  movx @dptr,a
-  mov a,#$5C
+  mov a,#$00
   mov dptr,#$024E
   movx @dptr,a
   mov a,#$00
@@ -4332,13 +4724,39 @@ InitTables:
   subb a,#$00
   mov dptr,#$024F
   movx @dptr,a
+  mov dptr,#$024C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$024A
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$024D
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$024B
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_24
+  ljmp L44
+__i51_cond_24:
+  mov a,#$01
+  mov dptr,#$024E
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$024E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E209
-  mov a,$58
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$024F
   movx @dptr,a
-  mov a,#$1C
+L44:
+  mov a,#$00
   mov dptr,#$0250
   movx @dptr,a
   mov a,#$00
@@ -4349,47 +4767,36 @@ InitTables:
   subb a,#$00
   mov dptr,#$0251
   movx @dptr,a
-  mov dptr,#$0250
+  mov dptr,#$024E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E20A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$1C
-  mov dptr,#$0252
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0252
-  movx a,@dptr
-  rlc a
-  clr a
+  clr c
   subb a,#$00
+  mov $50,a
+  mov dptr,#$024F
+  movx a,@dptr
+  xrl a,#$80
+  subb a,#$80
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_25
+  ljmp L43
+__i51_cond_25:
+  mov dptr,#$0212
+  movx a,@dptr
+  mov dptr,#$0252
+  movx @dptr,a
+  mov dptr,#$0213
+  movx a,@dptr
   mov dptr,#$0253
   movx @dptr,a
-  mov dptr,#$0252
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E20B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$1C
+  mov a,#$00
   mov dptr,#$0254
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0254
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0255
   movx @dptr,a
-  mov dptr,#$0254
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E20C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$1D
+  mov a,#$00
   mov dptr,#$0256
   movx @dptr,a
   mov a,#$00
@@ -4400,13 +4807,66 @@ InitTables:
   subb a,#$00
   mov dptr,#$0257
   movx @dptr,a
+  mov dptr,#$0254
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0252
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0255
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0253
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_26
+  ljmp L45
+__i51_cond_26:
+  mov a,#$01
+  mov dptr,#$0256
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$0256
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E20D
-  mov a,$58
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$0257
   movx @dptr,a
-  mov a,#$1E
+L45:
+  mov dptr,#$0256
+  movx a,@dptr
+  clr c
+  subb a,#$00
+  mov $50,a
+  mov dptr,#$0257
+  movx a,@dptr
+  xrl a,#$80
+  subb a,#$80
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_27
+  ljmp L43
+__i51_cond_27:
+  mov a,#$01
+  mov dptr,#$0250
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0250
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$0251
+  movx @dptr,a
+L43:
+  mov a,#$00
   mov dptr,#$0258
   movx @dptr,a
   mov a,#$00
@@ -4417,47 +4877,36 @@ InitTables:
   subb a,#$00
   mov dptr,#$0259
   movx @dptr,a
-  mov dptr,#$0258
+  mov dptr,#$0250
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E20E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$1F
-  mov dptr,#$025A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$025A
-  movx a,@dptr
-  rlc a
-  clr a
+  clr c
   subb a,#$00
+  mov $50,a
+  mov dptr,#$0251
+  movx a,@dptr
+  xrl a,#$80
+  subb a,#$80
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_28
+  ljmp L42
+__i51_cond_28:
+  mov dptr,#$0214
+  movx a,@dptr
+  mov dptr,#$025A
+  movx @dptr,a
+  mov dptr,#$0215
+  movx a,@dptr
   mov dptr,#$025B
   movx @dptr,a
-  mov dptr,#$025A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E20F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$1F
+  mov a,#$00
   mov dptr,#$025C
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$025C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$025D
   movx @dptr,a
-  mov dptr,#$025C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E210
-  mov a,$58
-  movx @dptr,a
-  mov a,#$1B
+  mov a,#$00
   mov dptr,#$025E
   movx @dptr,a
   mov a,#$00
@@ -4468,13 +4917,66 @@ InitTables:
   subb a,#$00
   mov dptr,#$025F
   movx @dptr,a
+  mov dptr,#$025C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$025A
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$025D
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$025B
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_29
+  ljmp L46
+__i51_cond_29:
+  mov a,#$01
+  mov dptr,#$025E
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$025E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E211
-  mov a,$58
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$025F
   movx @dptr,a
-  mov a,#$13
+L46:
+  mov dptr,#$025E
+  movx a,@dptr
+  clr c
+  subb a,#$00
+  mov $50,a
+  mov dptr,#$025F
+  movx a,@dptr
+  xrl a,#$80
+  subb a,#$80
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_30
+  ljmp L42
+__i51_cond_30:
+  mov a,#$01
+  mov dptr,#$0258
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0258
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$0259
+  movx @dptr,a
+L42:
+  mov a,#$00
   mov dptr,#$0260
   movx @dptr,a
   mov a,#$00
@@ -4487,11 +4989,27 @@ InitTables:
   movx @dptr,a
   mov dptr,#$0260
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E212
-  mov a,$58
-  movx @dptr,a
-  mov a,#$0F
+  mov $30,a
+  mov dptr,#$0258
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0261
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0259
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_31
+  ljmp L40
+__i51_cond_31:
+  mov a,#$FF
   mov dptr,#$0262
   movx @dptr,a
   mov a,#$00
@@ -4502,693 +5020,939 @@ InitTables:
   subb a,#$00
   mov dptr,#$0263
   movx @dptr,a
+  mov dptr,#$24
+  movx a,@dptr
+  mov dptr,#$0264
+  movx @dptr,a
+  mov dptr,#$25
+  movx a,@dptr
+  mov dptr,#$0265
+  movx @dptr,a
   mov dptr,#$0262
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E213
-  mov a,$58
-  movx @dptr,a
-  mov a,#$07
-  mov dptr,#$0264
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$0264
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $56,a
   mov dptr,#$0265
-  movx @dptr,a
-  mov dptr,#$0264
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E214
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$03
+  ljmp L41
+L40:
+  mov dptr,#$0218
+  movx a,@dptr
   mov dptr,#$0266
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0266
+  mov dptr,#$0219
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0267
   movx @dptr,a
+  mov a,#$03
+  mov $55,a
+__i8051_sh598:
+  mov a,$55
+  jz __i8051_shd598
   mov dptr,#$0266
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E215
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$0266
   movx @dptr,a
-  mov a,#$03
+  mov dptr,#$0267
+  movx a,@dptr
+  rlc a
+  mov dptr,#$0267
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh598
+__i8051_shd598:
+  mov a,#$02
   mov dptr,#$0268
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0268
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0269
   movx @dptr,a
   mov dptr,#$0268
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E216
-  mov a,$58
-  movx @dptr,a
-  mov a,#$43
-  mov dptr,#$026A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$026A
+  mov $30,a
+  mov dptr,#$0266
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  addc a,$30
+  mov dptr,#$0266
+  movx @dptr,a
+  mov dptr,#$0269
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0267
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0267
+  movx @dptr,a
+  mov dptr,#$0266
+  movx a,@dptr
+  mov dptr,#$0102
+  movx @dptr,a
+  mov dptr,#$0267
+  movx a,@dptr
+  mov dptr,#$0103
+  movx @dptr,a
+  lcall rainbow
+  mov dptr,#$00
+  movx a,@dptr
+  mov dptr,#$026A
+  movx @dptr,a
+  mov dptr,#$01
+  movx a,@dptr
   mov dptr,#$026B
   movx @dptr,a
+  mov dptr,#$24
+  movx a,@dptr
+  mov dptr,#$026C
+  movx @dptr,a
+  mov dptr,#$25
+  movx a,@dptr
+  mov dptr,#$026D
+  movx @dptr,a
   mov dptr,#$026A
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E217
-  mov a,$58
-  movx @dptr,a
-  mov a,#$63
-  mov dptr,#$026C
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$026C
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $56,a
   mov dptr,#$026D
-  movx @dptr,a
-  mov dptr,#$026C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E218
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$A3
+L41:
+L39:
+  mov dptr,#$020E
+  movx a,@dptr
   mov dptr,#$026E
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$026E
+  mov dptr,#$020F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$026F
   movx @dptr,a
-  mov dptr,#$026E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E219
-  mov a,$58
-  movx @dptr,a
-  mov a,#$C3
+  mov a,#$01
   mov dptr,#$0270
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0270
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0271
   movx @dptr,a
   mov dptr,#$0270
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E21A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$E3
-  mov dptr,#$0272
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0272
+  mov $30,a
+  mov dptr,#$026E
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  addc a,$30
+  mov dptr,#$026E
+  movx @dptr,a
+  mov dptr,#$0271
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$026F
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$026F
+  movx @dptr,a
+  mov dptr,#$026E
+  movx a,@dptr
+  mov dptr,#$020E
+  movx @dptr,a
+  mov dptr,#$026F
+  movx a,@dptr
+  mov dptr,#$020F
+  movx @dptr,a
+  ljmp L36
+L37:
+  mov dptr,#$0216
+  movx a,@dptr
+  mov dptr,#$0272
+  movx @dptr,a
+  mov dptr,#$0217
+  movx a,@dptr
   mov dptr,#$0273
   movx @dptr,a
-  mov dptr,#$0272
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E21B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$E2
+  mov a,#$01
   mov dptr,#$0274
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0274
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0275
   movx @dptr,a
   mov dptr,#$0274
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E21C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$E2
-  mov dptr,#$0276
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0276
+  mov $30,a
+  mov dptr,#$0272
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  addc a,$30
+  mov dptr,#$0272
+  movx @dptr,a
+  mov dptr,#$0275
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0273
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0273
+  movx @dptr,a
+  mov dptr,#$0272
+  movx a,@dptr
+  mov dptr,#$0216
+  movx @dptr,a
+  mov dptr,#$0273
+  movx a,@dptr
+  mov dptr,#$0217
+  movx @dptr,a
+  ljmp L34
+L35:
+  mov dptr,#$0218
+  movx a,@dptr
+  mov dptr,#$0276
+  movx @dptr,a
+  mov dptr,#$0219
+  movx a,@dptr
   mov dptr,#$0277
   movx @dptr,a
-  mov dptr,#$0276
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E21D
-  mov a,$58
-  movx @dptr,a
-  mov a,#$E1
+  mov a,#$01
   mov dptr,#$0278
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0278
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0279
   movx @dptr,a
   mov dptr,#$0278
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E21E
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0276
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0276
   movx @dptr,a
-  mov a,#$E0
+  mov dptr,#$0279
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0277
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0277
+  movx @dptr,a
+  mov dptr,#$0276
+  movx a,@dptr
+  mov dptr,#$0218
+  movx @dptr,a
+  mov dptr,#$0277
+  movx a,@dptr
+  mov dptr,#$0219
+  movx @dptr,a
+  ljmp L32
+L33:
+  mov a,#$00
   mov dptr,#$027A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$027A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$027B
   movx @dptr,a
   mov dptr,#$027A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E21F
-  mov a,$58
+  mov dptr,#$28
   movx @dptr,a
-  mov a,#$20
-  mov dptr,#$027C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$027C
+  mov dptr,#$027B
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$29
+  movx @dptr,a
+L47:
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$027C
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$027D
   movx @dptr,a
-  mov dptr,#$027C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E300
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$08
   mov dptr,#$027E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$027E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$027F
   movx @dptr,a
   mov dptr,#$027E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E301
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov $30,a
+  mov dptr,#$027C
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$027F
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$027D
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_32
+  ljmp L48
+__i51_cond_32:
+  mov a,#$0A
   mov dptr,#$0280
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0280
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0281
   movx @dptr,a
-  mov dptr,#$0280
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E302
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
   mov dptr,#$0282
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0283
+  movx @dptr,a
+  mov a,#$11
+  mov dptr,#$0284
   movx @dptr,a
   mov a,#$00
+  mov dptr,#$0285
+  movx @dptr,a
   mov dptr,#$0282
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $40,a
+  mov dptr,#$0283
+  movx a,@dptr
+  mov $41,a
+  mov dptr,#$0284
+  movx a,@dptr
+  mov $42,a
+  mov dptr,#$0285
+  movx a,@dptr
+  mov $43,a
+  lcall __i8051_mul16
+  mov a,$40
+  mov dptr,#$0282
+  movx @dptr,a
+  mov a,$41
   mov dptr,#$0283
   movx @dptr,a
   mov dptr,#$0282
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E303
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$0284
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0284
+  mov $30,a
+  mov dptr,#$0280
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0285
+  clr c
+  addc a,$30
+  mov dptr,#$0280
   movx @dptr,a
-  mov dptr,#$0284
+  mov dptr,#$0283
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E304
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0281
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0281
   movx @dptr,a
-  mov a,#$50
+  mov a,#$5A
   mov dptr,#$0286
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0286
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0287
   movx @dptr,a
-  mov dptr,#$0286
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E305
-  mov a,$58
-  movx @dptr,a
-  mov a,#$55
   mov dptr,#$0288
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0288
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0289
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh638:
+  mov a,$55
+  jz __i8051_shd638
   mov dptr,#$0288
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0288
+  movx @dptr,a
+  mov dptr,#$0289
+  movx a,@dptr
+  rlc a
+  mov dptr,#$0289
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh638
+__i8051_shd638:
+  mov dptr,#$0288
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0286
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0286
+  movx @dptr,a
+  mov dptr,#$0289
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0287
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0287
+  movx @dptr,a
+  mov dptr,#$0280
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E306
+  mov dptr,#$0281
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$0286
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0287
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$52
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  mov a,#$14
   mov dptr,#$028A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$028A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$028B
   movx @dptr,a
-  mov dptr,#$028A
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E307
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
   mov dptr,#$028C
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$028D
+  movx @dptr,a
+  mov a,#$0B
+  mov dptr,#$028E
   movx @dptr,a
   mov a,#$00
+  mov dptr,#$028F
+  movx @dptr,a
   mov dptr,#$028C
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $40,a
+  mov dptr,#$028D
+  movx a,@dptr
+  mov $41,a
+  mov dptr,#$028E
+  movx a,@dptr
+  mov $42,a
+  mov dptr,#$028F
+  movx a,@dptr
+  mov $43,a
+  lcall __i8051_mul16
+  mov a,$40
+  mov dptr,#$028C
+  movx @dptr,a
+  mov a,$41
   mov dptr,#$028D
   movx @dptr,a
   mov dptr,#$028C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E308
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4D
-  mov dptr,#$028E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$028E
+  mov $30,a
+  mov dptr,#$028A
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$028F
+  clr c
+  addc a,$30
+  mov dptr,#$028A
   movx @dptr,a
-  mov dptr,#$028E
+  mov dptr,#$028D
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E309
-  mov a,$58
+  mov $30,a
+  mov dptr,#$028B
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$028B
   movx @dptr,a
-  mov a,#$45
+  mov a,#$6A
   mov dptr,#$0290
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0290
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0291
   movx @dptr,a
-  mov dptr,#$0290
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E30A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
   mov dptr,#$0292
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0292
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0293
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh648:
+  mov a,$55
+  jz __i8051_shd648
   mov dptr,#$0292
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0292
+  movx @dptr,a
+  mov dptr,#$0293
+  movx a,@dptr
+  rlc a
+  mov dptr,#$0293
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh648
+__i8051_shd648:
+  mov dptr,#$0292
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0290
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0290
+  movx @dptr,a
+  mov dptr,#$0293
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0291
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0291
+  movx @dptr,a
+  mov dptr,#$028A
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E30B
+  mov dptr,#$028B
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$0290
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0291
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$41
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  mov a,#$01
   mov dptr,#$0294
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0294
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0295
   movx @dptr,a
-  mov dptr,#$0294
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E30C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4C
   mov dptr,#$0296
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0296
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0297
   movx @dptr,a
-  mov dptr,#$0296
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E30D
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$01
   mov dptr,#$0298
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0298
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0299
   movx @dptr,a
   mov dptr,#$0298
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E30E
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0296
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0296
   movx @dptr,a
-  mov a,#$38
+  mov dptr,#$0299
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0297
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0297
+  movx @dptr,a
+  mov dptr,#$0296
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0294
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0294
+  movx @dptr,a
+  mov dptr,#$0297
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0295
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0295
+  movx @dptr,a
+  mov a,#$7A
   mov dptr,#$029A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$029A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$029B
   movx @dptr,a
-  mov dptr,#$029A
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E30F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$30
   mov dptr,#$029C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$029C
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$029D
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh658:
+  mov a,$55
+  jz __i8051_shd658
   mov dptr,#$029C
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$029C
+  movx @dptr,a
+  mov dptr,#$029D
+  movx a,@dptr
+  rlc a
+  mov dptr,#$029D
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh658
+__i8051_shd658:
+  mov dptr,#$029C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$029A
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$029A
+  movx @dptr,a
+  mov dptr,#$029D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$029B
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$029B
+  movx @dptr,a
+  mov dptr,#$0294
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E310
+  mov dptr,#$0295
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$029A
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$029B
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$35
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  mov a,#$01
   mov dptr,#$029E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$029E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$029F
   movx @dptr,a
-  mov dptr,#$029E
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E311
-  mov a,$58
-  movx @dptr,a
-  mov a,#$31
   mov dptr,#$02A0
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02A0
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$02A1
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh663:
+  mov a,$55
+  jz __i8051_shd663
+  mov dptr,#$02A1
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$02A1
+  movx a,@dptr
+  rrc a
   mov dptr,#$02A1
   movx @dptr,a
   mov dptr,#$02A0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E312
-  mov a,$58
+  rrc a
+  mov dptr,#$02A0
   movx @dptr,a
-  mov a,#$20
+  dec $55
+  sjmp __i8051_sh663
+__i8051_shd663:
+  mov a,#$01
   mov dptr,#$02A2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02A2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02A3
   movx @dptr,a
   mov dptr,#$02A2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E313
-  mov a,$58
+  mov $30,a
+  mov dptr,#$02A0
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02A0
   movx @dptr,a
-  mov a,#$4F
+  mov dptr,#$02A3
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02A1
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02A1
+  movx @dptr,a
+  mov dptr,#$02A0
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$029E
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$029E
+  movx @dptr,a
+  mov dptr,#$02A1
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$029F
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$029F
+  movx @dptr,a
+  mov a,#$8A
   mov dptr,#$02A4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02A4
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02A5
   movx @dptr,a
-  mov dptr,#$02A4
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E314
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4E
   mov dptr,#$02A6
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02A6
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02A7
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh669:
+  mov a,$55
+  jz __i8051_shd669
   mov dptr,#$02A6
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$02A6
+  movx @dptr,a
+  mov dptr,#$02A7
+  movx a,@dptr
+  rlc a
+  mov dptr,#$02A7
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh669
+__i8051_shd669:
+  mov dptr,#$02A6
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02A4
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02A4
+  movx @dptr,a
+  mov dptr,#$02A7
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02A5
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02A5
+  movx @dptr,a
+  mov dptr,#$029E
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E315
+  mov dptr,#$029F
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$02A4
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$02A5
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$20
-  mov dptr,#$02A8
+  inc dptr
+  mov a,$59
   movx @dptr,a
   mov a,#$00
   mov dptr,#$02A8
+  movx @dptr,a
+  mov a,#$D4
+  mov dptr,#$02A9
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$02AA
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$02AB
+  movx @dptr,a
+  mov a,#$03
+  mov $55,a
+__i8051_sh674:
+  mov a,$55
+  jz __i8051_shd674
+  mov dptr,#$02AA
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$02AA
+  movx @dptr,a
+  mov dptr,#$02AB
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$02AB
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh674
+__i8051_shd674:
+  mov dptr,#$02AA
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02A8
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02A8
+  movx @dptr,a
+  mov dptr,#$02AB
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02A9
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$02A9
   movx @dptr,a
   mov dptr,#$02A8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E316
-  mov a,$58
+  mov dptr,#$24
   movx @dptr,a
-  mov a,#$54
-  mov dptr,#$02AA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02AA
+  mov dptr,#$02A9
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$02AB
+  mov dptr,#$25
   movx @dptr,a
-  mov dptr,#$02AA
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E317
-  mov a,$58
-  movx @dptr,a
-  mov a,#$48
   mov dptr,#$02AC
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02AC
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02AD
   movx @dptr,a
-  mov dptr,#$02AC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E318
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
+  mov a,#$03
   mov dptr,#$02AE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02AE
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02AF
   movx @dptr,a
   mov dptr,#$02AE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E319
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$02B0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02B0
+  mov $30,a
+  mov dptr,#$02AC
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  anl a,$30
+  mov dptr,#$02AC
+  movx @dptr,a
+  mov dptr,#$02AF
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02AD
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02AD
+  movx @dptr,a
+  mov dptr,#$24
+  movx a,@dptr
+  mov dptr,#$02B0
+  movx @dptr,a
+  mov dptr,#$25
+  movx a,@dptr
   mov dptr,#$02B1
   movx @dptr,a
-  mov dptr,#$02B0
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E31A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$50
+  mov a,#$02
   mov dptr,#$02B2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02B2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02B3
   movx @dptr,a
   mov dptr,#$02B2
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$02B0
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02B0
+  movx @dptr,a
+  mov dptr,#$02B3
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02B1
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02B1
+  movx @dptr,a
+  mov dptr,#$02AC
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E31B
+  mov dptr,#$02B0
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$02B1
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$4D
+  mov a,#$01
   mov dptr,#$02B4
   movx @dptr,a
   mov a,#$00
@@ -5199,166 +5963,157 @@ InitTables:
   subb a,#$00
   mov dptr,#$02B5
   movx @dptr,a
-  mov dptr,#$02B4
+  mov dptr,#$24
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E31C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$35
   mov dptr,#$02B6
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02B6
+  mov dptr,#$25
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02B7
   movx @dptr,a
-  mov dptr,#$02B6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E31D
-  mov a,$58
-  movx @dptr,a
-  mov a,#$31
+  mov a,#$03
   mov dptr,#$02B8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02B8
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02B9
   movx @dptr,a
   mov dptr,#$02B8
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$02B6
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02B6
+  movx @dptr,a
+  mov dptr,#$02B9
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02B7
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02B7
+  movx @dptr,a
+  mov dptr,#$02B4
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E31E
+  mov dptr,#$02B6
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$02B7
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$20
+  mov dptr,#$28
+  movx a,@dptr
   mov dptr,#$02BA
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02BA
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02BB
   movx @dptr,a
-  mov dptr,#$02BA
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E31F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$42
+  mov a,#$01
   mov dptr,#$02BC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02BC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02BD
   movx @dptr,a
   mov dptr,#$02BC
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E320
-  mov a,$58
+  mov $30,a
+  mov dptr,#$02BA
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02BA
   movx @dptr,a
-  mov a,#$4F
+  mov dptr,#$02BD
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02BB
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02BB
+  movx @dptr,a
+  mov dptr,#$02BA
+  movx a,@dptr
+  mov dptr,#$28
+  movx @dptr,a
+  mov dptr,#$02BB
+  movx a,@dptr
+  mov dptr,#$29
+  movx @dptr,a
+  ljmp L47
+L48:
+  ret
+MoveBalls:
+  mov a,#$00
   mov dptr,#$02BE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02BE
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02BF
   movx @dptr,a
   mov dptr,#$02BE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E321
-  mov a,$58
+  mov dptr,#$28
   movx @dptr,a
-  mov a,#$41
-  mov dptr,#$02C0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02C0
+  mov dptr,#$02BF
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$29
+  movx @dptr,a
+L49:
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$02C0
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$02C1
   movx @dptr,a
-  mov dptr,#$02C0
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E322
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
+  mov a,#$08
   mov dptr,#$02C2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02C2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02C3
   movx @dptr,a
   mov dptr,#$02C2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E323
-  mov a,$58
-  movx @dptr,a
-  mov a,#$44
-  mov dptr,#$02C4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02C4
+  mov $30,a
+  mov dptr,#$02C0
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$02C3
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$02C1
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_33
+  ljmp L50
+__i51_cond_33:
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$02C4
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
   mov dptr,#$02C5
   movx @dptr,a
-  mov dptr,#$02C4
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E324
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$00
   mov dptr,#$02C6
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02C6
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02C7
   movx @dptr,a
-  mov dptr,#$02C6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E325
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2E
+  mov a,#$00
   mov dptr,#$02C8
   movx @dptr,a
   mov a,#$00
@@ -5369,13 +6124,41 @@ InitTables:
   subb a,#$00
   mov dptr,#$02C9
   movx @dptr,a
+  mov dptr,#$02C6
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02C4
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$02C7
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$02C5
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jz __i51_cond_34
+  ljmp L54
+__i51_cond_34:
+  mov a,#$01
+  mov dptr,#$02C8
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$02C8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E326
-  mov a,$58
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$02C9
   movx @dptr,a
-  mov a,#$2E
+L54:
+  mov a,#$00
   mov dptr,#$02CA
   movx @dptr,a
   mov a,#$00
@@ -5386,64 +6169,58 @@ InitTables:
   subb a,#$00
   mov dptr,#$02CB
   movx @dptr,a
-  mov dptr,#$02CA
+  mov dptr,#$02C8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E327
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2E
-  mov dptr,#$02CC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02CC
-  movx a,@dptr
-  rlc a
-  clr a
+  clr c
   subb a,#$00
+  mov $50,a
+  mov dptr,#$02C9
+  movx a,@dptr
+  xrl a,#$80
+  subb a,#$80
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_35
+  ljmp L53
+__i51_cond_35:
+  mov dptr,#$2C
+  movx a,@dptr
+  mov dptr,#$02CC
+  movx @dptr,a
+  mov dptr,#$2D
+  movx a,@dptr
   mov dptr,#$02CD
   movx @dptr,a
-  mov dptr,#$02CC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E328
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$0F
   mov dptr,#$02CE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02CE
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02CF
   movx @dptr,a
   mov dptr,#$02CE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E329
-  mov a,$58
+  mov $30,a
+  mov dptr,#$02CC
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02CC
   movx @dptr,a
-  mov a,#$43
-  mov dptr,#$02D0
+  mov dptr,#$02CF
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02CD
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02CD
   movx @dptr,a
   mov a,#$00
   mov dptr,#$02D0
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$02D1
   movx @dptr,a
-  mov dptr,#$02D0
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E32A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
+  mov a,#$00
   mov dptr,#$02D2
   movx @dptr,a
   mov a,#$00
@@ -5454,13 +6231,68 @@ InitTables:
   subb a,#$00
   mov dptr,#$02D3
   movx @dptr,a
+  mov dptr,#$02D0
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02CC
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$02D1
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$02CD
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_36
+  ljmp L55
+__i51_cond_36:
+  mov a,#$01
+  mov dptr,#$02D2
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$02D2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E32B
-  mov a,$58
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$02D3
   movx @dptr,a
-  mov a,#$4D
+L55:
+  mov dptr,#$02D2
+  movx a,@dptr
+  clr c
+  subb a,#$00
+  mov $50,a
+  mov dptr,#$02D3
+  movx a,@dptr
+  xrl a,#$80
+  subb a,#$80
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_37
+  ljmp L53
+__i51_cond_37:
+  mov a,#$01
+  mov dptr,#$02CA
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$02CA
+  movx a,@dptr
+  rlc a
+  clr a
+  subb a,#$00
+  mov dptr,#$02CB
+  movx @dptr,a
+L53:
+  mov a,#$00
   mov dptr,#$02D4
   movx @dptr,a
   mov a,#$00
@@ -5473,79 +6305,91 @@ InitTables:
   movx @dptr,a
   mov dptr,#$02D4
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E32C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$50
-  mov dptr,#$02D6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02D6
+  mov $30,a
+  mov dptr,#$02CA
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$02D5
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$02CB
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_38
+  ljmp L51
+__i51_cond_38:
+  mov dptr,#$2C
+  movx a,@dptr
+  mov dptr,#$02D6
+  movx @dptr,a
+  mov dptr,#$2D
+  movx a,@dptr
   mov dptr,#$02D7
   movx @dptr,a
-  mov dptr,#$02D6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E32D
-  mov a,$58
-  movx @dptr,a
-  mov a,#$49
+  mov a,#$01
   mov dptr,#$02D8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02D8
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02D9
   movx @dptr,a
   mov dptr,#$02D8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E32E
-  mov a,$58
+  mov $30,a
+  mov dptr,#$02D6
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02D6
   movx @dptr,a
-  mov a,#$4C
-  mov dptr,#$02DA
+  mov dptr,#$02D9
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02D7
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02D7
   movx @dptr,a
   mov a,#$00
   mov dptr,#$02DA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$02DB
   movx @dptr,a
   mov dptr,#$02DA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E32F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
+  mov $30,a
+  mov dptr,#$02D6
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$02DB
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$02D7
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_39
+  ljmp L56
+__i51_cond_39:
+  mov a,#$6A
   mov dptr,#$02DC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02DC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02DD
   movx @dptr,a
-  mov dptr,#$02DC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E330
-  mov a,$58
-  movx @dptr,a
-  mov a,#$44
+  mov a,#$00
   mov dptr,#$02DE
   movx @dptr,a
   mov a,#$00
@@ -5558,79 +6402,96 @@ InitTables:
   movx @dptr,a
   mov dptr,#$02DE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E331
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
   mov dptr,#$02E0
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02E0
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$02E1
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh732:
+  mov a,$55
+  jz __i8051_shd732
   mov dptr,#$02E0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E332
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$02E0
   movx @dptr,a
-  mov a,#$42
-  mov dptr,#$02E2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02E2
+  mov dptr,#$02E1
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$02E1
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh732
+__i8051_shd732:
+  mov dptr,#$02E0
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02DC
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02DC
+  movx @dptr,a
+  mov dptr,#$02E1
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02DD
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02DD
+  movx @dptr,a
+  mov dptr,#$02DC
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$02DD
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  inc dptr
+  movx a,@dptr
+  mov $59,a
+  mov a,$58
+  mov dptr,#$02E2
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$02E3
   movx @dptr,a
-  mov dptr,#$02E2
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E333
-  mov a,$58
-  movx @dptr,a
-  mov a,#$59
+  mov a,#$02
   mov dptr,#$02E4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02E4
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02E5
   movx @dptr,a
   mov dptr,#$02E4
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E334
-  mov a,$58
+  mov $30,a
+  mov dptr,#$02E2
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov dptr,#$02E2
   movx @dptr,a
-  mov a,#$20
+  mov dptr,#$02E5
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02E3
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$02E3
+  movx @dptr,a
+  mov a,#$6A
   mov dptr,#$02E6
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02E6
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02E7
   movx @dptr,a
-  mov dptr,#$02E6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E335
-  mov a,$58
-  movx @dptr,a
-  mov a,#$50
+  mov a,#$00
   mov dptr,#$02E8
   movx @dptr,a
   mov a,#$00
@@ -5643,96 +6504,134 @@ InitTables:
   movx @dptr,a
   mov dptr,#$02E8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E336
-  mov a,$58
-  movx @dptr,a
-  mov a,#$55
   mov dptr,#$02EA
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02EA
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$02EB
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh740:
+  mov a,$55
+  jz __i8051_shd740
   mov dptr,#$02EA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E337
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$02EA
   movx @dptr,a
-  mov a,#$52
-  mov dptr,#$02EC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02EC
+  mov dptr,#$02EB
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$02EB
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh740
+__i8051_shd740:
+  mov dptr,#$02EA
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02E6
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02E6
+  movx @dptr,a
+  mov dptr,#$02EB
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02E7
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02E7
+  movx @dptr,a
+  mov dptr,#$02E2
+  movx a,@dptr
+  mov $58,a
+  mov dptr,#$02E3
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$02E6
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$02E7
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  mov a,$58
+  movx @dptr,a
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  ljmp L57
+L56:
+L57:
+  mov dptr,#$2C
+  movx a,@dptr
+  mov dptr,#$02EC
+  movx @dptr,a
+  mov dptr,#$2D
+  movx a,@dptr
   mov dptr,#$02ED
   movx @dptr,a
-  mov dptr,#$02EC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E338
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
+  mov a,#$02
   mov dptr,#$02EE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02EE
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02EF
   movx @dptr,a
   mov dptr,#$02EE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E339
-  mov a,$58
+  mov $30,a
+  mov dptr,#$02EC
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02EC
   movx @dptr,a
-  mov a,#$4D
-  mov dptr,#$02F0
+  mov dptr,#$02EF
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02ED
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$02ED
   movx @dptr,a
   mov a,#$00
   mov dptr,#$02F0
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$02F1
   movx @dptr,a
   mov dptr,#$02F0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E33A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
+  mov $30,a
+  mov dptr,#$02EC
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$02F1
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$02ED
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_40
+  ljmp L58
+__i51_cond_40:
+  mov a,#$6A
   mov dptr,#$02F2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02F2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02F3
   movx @dptr,a
-  mov dptr,#$02F2
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E33B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
+  mov a,#$00
   mov dptr,#$02F4
   movx @dptr,a
   mov a,#$00
@@ -5745,79 +6644,96 @@ InitTables:
   movx @dptr,a
   mov dptr,#$02F4
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E33C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$41
   mov dptr,#$02F6
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02F6
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$02F7
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh754:
+  mov a,$55
+  jz __i8051_shd754
   mov dptr,#$02F6
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E33D
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$02F6
   movx @dptr,a
-  mov a,#$4C
-  mov dptr,#$02F8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$02F8
+  mov dptr,#$02F7
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$02F7
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh754
+__i8051_shd754:
+  mov dptr,#$02F6
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02F2
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02F2
+  movx @dptr,a
+  mov dptr,#$02F7
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02F3
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02F3
+  movx @dptr,a
+  mov dptr,#$02F2
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$02F3
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  inc dptr
+  movx a,@dptr
+  mov $59,a
+  mov a,$58
+  mov dptr,#$02F8
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$02F9
   movx @dptr,a
-  mov dptr,#$02F8
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E33E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$02
   mov dptr,#$02FA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02FA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02FB
   movx @dptr,a
   mov dptr,#$02FA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E33F
-  mov a,$58
+  mov $30,a
+  mov dptr,#$02F8
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02F8
   movx @dptr,a
-  mov a,#$46
+  mov dptr,#$02FB
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02F9
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02F9
+  movx @dptr,a
+  mov a,#$6A
   mov dptr,#$02FC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$02FC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$02FD
   movx @dptr,a
-  mov dptr,#$02FC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E340
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
+  mov a,#$00
   mov dptr,#$02FE
   movx @dptr,a
   mov a,#$00
@@ -5830,96 +6746,134 @@ InitTables:
   movx @dptr,a
   mov dptr,#$02FE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E341
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
   mov dptr,#$0300
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0300
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$0301
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh762:
+  mov a,$55
+  jz __i8051_shd762
   mov dptr,#$0300
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E342
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$0300
   movx @dptr,a
-  mov a,#$47
-  mov dptr,#$0302
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0302
+  mov dptr,#$0301
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0301
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh762
+__i8051_shd762:
+  mov dptr,#$0300
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02FC
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$02FC
+  movx @dptr,a
+  mov dptr,#$0301
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$02FD
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$02FD
+  movx @dptr,a
+  mov dptr,#$02F8
+  movx a,@dptr
+  mov $58,a
+  mov dptr,#$02F9
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$02FC
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$02FD
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  mov a,$58
+  movx @dptr,a
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  ljmp L59
+L58:
+L59:
+  mov dptr,#$2C
+  movx a,@dptr
+  mov dptr,#$0302
+  movx @dptr,a
+  mov dptr,#$2D
+  movx a,@dptr
   mov dptr,#$0303
   movx @dptr,a
-  mov dptr,#$0302
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E343
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
+  mov a,#$04
   mov dptr,#$0304
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0304
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0305
   movx @dptr,a
   mov dptr,#$0304
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E344
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0302
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0302
   movx @dptr,a
-  mov a,#$2C
-  mov dptr,#$0306
+  mov dptr,#$0305
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0303
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0303
   movx @dptr,a
   mov a,#$00
   mov dptr,#$0306
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$0307
   movx @dptr,a
   mov dptr,#$0306
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E345
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov $30,a
+  mov dptr,#$0302
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0307
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0303
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_41
+  ljmp L60
+__i51_cond_41:
+  mov a,#$5A
   mov dptr,#$0308
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0308
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0309
   movx @dptr,a
-  mov dptr,#$0308
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E346
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
+  mov a,#$00
   mov dptr,#$030A
   movx @dptr,a
   mov a,#$00
@@ -5932,79 +6886,96 @@ InitTables:
   movx @dptr,a
   mov dptr,#$030A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E347
-  mov a,$58
-  movx @dptr,a
-  mov a,#$55
   mov dptr,#$030C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$030C
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$030D
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh776:
+  mov a,$55
+  jz __i8051_shd776
   mov dptr,#$030C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E348
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$030C
   movx @dptr,a
-  mov a,#$4E
-  mov dptr,#$030E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$030E
+  mov dptr,#$030D
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$030D
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh776
+__i8051_shd776:
+  mov dptr,#$030C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0308
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0308
+  movx @dptr,a
+  mov dptr,#$030D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0309
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0309
+  movx @dptr,a
+  mov dptr,#$0308
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0309
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  inc dptr
+  movx a,@dptr
+  mov $59,a
+  mov a,$58
+  mov dptr,#$030E
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$030F
   movx @dptr,a
-  mov dptr,#$030E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E349
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$02
   mov dptr,#$0310
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0310
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0311
   movx @dptr,a
   mov dptr,#$0310
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E34A
-  mov a,$58
+  mov $30,a
+  mov dptr,#$030E
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov dptr,#$030E
   movx @dptr,a
-  mov a,#$42
+  mov dptr,#$0311
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$030F
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$030F
+  movx @dptr,a
+  mov a,#$5A
   mov dptr,#$0312
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0312
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0313
   movx @dptr,a
-  mov dptr,#$0312
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E34B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$59
+  mov a,#$00
   mov dptr,#$0314
   movx @dptr,a
   mov a,#$00
@@ -6017,96 +6988,134 @@ InitTables:
   movx @dptr,a
   mov dptr,#$0314
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E34C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
   mov dptr,#$0316
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0316
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$0317
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh784:
+  mov a,$55
+  jz __i8051_shd784
   mov dptr,#$0316
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E34D
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$0316
   movx @dptr,a
-  mov a,#$41
-  mov dptr,#$0318
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0318
+  mov dptr,#$0317
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0317
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh784
+__i8051_shd784:
+  mov dptr,#$0316
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0312
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0312
+  movx @dptr,a
+  mov dptr,#$0317
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0313
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0313
+  movx @dptr,a
+  mov dptr,#$030E
+  movx a,@dptr
+  mov $58,a
+  mov dptr,#$030F
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$0312
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0313
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  mov a,$58
+  movx @dptr,a
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  ljmp L61
+L60:
+L61:
+  mov dptr,#$2C
+  movx a,@dptr
+  mov dptr,#$0318
+  movx @dptr,a
+  mov dptr,#$2D
+  movx a,@dptr
   mov dptr,#$0319
   movx @dptr,a
-  mov dptr,#$0318
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E34E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$08
   mov dptr,#$031A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$031A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$031B
   movx @dptr,a
   mov dptr,#$031A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E34F
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0318
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0318
   movx @dptr,a
-  mov a,#$43
-  mov dptr,#$031C
+  mov dptr,#$031B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0319
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0319
   movx @dptr,a
   mov a,#$00
   mov dptr,#$031C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$031D
   movx @dptr,a
   mov dptr,#$031C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E350
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
+  mov $30,a
+  mov dptr,#$0318
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$031D
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0319
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_42
+  ljmp L62
+__i51_cond_42:
+  mov a,#$5A
   mov dptr,#$031E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$031E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$031F
   movx @dptr,a
-  mov dptr,#$031E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E351
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4D
+  mov a,#$00
   mov dptr,#$0320
   movx @dptr,a
   mov a,#$00
@@ -6119,79 +7128,96 @@ InitTables:
   movx @dptr,a
   mov dptr,#$0320
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E352
-  mov a,$58
-  movx @dptr,a
-  mov a,#$50
   mov dptr,#$0322
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0322
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$0323
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh798:
+  mov a,$55
+  jz __i8051_shd798
   mov dptr,#$0322
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E353
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$0322
   movx @dptr,a
-  mov a,#$55
-  mov dptr,#$0324
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0324
+  mov dptr,#$0323
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0323
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh798
+__i8051_shd798:
+  mov dptr,#$0322
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$031E
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$031E
+  movx @dptr,a
+  mov dptr,#$0323
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$031F
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$031F
+  movx @dptr,a
+  mov dptr,#$031E
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$031F
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  inc dptr
+  movx a,@dptr
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0324
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0325
   movx @dptr,a
-  mov dptr,#$0324
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E354
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
+  mov a,#$02
   mov dptr,#$0326
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0326
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0327
   movx @dptr,a
   mov dptr,#$0326
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E355
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0324
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0324
   movx @dptr,a
-  mov a,#$45
+  mov dptr,#$0327
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0325
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0325
+  movx @dptr,a
+  mov a,#$5A
   mov dptr,#$0328
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0328
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0329
   movx @dptr,a
-  mov dptr,#$0328
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E356
-  mov a,$58
-  movx @dptr,a
-  mov a,#$44
+  mov a,#$00
   mov dptr,#$032A
   movx @dptr,a
   mov a,#$00
@@ -6204,1561 +7230,2414 @@ InitTables:
   movx @dptr,a
   mov dptr,#$032A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E357
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2D
   mov dptr,#$032C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$032C
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$032D
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh806:
+  mov a,$55
+  jz __i8051_shd806
   mov dptr,#$032C
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$032C
+  movx @dptr,a
+  mov dptr,#$032D
+  movx a,@dptr
+  rlc a
+  mov dptr,#$032D
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh806
+__i8051_shd806:
+  mov dptr,#$032C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0328
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0328
+  movx @dptr,a
+  mov dptr,#$032D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0329
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0329
+  movx @dptr,a
+  mov dptr,#$0324
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E358
+  mov dptr,#$0325
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$0328
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0329
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$47
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  ljmp L63
+L62:
+L63:
+  ljmp L52
+L51:
+  mov a,#$5A
   mov dptr,#$032E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$032E
+  mov dptr,#$032F
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0330
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0331
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh816:
+  mov a,$55
+  jz __i8051_shd816
+  mov dptr,#$0330
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0330
+  movx @dptr,a
+  mov dptr,#$0331
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0331
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh816
+__i8051_shd816:
+  mov dptr,#$0330
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$032E
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$032E
+  movx @dptr,a
+  mov dptr,#$0331
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$032F
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$032F
   movx @dptr,a
   mov dptr,#$032E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E359
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
-  mov dptr,#$0330
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0330
+  mov $56,a
+  mov dptr,#$032F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0331
-  movx @dptr,a
-  mov dptr,#$0330
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E35A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
-  mov dptr,#$0332
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0332
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0332
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0333
   movx @dptr,a
-  mov dptr,#$0332
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E35B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
+  mov a,#$7A
   mov dptr,#$0334
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0334
+  mov dptr,#$0335
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0336
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0337
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh821:
+  mov a,$55
+  jz __i8051_shd821
+  mov dptr,#$0336
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0336
+  movx @dptr,a
+  mov dptr,#$0337
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0337
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh821
+__i8051_shd821:
+  mov dptr,#$0336
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0334
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0334
+  movx @dptr,a
+  mov dptr,#$0337
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0335
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$0335
   movx @dptr,a
   mov dptr,#$0334
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E35C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$0336
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0336
+  mov $56,a
+  mov dptr,#$0335
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0337
-  movx @dptr,a
-  mov dptr,#$0336
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E35D
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4D
-  mov dptr,#$0338
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0338
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0338
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0339
   movx @dptr,a
   mov dptr,#$0338
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E35E
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0332
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0332
   movx @dptr,a
-  mov a,#$43
+  mov dptr,#$0339
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0333
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0333
+  movx @dptr,a
+  mov a,#$5A
   mov dptr,#$033A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$033A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$033B
   movx @dptr,a
-  mov dptr,#$033A
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E35F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$53
   mov dptr,#$033C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$033C
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$033D
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh827:
+  mov a,$55
+  jz __i8051_shd827
   mov dptr,#$033C
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$033C
+  movx @dptr,a
+  mov dptr,#$033D
+  movx a,@dptr
+  rlc a
+  mov dptr,#$033D
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh827
+__i8051_shd827:
+  mov dptr,#$033C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$033A
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$033A
+  movx @dptr,a
+  mov dptr,#$033D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$033B
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$033B
+  movx @dptr,a
+  mov dptr,#$0332
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E360
+  mov dptr,#$0333
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$033A
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$033B
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$2D
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  mov a,#$6A
   mov dptr,#$033E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$033E
+  mov dptr,#$033F
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0340
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0341
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh832:
+  mov a,$55
+  jz __i8051_shd832
+  mov dptr,#$0340
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0340
+  movx @dptr,a
+  mov dptr,#$0341
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0341
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh832
+__i8051_shd832:
+  mov dptr,#$0340
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$033E
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$033E
+  movx @dptr,a
+  mov dptr,#$0341
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$033F
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$033F
   movx @dptr,a
   mov dptr,#$033E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E361
-  mov a,$58
-  movx @dptr,a
-  mov a,#$35
-  mov dptr,#$0340
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0340
+  mov $56,a
+  mov dptr,#$033F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0341
-  movx @dptr,a
-  mov dptr,#$0340
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E362
-  mov a,$58
-  movx @dptr,a
-  mov a,#$31
-  mov dptr,#$0342
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0342
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0342
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0343
   movx @dptr,a
-  mov dptr,#$0342
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E363
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$8A
   mov dptr,#$0344
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0344
+  mov dptr,#$0345
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0346
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0347
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh837:
+  mov a,$55
+  jz __i8051_shd837
+  mov dptr,#$0346
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0346
+  movx @dptr,a
+  mov dptr,#$0347
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0347
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh837
+__i8051_shd837:
+  mov dptr,#$0346
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0344
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0344
+  movx @dptr,a
+  mov dptr,#$0347
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0345
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$0345
   movx @dptr,a
   mov dptr,#$0344
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E364
-  mov a,$58
-  movx @dptr,a
-  mov a,#$43
-  mov dptr,#$0346
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0346
+  mov $56,a
+  mov dptr,#$0345
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0347
-  movx @dptr,a
-  mov dptr,#$0346
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E365
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
-  mov dptr,#$0348
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0348
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0348
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0349
   movx @dptr,a
   mov dptr,#$0348
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E366
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0342
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0342
   movx @dptr,a
-  mov a,#$52
+  mov dptr,#$0349
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0343
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0343
+  movx @dptr,a
+  mov a,#$6A
   mov dptr,#$034A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$034A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$034B
   movx @dptr,a
-  mov dptr,#$034A
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E367
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
   mov dptr,#$034C
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$034C
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$034D
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh843:
+  mov a,$55
+  jz __i8051_shd843
   mov dptr,#$034C
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$034C
+  movx @dptr,a
+  mov dptr,#$034D
+  movx a,@dptr
+  rlc a
+  mov dptr,#$034D
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh843
+__i8051_shd843:
+  mov dptr,#$034C
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$034A
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$034A
+  movx @dptr,a
+  mov dptr,#$034D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$034B
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$034B
+  movx @dptr,a
+  mov dptr,#$0342
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E368
+  mov dptr,#$0343
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$034A
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$034B
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$20
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+L52:
+  mov a,#$5A
   mov dptr,#$034E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$034E
+  mov dptr,#$034F
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0350
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0351
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh849:
+  mov a,$55
+  jz __i8051_shd849
+  mov dptr,#$0350
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0350
+  movx @dptr,a
+  mov dptr,#$0351
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0351
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh849
+__i8051_shd849:
+  mov dptr,#$0350
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$034E
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$034E
+  movx @dptr,a
+  mov dptr,#$0351
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$034F
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$034F
   movx @dptr,a
   mov dptr,#$034E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E369
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
-  mov dptr,#$0350
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0350
+  mov $56,a
+  mov dptr,#$034F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0351
-  movx @dptr,a
-  mov dptr,#$0350
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E36A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4E
-  mov dptr,#$0352
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0352
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0352
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0353
   movx @dptr,a
-  mov dptr,#$0352
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E36B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$00
   mov dptr,#$0354
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0354
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0355
   movx @dptr,a
   mov dptr,#$0354
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E36C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$41
+  mov $30,a
+  mov dptr,#$0352
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0355
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0353
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_43
+  ljmp L64
+__i51_cond_43:
+  mov a,#$00
   mov dptr,#$0356
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0356
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0357
   movx @dptr,a
+  mov a,#$5A
+  mov dptr,#$0358
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0359
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$035A
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$035B
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh857:
+  mov a,$55
+  jz __i8051_shd857
+  mov dptr,#$035A
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$035A
+  movx @dptr,a
+  mov dptr,#$035B
+  movx a,@dptr
+  rlc a
+  mov dptr,#$035B
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh857
+__i8051_shd857:
+  mov dptr,#$035A
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0358
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0358
+  movx @dptr,a
+  mov dptr,#$035B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0359
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0359
+  movx @dptr,a
   mov dptr,#$0356
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E36D
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$0358
-  movx @dptr,a
-  mov a,#$00
+  mov dptr,#$0357
+  movx a,@dptr
+  mov $59,a
   mov dptr,#$0358
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $56,a
   mov dptr,#$0359
-  movx @dptr,a
-  mov dptr,#$0358
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E36E
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$52
-  mov dptr,#$035A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$035A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$035B
-  movx @dptr,a
-  mov dptr,#$035A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E36F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$41
-  mov dptr,#$035C
+  inc dptr
+  mov a,$59
   movx @dptr,a
   mov a,#$00
   mov dptr,#$035C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$035D
   movx @dptr,a
-  mov dptr,#$035C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E370
-  mov a,$58
-  movx @dptr,a
-  mov a,#$53
+  mov a,#$7A
   mov dptr,#$035E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$035E
+  mov dptr,#$035F
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0360
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0361
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh863:
+  mov a,$55
+  jz __i8051_shd863
+  mov dptr,#$0360
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0360
+  movx @dptr,a
+  mov dptr,#$0361
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0361
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh863
+__i8051_shd863:
+  mov dptr,#$0360
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$035E
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$035E
+  movx @dptr,a
+  mov dptr,#$0361
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$035F
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$035F
   movx @dptr,a
   mov dptr,#$035E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E371
-  mov a,$58
-  movx @dptr,a
-  mov a,#$50
-  mov dptr,#$0360
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0360
+  mov $56,a
+  mov dptr,#$035F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0361
-  movx @dptr,a
-  mov dptr,#$0360
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E372
-  mov a,$58
-  movx @dptr,a
-  mov a,#$42
-  mov dptr,#$0362
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0362
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0362
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0363
   movx @dptr,a
   mov dptr,#$0362
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E373
-  mov a,$58
+  mov $30,a
+  mov dptr,#$035C
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov dptr,#$035C
   movx @dptr,a
-  mov a,#$45
+  mov dptr,#$0363
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$035D
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$035D
+  movx @dptr,a
+  mov a,#$7A
   mov dptr,#$0364
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0364
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0365
   movx @dptr,a
-  mov dptr,#$0364
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E374
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
   mov dptr,#$0366
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0366
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0367
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh869:
+  mov a,$55
+  jz __i8051_shd869
   mov dptr,#$0366
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0366
+  movx @dptr,a
+  mov dptr,#$0367
+  movx a,@dptr
+  rlc a
+  mov dptr,#$0367
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh869
+__i8051_shd869:
+  mov dptr,#$0366
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0364
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0364
+  movx @dptr,a
+  mov dptr,#$0367
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0365
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0365
+  movx @dptr,a
+  mov dptr,#$035C
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E375
+  mov dptr,#$035D
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$0364
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0365
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$52
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  ljmp L65
+L64:
+L65:
+  mov a,#$5A
   mov dptr,#$0368
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0368
+  mov dptr,#$0369
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$036A
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$036B
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh877:
+  mov a,$55
+  jz __i8051_shd877
+  mov dptr,#$036A
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$036A
+  movx @dptr,a
+  mov dptr,#$036B
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$036B
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh877
+__i8051_shd877:
+  mov dptr,#$036A
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0368
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0368
+  movx @dptr,a
+  mov dptr,#$036B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0369
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$0369
   movx @dptr,a
   mov dptr,#$0368
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E376
-  mov a,$58
-  movx @dptr,a
-  mov a,#$59
-  mov dptr,#$036A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$036A
+  mov $56,a
+  mov dptr,#$0369
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$036B
-  movx @dptr,a
-  mov dptr,#$036A
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E377
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$036C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$036C
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$036C
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$036D
   movx @dptr,a
-  mov dptr,#$036C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E378
-  mov a,$58
-  movx @dptr,a
-  mov a,#$50
+  mov a,#$98
   mov dptr,#$036E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$036E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$036F
   movx @dptr,a
   mov dptr,#$036E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E379
-  mov a,$58
-  movx @dptr,a
-  mov a,#$49
+  mov $30,a
+  mov dptr,#$036C
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$036F
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$036D
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_44_n
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_44
+__i51_cond_44_n:
+  ljmp L66
+__i51_cond_44:
+  mov a,#$98
   mov dptr,#$0370
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0370
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0371
   movx @dptr,a
+  mov a,#$5A
+  mov dptr,#$0372
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0373
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0374
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0375
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh885:
+  mov a,$55
+  jz __i8051_shd885
+  mov dptr,#$0374
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0374
+  movx @dptr,a
+  mov dptr,#$0375
+  movx a,@dptr
+  rlc a
+  mov dptr,#$0375
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh885
+__i8051_shd885:
+  mov dptr,#$0374
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0372
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0372
+  movx @dptr,a
+  mov dptr,#$0375
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0373
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0373
+  movx @dptr,a
   mov dptr,#$0370
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E37A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$0372
-  movx @dptr,a
-  mov a,#$00
+  mov dptr,#$0371
+  movx a,@dptr
+  mov $59,a
   mov dptr,#$0372
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $56,a
   mov dptr,#$0373
-  movx @dptr,a
-  mov dptr,#$0372
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E37B
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$50
-  mov dptr,#$0374
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0374
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0375
-  movx @dptr,a
-  mov dptr,#$0374
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E37C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$49
-  mov dptr,#$0376
+  inc dptr
+  mov a,$59
   movx @dptr,a
   mov a,#$00
   mov dptr,#$0376
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$0377
   movx @dptr,a
-  mov dptr,#$0376
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E37D
-  mov a,$58
-  movx @dptr,a
-  mov a,#$43
+  mov a,#$7A
   mov dptr,#$0378
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0378
+  mov dptr,#$0379
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$037A
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$037B
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh891:
+  mov a,$55
+  jz __i8051_shd891
+  mov dptr,#$037A
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$037A
+  movx @dptr,a
+  mov dptr,#$037B
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$037B
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh891
+__i8051_shd891:
+  mov dptr,#$037A
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0378
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0378
+  movx @dptr,a
+  mov dptr,#$037B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0379
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$0379
   movx @dptr,a
   mov dptr,#$0378
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E37E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
-  mov dptr,#$037A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$037A
+  mov $56,a
+  mov dptr,#$0379
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$037B
-  movx @dptr,a
-  mov dptr,#$037A
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E37F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$037C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$037C
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$037C
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$037D
   movx @dptr,a
   mov dptr,#$037C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E380
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0376
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov dptr,#$0376
   movx @dptr,a
-  mov a,#$2E
+  mov dptr,#$037D
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0377
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$0377
+  movx @dptr,a
+  mov a,#$7A
   mov dptr,#$037E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$037E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$037F
   movx @dptr,a
-  mov dptr,#$037E
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E381
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2E
   mov dptr,#$0380
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0380
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0381
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh897:
+  mov a,$55
+  jz __i8051_shd897
   mov dptr,#$0380
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0380
+  movx @dptr,a
+  mov dptr,#$0381
+  movx a,@dptr
+  rlc a
+  mov dptr,#$0381
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh897
+__i8051_shd897:
+  mov dptr,#$0380
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$037E
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$037E
+  movx @dptr,a
+  mov dptr,#$0381
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$037F
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$037F
+  movx @dptr,a
+  mov dptr,#$0376
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E382
+  mov dptr,#$0377
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$037E
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$037F
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$2E
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  ljmp L67
+L66:
+L67:
+  mov a,#$6A
   mov dptr,#$0382
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0382
+  mov dptr,#$0383
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0384
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0385
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh905:
+  mov a,$55
+  jz __i8051_shd905
+  mov dptr,#$0384
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0384
+  movx @dptr,a
+  mov dptr,#$0385
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0385
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh905
+__i8051_shd905:
+  mov dptr,#$0384
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0382
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0382
+  movx @dptr,a
+  mov dptr,#$0385
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0383
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$0383
   movx @dptr,a
   mov dptr,#$0382
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E383
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$0384
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0384
+  mov $56,a
+  mov dptr,#$0383
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0385
-  movx @dptr,a
-  mov dptr,#$0384
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E384
-  mov a,$58
-  movx @dptr,a
-  mov a,#$41
-  mov dptr,#$0386
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0386
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0386
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0387
   movx @dptr,a
-  mov dptr,#$0386
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E385
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
+  mov a,#$00
   mov dptr,#$0388
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0388
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0389
   movx @dptr,a
   mov dptr,#$0388
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E386
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
+  mov $30,a
+  mov dptr,#$0386
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0389
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0387
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_45
+  ljmp L68
+__i51_cond_45:
+  mov a,#$00
   mov dptr,#$038A
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$038A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$038B
   movx @dptr,a
+  mov a,#$6A
+  mov dptr,#$038C
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$038D
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$038E
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$038F
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh913:
+  mov a,$55
+  jz __i8051_shd913
+  mov dptr,#$038E
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$038E
+  movx @dptr,a
+  mov dptr,#$038F
+  movx a,@dptr
+  rlc a
+  mov dptr,#$038F
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh913
+__i8051_shd913:
+  mov dptr,#$038E
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$038C
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$038C
+  movx @dptr,a
+  mov dptr,#$038F
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$038D
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$038D
+  movx @dptr,a
   mov dptr,#$038A
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E387
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4F
-  mov dptr,#$038C
-  movx @dptr,a
-  mov a,#$00
+  mov dptr,#$038B
+  movx a,@dptr
+  mov $59,a
   mov dptr,#$038C
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $56,a
   mov dptr,#$038D
-  movx @dptr,a
-  mov dptr,#$038C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E388
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$57
-  mov dptr,#$038E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$038E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$038F
-  movx @dptr,a
-  mov dptr,#$038E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E389
-  mov a,$58
-  movx @dptr,a
-  mov a,#$53
-  mov dptr,#$0390
+  inc dptr
+  mov a,$59
   movx @dptr,a
   mov a,#$00
   mov dptr,#$0390
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$0391
   movx @dptr,a
-  mov dptr,#$0390
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E38A
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$8A
   mov dptr,#$0392
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0392
+  mov dptr,#$0393
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$0394
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$0395
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh919:
+  mov a,$55
+  jz __i8051_shd919
+  mov dptr,#$0394
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$0394
+  movx @dptr,a
+  mov dptr,#$0395
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0395
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh919
+__i8051_shd919:
+  mov dptr,#$0394
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0392
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0392
+  movx @dptr,a
+  mov dptr,#$0395
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0393
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$0393
   movx @dptr,a
   mov dptr,#$0392
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E38B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$53
-  mov dptr,#$0394
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0394
+  mov $56,a
+  mov dptr,#$0393
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0395
-  movx @dptr,a
-  mov dptr,#$0394
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E38C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
-  mov dptr,#$0396
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0396
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$0396
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$0397
   movx @dptr,a
   mov dptr,#$0396
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E38D
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0390
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov dptr,#$0390
   movx @dptr,a
-  mov a,#$45
+  mov dptr,#$0397
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0391
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$0391
+  movx @dptr,a
+  mov a,#$8A
   mov dptr,#$0398
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0398
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0399
   movx @dptr,a
-  mov dptr,#$0398
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E38E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
   mov dptr,#$039A
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$039A
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$039B
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh925:
+  mov a,$55
+  jz __i8051_shd925
   mov dptr,#$039A
   movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$039A
+  movx @dptr,a
+  mov dptr,#$039B
+  movx a,@dptr
+  rlc a
+  mov dptr,#$039B
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh925
+__i8051_shd925:
+  mov dptr,#$039A
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0398
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0398
+  movx @dptr,a
+  mov dptr,#$039B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0399
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0399
+  movx @dptr,a
+  mov dptr,#$0390
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E38F
+  mov dptr,#$0391
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$0398
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0399
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$52
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  ljmp L69
+L68:
+L69:
+  mov a,#$6A
   mov dptr,#$039C
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$039C
+  mov dptr,#$039D
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$039E
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$039F
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh933:
+  mov a,$55
+  jz __i8051_shd933
+  mov dptr,#$039E
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$039E
+  movx @dptr,a
+  mov dptr,#$039F
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$039F
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh933
+__i8051_shd933:
+  mov dptr,#$039E
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$039C
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$039C
+  movx @dptr,a
+  mov dptr,#$039F
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$039D
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$039D
   movx @dptr,a
   mov dptr,#$039C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E390
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$039E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$039E
+  mov $56,a
+  mov dptr,#$039D
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$039F
-  movx @dptr,a
-  mov dptr,#$039E
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E391
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
-  mov dptr,#$03A0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03A0
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$03A0
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$03A1
   movx @dptr,a
-  mov dptr,#$03A0
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E392
-  mov a,$58
-  movx @dptr,a
-  mov a,#$48
+  mov a,#$78
   mov dptr,#$03A2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03A2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03A3
   movx @dptr,a
   mov dptr,#$03A2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E393
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
+  mov $30,a
+  mov dptr,#$03A0
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$03A3
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$03A1
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_46_n
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_46
+__i51_cond_46_n:
+  ljmp L70
+__i51_cond_46:
+  mov a,#$78
   mov dptr,#$03A4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03A4
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03A5
   movx @dptr,a
+  mov a,#$6A
+  mov dptr,#$03A6
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$03A7
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$03A8
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$03A9
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh941:
+  mov a,$55
+  jz __i8051_shd941
+  mov dptr,#$03A8
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$03A8
+  movx @dptr,a
+  mov dptr,#$03A9
+  movx a,@dptr
+  rlc a
+  mov dptr,#$03A9
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh941
+__i8051_shd941:
+  mov dptr,#$03A8
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03A6
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03A6
+  movx @dptr,a
+  mov dptr,#$03A9
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03A7
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$03A7
+  movx @dptr,a
   mov dptr,#$03A4
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E394
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$03A6
-  movx @dptr,a
-  mov a,#$00
+  mov dptr,#$03A5
+  movx a,@dptr
+  mov $59,a
   mov dptr,#$03A6
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $56,a
   mov dptr,#$03A7
-  movx @dptr,a
-  mov dptr,#$03A6
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E395
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$46
-  mov dptr,#$03A8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03A8
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$03A9
-  movx @dptr,a
-  mov dptr,#$03A8
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E396
-  mov a,$58
-  movx @dptr,a
-  mov a,#$49
-  mov dptr,#$03AA
+  inc dptr
+  mov a,$59
   movx @dptr,a
   mov a,#$00
   mov dptr,#$03AA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$00
   mov dptr,#$03AB
   movx @dptr,a
-  mov dptr,#$03AA
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E397
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
+  mov a,#$8A
   mov dptr,#$03AC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03AC
+  mov dptr,#$03AD
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$03AE
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$03AF
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh947:
+  mov a,$55
+  jz __i8051_shd947
+  mov dptr,#$03AE
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$03AE
+  movx @dptr,a
+  mov dptr,#$03AF
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$03AF
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh947
+__i8051_shd947:
+  mov dptr,#$03AE
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03AC
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03AC
+  movx @dptr,a
+  mov dptr,#$03AF
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03AD
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$03AD
   movx @dptr,a
   mov dptr,#$03AC
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E398
-  mov a,$58
-  movx @dptr,a
-  mov a,#$53
-  mov dptr,#$03AE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03AE
+  mov $56,a
+  mov dptr,#$03AD
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$03AF
-  movx @dptr,a
-  mov dptr,#$03AE
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E399
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
-  mov dptr,#$03B0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03B0
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$03B0
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$03B1
   movx @dptr,a
   mov dptr,#$03B0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E39A
-  mov a,$58
+  mov $30,a
+  mov dptr,#$03AA
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov dptr,#$03AA
   movx @dptr,a
-  mov a,#$20
+  mov dptr,#$03B1
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03AB
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$03AB
+  movx @dptr,a
+  mov a,#$8A
   mov dptr,#$03B2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03B2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03B3
   movx @dptr,a
-  mov dptr,#$03B2
+  mov dptr,#$28
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E39B
-  mov a,$58
-  movx @dptr,a
-  mov a,#$42
   mov dptr,#$03B4
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03B4
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03B5
   movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh953:
+  mov a,$55
+  jz __i8051_shd953
   mov dptr,#$03B4
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E39C
-  mov a,$58
+  clr c
+  rlc a
+  mov dptr,#$03B4
   movx @dptr,a
-  mov a,#$41
-  mov dptr,#$03B6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03B6
+  mov dptr,#$03B5
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$03B5
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh953
+__i8051_shd953:
+  mov dptr,#$03B4
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03B2
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03B2
+  movx @dptr,a
+  mov dptr,#$03B5
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03B3
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$03B3
+  movx @dptr,a
+  mov dptr,#$03AA
+  movx a,@dptr
+  mov $58,a
+  mov dptr,#$03AB
+  movx a,@dptr
+  mov $59,a
+  mov dptr,#$03B2
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$03B3
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  mov a,$58
+  movx @dptr,a
+  inc dptr
+  mov a,$59
+  movx @dptr,a
+  ljmp L71
+L70:
+L71:
+  mov a,#$00
+  mov dptr,#$03B6
+  movx @dptr,a
+  mov a,#$D4
+  mov dptr,#$03B7
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$03B8
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$03B9
+  movx @dptr,a
+  mov a,#$03
+  mov $55,a
+__i8051_sh961:
+  mov a,$55
+  jz __i8051_shd961
+  mov dptr,#$03B8
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$03B8
+  movx @dptr,a
+  mov dptr,#$03B9
+  movx a,@dptr
+  rlc a
+  mov dptr,#$03B9
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh961
+__i8051_shd961:
+  mov dptr,#$03B8
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03B6
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03B6
+  movx @dptr,a
+  mov dptr,#$03B9
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03B7
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$03B7
   movx @dptr,a
   mov dptr,#$03B6
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E39D
-  mov a,$58
+  mov dptr,#$24
   movx @dptr,a
-  mov a,#$4C
-  mov dptr,#$03B8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03B8
+  mov dptr,#$03B7
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$03B9
+  mov dptr,#$25
   movx @dptr,a
-  mov dptr,#$03B8
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E39E
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4C
+  mov a,#$5A
   mov dptr,#$03BA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03BA
+  mov dptr,#$03BB
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$03BC
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$03BD
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh966:
+  mov a,$55
+  jz __i8051_shd966
+  mov dptr,#$03BC
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$03BC
+  movx @dptr,a
+  mov dptr,#$03BD
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$03BD
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh966
+__i8051_shd966:
+  mov dptr,#$03BC
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03BA
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03BA
+  movx @dptr,a
+  mov dptr,#$03BD
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03BB
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$03BB
   movx @dptr,a
   mov dptr,#$03BA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E39F
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2C
-  mov dptr,#$03BC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03BC
+  mov $56,a
+  mov dptr,#$03BB
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$03BD
-  movx @dptr,a
-  mov dptr,#$03BC
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E3A0
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$03BE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03BE
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$03BE
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$03BF
   movx @dptr,a
+  mov dptr,#$24
+  movx a,@dptr
+  mov dptr,#$03C0
+  movx @dptr,a
+  mov dptr,#$25
+  movx a,@dptr
+  mov dptr,#$03C1
+  movx @dptr,a
   mov dptr,#$03BE
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E3A1
-  mov a,$58
-  movx @dptr,a
-  mov a,#$41
-  mov dptr,#$03C0
-  movx @dptr,a
-  mov a,#$00
   mov dptr,#$03C0
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $56,a
   mov dptr,#$03C1
-  movx @dptr,a
-  mov dptr,#$03C0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3A2
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$20
+  mov a,#$6A
   mov dptr,#$03C2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03C2
+  mov dptr,#$03C3
+  movx @dptr,a
+  mov dptr,#$28
+  movx a,@dptr
+  mov dptr,#$03C4
+  movx @dptr,a
+  mov dptr,#$29
+  movx a,@dptr
+  mov dptr,#$03C5
+  movx @dptr,a
+  mov a,#$01
+  mov $55,a
+__i8051_sh973:
+  mov a,$55
+  jz __i8051_shd973
+  mov dptr,#$03C4
+  movx a,@dptr
+  clr c
+  rlc a
+  mov dptr,#$03C4
+  movx @dptr,a
+  mov dptr,#$03C5
   movx a,@dptr
   rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$03C5
+  movx @dptr,a
+  dec $55
+  sjmp __i8051_sh973
+__i8051_shd973:
+  mov dptr,#$03C4
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03C2
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03C2
+  movx @dptr,a
+  mov dptr,#$03C5
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03C3
+  movx a,@dptr
+  addc a,$30
   mov dptr,#$03C3
   movx @dptr,a
   mov dptr,#$03C2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3A3
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
-  mov dptr,#$03C4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03C4
+  mov $56,a
+  mov dptr,#$03C3
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$03C5
-  movx @dptr,a
-  mov dptr,#$03C4
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   movx a,@dptr
   mov $58,a
-  mov dptr,#$E3A4
-  mov a,$58
-  movx @dptr,a
-  mov a,#$55
-  mov dptr,#$03C6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03C6
+  inc dptr
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov $59,a
+  mov a,$58
+  mov dptr,#$03C6
+  movx @dptr,a
+  mov a,$59
   mov dptr,#$03C7
   movx @dptr,a
-  mov dptr,#$03C6
+  mov dptr,#$24
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3A5
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
   mov dptr,#$03C8
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03C8
+  mov dptr,#$25
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03C9
   movx @dptr,a
-  mov dptr,#$03C8
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3A6
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4E
+  mov a,#$01
   mov dptr,#$03CA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03CA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03CB
   movx @dptr,a
   mov dptr,#$03CA
   movx a,@dptr
+  mov $30,a
+  mov dptr,#$03C8
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03C8
+  movx @dptr,a
+  mov dptr,#$03CB
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03C9
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$03C9
+  movx @dptr,a
+  mov dptr,#$03C6
+  movx a,@dptr
   mov $58,a
-  mov dptr,#$E3A7
+  mov dptr,#$03C8
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$03C9
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
   mov a,$58
   movx @dptr,a
-  mov a,#$53
+  mov dptr,#$28
+  movx a,@dptr
   mov dptr,#$03CC
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03CC
+  mov dptr,#$29
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03CD
   movx @dptr,a
-  mov dptr,#$03CC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3A8
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$01
   mov dptr,#$03CE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03CE
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03CF
   movx @dptr,a
   mov dptr,#$03CE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3A9
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
-  mov dptr,#$03D0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03D0
+  mov $30,a
+  mov dptr,#$03CC
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  addc a,$30
+  mov dptr,#$03CC
+  movx @dptr,a
+  mov dptr,#$03CF
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03CD
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$03CD
+  movx @dptr,a
+  mov dptr,#$03CC
+  movx a,@dptr
+  mov dptr,#$28
+  movx @dptr,a
+  mov dptr,#$03CD
+  movx a,@dptr
+  mov dptr,#$29
+  movx @dptr,a
+  ljmp L49
+L50:
+  ret
+Music:
+  mov dptr,#$38
+  movx a,@dptr
+  mov dptr,#$03D0
+  movx @dptr,a
+  mov dptr,#$39
+  movx a,@dptr
   mov dptr,#$03D1
   movx @dptr,a
-  mov dptr,#$03D0
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3AA
-  mov a,$58
-  movx @dptr,a
-  mov a,#$48
+  mov a,#$00
   mov dptr,#$03D2
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03D2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03D3
   movx @dptr,a
   mov dptr,#$03D2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3AB
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
-  mov dptr,#$03D4
+  mov $30,a
+  mov dptr,#$03D0
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$03D3
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$03D1
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_47
+  ljmp L72
+__i51_cond_47:
+  mov a,#$00
+  mov dptr,#$0102
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03D4
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010E
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010F
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall voice
+  mov a,#$01
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010E
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010F
+  movx @dptr,a
+  mov a,#$01
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall voice
+  mov a,#$02
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0111
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010E
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010F
+  movx @dptr,a
+  mov a,#$03
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall voice
+  ret
+  ljmp L73
+L72:
+L73:
+  mov dptr,#$0C
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$03D4
+  movx @dptr,a
+  mov dptr,#$0D
+  movx a,@dptr
   mov dptr,#$03D5
   movx @dptr,a
-  mov dptr,#$03D4
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3AC
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$01
   mov dptr,#$03D6
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03D6
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03D7
   movx @dptr,a
   mov dptr,#$03D6
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3AD
-  mov a,$58
-  movx @dptr,a
-  mov a,#$53
-  mov dptr,#$03D8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03D8
+  mov $30,a
+  mov dptr,#$03D4
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  addc a,$30
+  mov dptr,#$03D4
+  movx @dptr,a
+  mov dptr,#$03D7
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03D5
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$03D5
+  movx @dptr,a
+  mov dptr,#$03D4
+  movx a,@dptr
+  mov dptr,#$0C
+  movx @dptr,a
+  mov dptr,#$03D5
+  movx a,@dptr
+  mov dptr,#$0D
+  movx @dptr,a
+  mov dptr,#$0C
+  movx a,@dptr
+  mov dptr,#$03D8
+  movx @dptr,a
+  mov dptr,#$0D
+  movx a,@dptr
   mov dptr,#$03D9
   movx @dptr,a
-  mov dptr,#$03D8
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3AE
-  mov a,$58
-  movx @dptr,a
-  mov a,#$43
+  mov a,#$06
   mov dptr,#$03DA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03DA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03DB
   movx @dptr,a
   mov dptr,#$03DA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3AF
-  mov a,$58
-  movx @dptr,a
-  mov a,#$52
+  mov $30,a
+  mov dptr,#$03D8
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$03DB
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$03D9
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jnc __i51_cond_48
+  ljmp L74
+__i51_cond_48:
+  mov a,#$00
   mov dptr,#$03DC
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03DC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03DD
   movx @dptr,a
   mov dptr,#$03DC
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B0
-  mov a,$58
+  mov dptr,#$0C
   movx @dptr,a
-  mov a,#$4F
-  mov dptr,#$03DE
+  mov dptr,#$03DD
+  movx a,@dptr
+  mov dptr,#$0D
   movx @dptr,a
   mov a,#$00
   mov dptr,#$03DE
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  movx @dptr,a
+  mov a,#$E0
   mov dptr,#$03DF
   movx @dptr,a
-  mov dptr,#$03DE
+  mov dptr,#$08
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B1
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4C
   mov dptr,#$03E0
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03E0
+  mov dptr,#$09
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03E1
   movx @dptr,a
   mov dptr,#$03E0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B2
-  mov a,$58
+  mov $30,a
+  mov dptr,#$03DE
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03DE
   movx @dptr,a
-  mov a,#$4C
+  mov dptr,#$03E1
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03DF
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$03DF
+  movx @dptr,a
+  mov dptr,#$03DE
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$03DF
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  mov a,$58
   mov dptr,#$03E2
   movx @dptr,a
-  mov a,#$00
   mov dptr,#$03E2
   movx a,@dptr
   rlc a
@@ -7768,201 +9647,221 @@ InitTables:
   movx @dptr,a
   mov dptr,#$03E2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B3
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2C
   mov dptr,#$03E4
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03E4
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$03E5
   movx @dptr,a
   mov dptr,#$03E4
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B4
-  mov a,$58
+  mov dptr,#$20
   movx @dptr,a
-  mov a,#$20
-  mov dptr,#$03E6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03E6
+  mov dptr,#$03E5
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$21
+  movx @dptr,a
+  mov dptr,#$20
+  movx a,@dptr
+  mov dptr,#$03E6
+  movx @dptr,a
+  mov dptr,#$21
+  movx a,@dptr
   mov dptr,#$03E7
   movx @dptr,a
-  mov dptr,#$03E6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B5
-  mov a,$58
-  movx @dptr,a
-  mov a,#$42
+  mov a,#$01
   mov dptr,#$03E8
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03E8
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03E9
   movx @dptr,a
   mov dptr,#$03E8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B6
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov $30,a
+  mov dptr,#$03E6
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$03E9
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$03E7
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jz __i51_cond_49
+  ljmp L76
+__i51_cond_49:
+  mov a,#$00
   mov dptr,#$03EA
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03EA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03EB
   movx @dptr,a
   mov dptr,#$03EA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B7
-  mov a,$58
+  mov dptr,#$44
   movx @dptr,a
-  mov a,#$4D
-  mov dptr,#$03EC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03EC
+  mov dptr,#$03EB
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$45
+  movx @dptr,a
+  ljmp L77
+L76:
+  mov dptr,#$20
+  movx a,@dptr
+  mov dptr,#$03EC
+  movx @dptr,a
+  mov dptr,#$21
+  movx a,@dptr
   mov dptr,#$03ED
   movx @dptr,a
-  mov dptr,#$03EC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B8
-  mov a,$58
-  movx @dptr,a
-  mov a,#$55
+  mov a,#$00
   mov dptr,#$03EE
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03EE
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03EF
   movx @dptr,a
   mov dptr,#$03EE
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3B9
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
-  mov dptr,#$03F0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03F0
+  mov $30,a
+  mov dptr,#$03EC
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$03EF
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$03ED
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_50
+  ljmp L78
+__i51_cond_50:
+  mov dptr,#$20
+  movx a,@dptr
+  mov dptr,#$03F0
+  movx @dptr,a
+  mov dptr,#$21
+  movx a,@dptr
   mov dptr,#$03F1
   movx @dptr,a
   mov dptr,#$03F0
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3BA
-  mov a,$58
+  mov dptr,#$0102
   movx @dptr,a
-  mov a,#$45
-  mov dptr,#$03F2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03F2
+  mov dptr,#$03F1
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0103
+  movx @dptr,a
+  lcall notehz
+  mov dptr,#$00
+  movx a,@dptr
+  mov dptr,#$03F2
+  movx @dptr,a
+  mov dptr,#$01
+  movx a,@dptr
   mov dptr,#$03F3
   movx @dptr,a
   mov dptr,#$03F2
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3BB
-  mov a,$58
+  mov dptr,#$0110
   movx @dptr,a
-  mov a,#$53
+  mov dptr,#$03F3
+  movx a,@dptr
+  mov dptr,#$0111
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$0B
+  mov dptr,#$010E
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010F
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall voice
+  mov a,#$0B
   mov dptr,#$03F4
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$03F4
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03F5
   movx @dptr,a
   mov dptr,#$03F4
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3BC
-  mov a,$58
+  mov dptr,#$44
   movx @dptr,a
-  mov a,#$20
-  mov dptr,#$03F6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03F6
+  mov dptr,#$03F5
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$45
+  movx @dptr,a
+  ljmp L79
+L78:
+L79:
+L77:
+  mov a,#$40
+  mov dptr,#$03F6
+  movx @dptr,a
+  mov a,#$E0
   mov dptr,#$03F7
   movx @dptr,a
-  mov dptr,#$03F6
+  mov dptr,#$08
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3BD
-  mov a,$58
-  movx @dptr,a
-  mov a,#$54
   mov dptr,#$03F8
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03F8
+  mov dptr,#$09
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$03F9
   movx @dptr,a
   mov dptr,#$03F8
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3BE
-  mov a,$58
+  mov $30,a
+  mov dptr,#$03F6
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$03F6
   movx @dptr,a
-  mov a,#$48
+  mov dptr,#$03F9
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$03F7
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$03F7
+  movx @dptr,a
+  mov dptr,#$03F6
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$03F7
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  mov a,$58
   mov dptr,#$03FA
   movx @dptr,a
-  mov a,#$00
   mov dptr,#$03FA
   movx a,@dptr
   rlc a
@@ -7972,150 +9871,170 @@ InitTables:
   movx @dptr,a
   mov dptr,#$03FA
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3BF
-  mov a,$58
-  movx @dptr,a
-  mov a,#$45
   mov dptr,#$03FC
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03FC
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$03FD
   movx @dptr,a
   mov dptr,#$03FC
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C0
-  mov a,$58
+  mov dptr,#$20
   movx @dptr,a
-  mov a,#$20
-  mov dptr,#$03FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$03FE
+  mov dptr,#$03FD
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$21
+  movx @dptr,a
+  mov dptr,#$20
+  movx a,@dptr
+  mov dptr,#$03FE
+  movx @dptr,a
+  mov dptr,#$21
+  movx a,@dptr
   mov dptr,#$03FF
   movx @dptr,a
-  mov dptr,#$03FE
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C1
-  mov a,$58
-  movx @dptr,a
-  mov a,#$4D
+  mov a,#$01
   mov dptr,#$0400
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0400
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0401
   movx @dptr,a
   mov dptr,#$0400
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C2
-  mov a,$58
-  movx @dptr,a
-  mov a,#$55
-  mov dptr,#$0402
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0402
+  mov $30,a
+  mov dptr,#$03FE
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$0401
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$03FF
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_51_n
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_51
+__i51_cond_51_n:
+  ljmp L80
+__i51_cond_51:
+  mov dptr,#$20
+  movx a,@dptr
+  mov dptr,#$0402
+  movx @dptr,a
+  mov dptr,#$21
+  movx a,@dptr
   mov dptr,#$0403
   movx @dptr,a
   mov dptr,#$0402
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C3
-  mov a,$58
+  mov dptr,#$0102
   movx @dptr,a
-  mov a,#$53
-  mov dptr,#$0404
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0404
+  mov dptr,#$0403
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$0103
+  movx @dptr,a
+  lcall notehz
+  mov dptr,#$00
+  movx a,@dptr
+  mov dptr,#$0404
+  movx @dptr,a
+  mov dptr,#$01
+  movx a,@dptr
   mov dptr,#$0405
   movx @dptr,a
   mov dptr,#$0404
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C4
-  mov a,$58
+  mov dptr,#$0110
   movx @dptr,a
-  mov a,#$49
+  mov dptr,#$0405
+  movx a,@dptr
+  mov dptr,#$0111
+  movx @dptr,a
+  mov a,#$01
+  mov dptr,#$0102
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$0C
+  mov dptr,#$010E
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010F
+  movx @dptr,a
+  mov a,#$01
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall voice
+  mov a,#$0C
   mov dptr,#$0406
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0406
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0407
   movx @dptr,a
   mov dptr,#$0406
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C5
-  mov a,$58
+  mov dptr,#$48
   movx @dptr,a
-  mov a,#$43
-  mov dptr,#$0408
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0408
+  mov dptr,#$0407
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$49
+  movx @dptr,a
+  ljmp L81
+L80:
+L81:
+  mov a,#$80
+  mov dptr,#$0408
+  movx @dptr,a
+  mov a,#$E0
   mov dptr,#$0409
   movx @dptr,a
-  mov dptr,#$0408
+  mov dptr,#$08
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C6
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
   mov dptr,#$040A
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$040A
+  mov dptr,#$09
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$040B
   movx @dptr,a
   mov dptr,#$040A
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C7
-  mov a,$58
+  mov $30,a
+  mov dptr,#$0408
+  movx a,@dptr
+  clr c
+  addc a,$30
+  mov dptr,#$0408
   movx @dptr,a
-  mov a,#$2E
+  mov dptr,#$040B
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0409
+  movx a,@dptr
+  addc a,$30
+  mov dptr,#$0409
+  movx @dptr,a
+  mov dptr,#$0408
+  movx a,@dptr
+  mov $56,a
+  mov dptr,#$0409
+  movx a,@dptr
+  mov $57,a
+  mov $82,$56
+  mov $83,$57
+  movx a,@dptr
+  mov $58,a
+  mov a,$58
   mov dptr,#$040C
   movx @dptr,a
-  mov a,#$00
   mov dptr,#$040C
   movx a,@dptr
   rlc a
@@ -8125,8080 +10044,46 @@ InitTables:
   movx @dptr,a
   mov dptr,#$040C
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C8
-  mov a,$58
-  movx @dptr,a
-  mov a,#$2E
   mov dptr,#$040E
   movx @dptr,a
-  mov a,#$00
-  mov dptr,#$040E
-  movx a,@dptr
-  rlc a
   clr a
-  subb a,#$00
   mov dptr,#$040F
   movx @dptr,a
   mov dptr,#$040E
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3C9
-  mov a,$58
+  mov dptr,#$50
   movx @dptr,a
-  mov a,#$2E
-  mov dptr,#$0410
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0410
+  mov dptr,#$040F
   movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
+  mov dptr,#$51
+  movx @dptr,a
+  mov dptr,#$50
+  movx a,@dptr
+  mov dptr,#$0410
+  movx @dptr,a
+  mov dptr,#$51
+  movx a,@dptr
   mov dptr,#$0411
   movx @dptr,a
-  mov dptr,#$0410
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3CA
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
+  mov a,#$01
   mov dptr,#$0412
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0412
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
   mov dptr,#$0413
   movx @dptr,a
   mov dptr,#$0412
   movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3CB
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$0414
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0414
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0415
-  movx @dptr,a
-  mov dptr,#$0414
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3CC
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$0416
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0416
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0417
-  movx @dptr,a
-  mov dptr,#$0416
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3CD
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$0418
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0418
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0419
-  movx @dptr,a
-  mov dptr,#$0418
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3CE
-  mov a,$58
-  movx @dptr,a
-  mov a,#$20
-  mov dptr,#$041A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$041A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$041B
-  movx @dptr,a
-  mov dptr,#$041A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$E3CF
-  mov a,$58
-  movx @dptr,a
-  ret
-Rainbow:
-  mov dptr,#$FE
-  movx a,@dptr
-  mov dptr,#$041C
-  movx @dptr,a
-  mov dptr,#$FF
-  movx a,@dptr
-  mov dptr,#$041D
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$041E
-  movx @dptr,a
-  mov a,#$E2
-  mov dptr,#$041F
-  movx @dptr,a
-  mov dptr,#$041C
-  movx a,@dptr
-  mov dptr,#$0420
-  movx @dptr,a
-  mov dptr,#$041D
-  movx a,@dptr
-  mov dptr,#$0421
-  movx @dptr,a
-  mov a,#$1F
-  mov dptr,#$0422
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0423
-  movx @dptr,a
-  mov dptr,#$0422
-  movx a,@dptr
   mov $30,a
-  mov dptr,#$0420
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0420
-  movx @dptr,a
-  mov dptr,#$0423
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0421
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0421
-  movx @dptr,a
-  mov dptr,#$0420
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$041E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$041E
-  movx @dptr,a
-  mov dptr,#$0421
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$041F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$041F
-  movx @dptr,a
-  mov dptr,#$041E
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$041F
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  mov a,$58
-  mov dptr,#$0424
-  movx @dptr,a
-  mov dptr,#$0424
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0425
-  movx @dptr,a
-  mov dptr,#$0424
-  movx a,@dptr
-  mov dptr,#$0426
-  movx @dptr,a
-  clr a
-  mov dptr,#$0427
-  movx @dptr,a
-  mov dptr,#$0426
-  movx a,@dptr
-  mov dptr,#$00
-  movx @dptr,a
-  mov dptr,#$0427
-  movx a,@dptr
-  mov dptr,#$01
-  movx @dptr,a
-  ret
-NoteHz:
-  mov dptr,#$FE
-  movx a,@dptr
-  mov dptr,#$0428
-  movx @dptr,a
-  mov dptr,#$FF
-  movx a,@dptr
-  mov dptr,#$0429
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$042A
-  movx @dptr,a
-  mov a,#$E1
-  mov dptr,#$042B
-  movx @dptr,a
-  mov dptr,#$0428
-  movx a,@dptr
-  mov dptr,#$042C
-  movx @dptr,a
-  mov dptr,#$0429
-  movx a,@dptr
-  mov dptr,#$042D
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh988:
-  mov a,$55
-  jz __i8051_shd988
-  mov dptr,#$042C
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$042C
-  movx @dptr,a
-  mov dptr,#$042D
-  movx a,@dptr
-  rlc a
-  mov dptr,#$042D
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh988
-__i8051_shd988:
-  mov dptr,#$042C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$042A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$042A
-  movx @dptr,a
-  mov dptr,#$042D
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$042B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$042B
-  movx @dptr,a
-  mov dptr,#$042A
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$042B
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  mov a,$58
-  mov dptr,#$042E
-  movx @dptr,a
-  mov dptr,#$042E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$042F
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0430
-  movx @dptr,a
-  mov a,#$E1
-  mov dptr,#$0431
-  movx @dptr,a
-  mov dptr,#$0428
-  movx a,@dptr
-  mov dptr,#$0432
-  movx @dptr,a
-  mov dptr,#$0429
-  movx a,@dptr
-  mov dptr,#$0433
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh993:
-  mov a,$55
-  jz __i8051_shd993
-  mov dptr,#$0432
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0432
-  movx @dptr,a
-  mov dptr,#$0433
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0433
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh993
-__i8051_shd993:
-  mov dptr,#$0432
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0430
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0430
-  movx @dptr,a
-  mov dptr,#$0433
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0431
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0431
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0434
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0435
-  movx @dptr,a
-  mov dptr,#$0434
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0430
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0430
-  movx @dptr,a
-  mov dptr,#$0435
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0431
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0431
-  movx @dptr,a
-  mov dptr,#$0430
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0431
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  mov a,$58
-  mov dptr,#$0436
-  movx @dptr,a
-  mov dptr,#$0436
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0437
-  movx @dptr,a
-  mov dptr,#$0436
-  movx a,@dptr
-  mov dptr,#$0438
-  movx @dptr,a
-  clr a
-  mov dptr,#$0439
-  movx @dptr,a
-  mov a,#$08
-  mov $55,a
-__i8051_sh999:
-  mov a,$55
-  jz __i8051_shd999
-  mov dptr,#$0438
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0438
-  movx @dptr,a
-  mov dptr,#$0439
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0439
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh999
-__i8051_shd999:
-  mov dptr,#$042E
-  movx a,@dptr
-  mov dptr,#$043A
-  movx @dptr,a
-  clr a
-  mov dptr,#$043B
-  movx @dptr,a
-  mov dptr,#$0438
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$043A
-  movx a,@dptr
-  orl a,$30
-  mov dptr,#$043A
-  movx @dptr,a
-  mov dptr,#$0439
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$043B
-  movx a,@dptr
-  orl a,$30
-  mov dptr,#$043B
-  movx @dptr,a
-  mov dptr,#$043A
-  movx a,@dptr
-  mov dptr,#$00
-  movx @dptr,a
-  mov dptr,#$043B
-  movx a,@dptr
-  mov dptr,#$01
-  movx @dptr,a
-  ret
-WaitFrame:
-L19:
-  mov dptr,#$F001
-  movx a,@dptr
-  mov $58,a
-  mov a,$58
-  mov dptr,#$043C
-  movx @dptr,a
-  mov dptr,#$043C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$043D
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$043E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$043E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$043F
-  movx @dptr,a
-  mov dptr,#$043E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$043C
+  mov dptr,#$0410
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$043F
+  mov dptr,#$0413
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$043D
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jz __i51_cond_14
-  ljmp L20
-__i51_cond_14:
-  ljmp L19
-L20:
-  ret
-Voice:
-  mov dptr,#$FE
-  movx a,@dptr
-  mov dptr,#$0440
-  movx @dptr,a
-  mov dptr,#$FF
-  movx a,@dptr
-  mov dptr,#$0441
-  movx @dptr,a
-  mov dptr,#$010E
-  movx a,@dptr
-  mov dptr,#$0442
-  movx @dptr,a
-  mov dptr,#$010F
-  movx a,@dptr
-  mov dptr,#$0443
-  movx @dptr,a
-  mov dptr,#$010C
-  movx a,@dptr
-  mov dptr,#$0444
-  movx @dptr,a
-  mov dptr,#$010D
-  movx a,@dptr
-  mov dptr,#$0445
-  movx @dptr,a
-  mov dptr,#$0110
-  movx a,@dptr
-  mov dptr,#$0446
-  movx @dptr,a
-  mov dptr,#$0111
-  movx a,@dptr
-  mov dptr,#$0447
-  movx @dptr,a
-  mov a,#$10
-  mov dptr,#$0448
-  movx @dptr,a
-  mov a,#$F0
-  mov dptr,#$0449
-  movx @dptr,a
-  mov dptr,#$0440
-  movx a,@dptr
-  mov dptr,#$044A
-  movx @dptr,a
-  mov dptr,#$0441
-  movx a,@dptr
-  mov dptr,#$044B
-  movx @dptr,a
-  mov a,#$02
-  mov $55,a
-__i8051_sh1018:
-  mov a,$55
-  jz __i8051_shd1018
-  mov dptr,#$044A
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$044A
-  movx @dptr,a
-  mov dptr,#$044B
-  movx a,@dptr
-  rlc a
-  mov dptr,#$044B
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1018
-__i8051_shd1018:
-  mov dptr,#$044A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0448
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0448
-  movx @dptr,a
-  mov dptr,#$044B
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0449
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0449
-  movx @dptr,a
-  mov dptr,#$0448
-  movx a,@dptr
-  mov dptr,#$24
-  movx @dptr,a
-  mov dptr,#$0449
-  movx a,@dptr
-  mov dptr,#$25
-  movx @dptr,a
-  mov dptr,#$0442
-  movx a,@dptr
-  mov dptr,#$044C
-  movx @dptr,a
-  mov dptr,#$0443
-  movx a,@dptr
-  mov dptr,#$044D
-  movx @dptr,a
-  mov a,#$FF
-  mov dptr,#$044E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$044F
-  movx @dptr,a
-  mov dptr,#$044E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$044C
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$044C
-  movx @dptr,a
-  mov dptr,#$044F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$044D
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$044D
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$0450
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$0451
-  movx @dptr,a
-  mov dptr,#$044C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0450
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0451
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$0442
-  movx a,@dptr
-  mov dptr,#$0452
-  movx @dptr,a
-  mov dptr,#$0443
-  movx a,@dptr
-  mov dptr,#$0453
-  movx @dptr,a
-  mov a,#$08
-  mov $55,a
-__i8051_sh1027:
-  mov a,$55
-  jz __i8051_shd1027
-  mov dptr,#$0453
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0453
-  movx a,@dptr
-  rrc a
-  mov dptr,#$0453
-  movx @dptr,a
-  mov dptr,#$0452
-  movx a,@dptr
-  rrc a
-  mov dptr,#$0452
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1027
-__i8051_shd1027:
-  mov a,#$FF
-  mov dptr,#$0454
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0455
-  movx @dptr,a
-  mov dptr,#$0454
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0452
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0452
-  movx @dptr,a
-  mov dptr,#$0455
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0453
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0453
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$0456
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$0457
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0458
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0459
-  movx @dptr,a
-  mov dptr,#$0458
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0456
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0456
-  movx @dptr,a
-  mov dptr,#$0459
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0457
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0457
-  movx @dptr,a
-  mov dptr,#$0452
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0456
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0457
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$0444
-  movx a,@dptr
-  mov dptr,#$045A
-  movx @dptr,a
-  mov dptr,#$0445
-  movx a,@dptr
-  mov dptr,#$045B
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$045C
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$045D
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$045E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$045F
-  movx @dptr,a
-  mov dptr,#$045E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$045C
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$045C
-  movx @dptr,a
-  mov dptr,#$045F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$045D
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$045D
-  movx @dptr,a
-  mov dptr,#$045A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$045C
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$045D
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$0446
-  movx a,@dptr
-  mov dptr,#$0460
-  movx @dptr,a
-  mov dptr,#$0447
-  movx a,@dptr
-  mov dptr,#$0461
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$0462
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$0463
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$0464
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0465
-  movx @dptr,a
-  mov dptr,#$0464
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0462
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0462
-  movx @dptr,a
-  mov dptr,#$0465
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0463
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0463
-  movx @dptr,a
-  mov dptr,#$0460
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0462
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0463
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  ret
-TextFromMsg:
-  mov dptr,#$FE
-  movx a,@dptr
-  mov dptr,#$0466
-  movx @dptr,a
-  mov dptr,#$FF
-  movx a,@dptr
-  mov dptr,#$0467
-  movx @dptr,a
-  mov dptr,#$010E
-  movx a,@dptr
-  mov dptr,#$0468
-  movx @dptr,a
-  mov dptr,#$010F
-  movx a,@dptr
-  mov dptr,#$0469
-  movx @dptr,a
-  mov dptr,#$010C
-  movx a,@dptr
-  mov dptr,#$046A
-  movx @dptr,a
-  mov dptr,#$010D
-  movx a,@dptr
-  mov dptr,#$046B
-  movx @dptr,a
-  mov dptr,#$0110
-  movx a,@dptr
-  mov dptr,#$046C
-  movx @dptr,a
-  mov dptr,#$0111
-  movx a,@dptr
-  mov dptr,#$046D
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$046E
-  movx @dptr,a
-  mov a,#$D0
-  mov dptr,#$046F
-  movx @dptr,a
-  mov dptr,#$0466
-  movx a,@dptr
-  mov dptr,#$0470
-  movx @dptr,a
-  mov dptr,#$0467
-  movx a,@dptr
-  mov dptr,#$0471
-  movx @dptr,a
-  mov a,#$14
-  mov dptr,#$0472
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0473
-  movx @dptr,a
-  mov dptr,#$0470
-  movx a,@dptr
-  mov $40,a
-  mov dptr,#$0471
-  movx a,@dptr
-  mov $41,a
-  mov dptr,#$0472
-  movx a,@dptr
-  mov $42,a
-  mov dptr,#$0473
-  movx a,@dptr
-  mov $43,a
-  lcall __i8051_mul16
-  mov a,$40
-  mov dptr,#$0470
-  movx @dptr,a
-  mov a,$41
-  mov dptr,#$0471
-  movx @dptr,a
-  mov dptr,#$0470
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$046E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$046E
-  movx @dptr,a
-  mov dptr,#$0471
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$046F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$046F
-  movx @dptr,a
-  mov dptr,#$0468
-  movx a,@dptr
-  mov dptr,#$0474
-  movx @dptr,a
-  mov dptr,#$0469
-  movx a,@dptr
-  mov dptr,#$0475
-  movx @dptr,a
-  mov dptr,#$0474
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$046E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$046E
-  movx @dptr,a
-  mov dptr,#$0475
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$046F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$046F
-  movx @dptr,a
-  mov dptr,#$046E
-  movx a,@dptr
-  mov dptr,#$24
-  movx @dptr,a
-  mov dptr,#$046F
-  movx a,@dptr
-  mov dptr,#$25
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0476
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0477
-  movx @dptr,a
-  mov dptr,#$0476
-  movx a,@dptr
-  mov dptr,#$28
-  movx @dptr,a
-  mov dptr,#$0477
-  movx a,@dptr
-  mov dptr,#$29
-  movx @dptr,a
-L21:
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0478
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0479
-  movx @dptr,a
-  mov dptr,#$046C
-  movx a,@dptr
-  mov dptr,#$047A
-  movx @dptr,a
-  mov dptr,#$046D
-  movx a,@dptr
-  mov dptr,#$047B
-  movx @dptr,a
-  mov dptr,#$047A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0478
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$047B
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$0479
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_15
-  ljmp L22
-__i51_cond_15:
-  mov a,#$00
-  mov dptr,#$047C
-  movx @dptr,a
-  mov a,#$E3
-  mov dptr,#$047D
-  movx @dptr,a
-  mov dptr,#$046A
-  movx a,@dptr
-  mov dptr,#$047E
-  movx @dptr,a
-  mov dptr,#$046B
-  movx a,@dptr
-  mov dptr,#$047F
-  movx @dptr,a
-  mov dptr,#$047E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$047C
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$047C
-  movx @dptr,a
-  mov dptr,#$047F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$047D
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$047D
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0480
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0481
-  movx @dptr,a
-  mov dptr,#$0480
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$047C
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$047C
-  movx @dptr,a
-  mov dptr,#$0481
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$047D
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$047D
-  movx @dptr,a
-  mov dptr,#$047C
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$047D
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  mov a,$58
-  mov dptr,#$0482
-  movx @dptr,a
-  mov dptr,#$0482
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0483
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$0484
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$0485
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0486
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0487
-  movx @dptr,a
-  mov dptr,#$0486
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0484
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0484
-  movx @dptr,a
-  mov dptr,#$0487
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0485
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0485
-  movx @dptr,a
-  mov dptr,#$0482
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0484
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0485
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$54
-  movx a,@dptr
-  mov dptr,#$0488
-  movx @dptr,a
-  mov dptr,#$55
-  movx a,@dptr
-  mov dptr,#$0489
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$048A
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$048B
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$048C
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$048D
-  movx @dptr,a
-  mov dptr,#$048C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$048A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$048A
-  movx @dptr,a
-  mov dptr,#$048D
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$048B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$048B
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$048E
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$048F
-  movx @dptr,a
-  mov dptr,#$048E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$048A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$048A
-  movx @dptr,a
-  mov dptr,#$048F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$048B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$048B
-  movx @dptr,a
-  mov dptr,#$0488
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$048A
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$048B
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0490
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0491
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0492
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0493
-  movx @dptr,a
-  mov dptr,#$0492
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0490
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0490
-  movx @dptr,a
-  mov dptr,#$0493
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0491
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0491
-  movx @dptr,a
-  mov dptr,#$0490
-  movx a,@dptr
-  mov dptr,#$28
-  movx @dptr,a
-  mov dptr,#$0491
-  movx a,@dptr
-  mov dptr,#$29
-  movx @dptr,a
-  ljmp L21
-L22:
-  ret
-Title:
-  mov dptr,#$FE
-  movx a,@dptr
-  mov dptr,#$0494
-  movx @dptr,a
-  mov dptr,#$FF
-  movx a,@dptr
-  mov dptr,#$0495
-  movx @dptr,a
-  mov dptr,#$0494
-  movx a,@dptr
-  mov dptr,#$0496
-  movx @dptr,a
-  mov dptr,#$0495
-  movx a,@dptr
-  mov dptr,#$0497
-  movx @dptr,a
-  mov dptr,#$0496
-  movx a,@dptr
-  mov dptr,#$54
-  movx @dptr,a
-  mov dptr,#$0497
-  movx a,@dptr
-  mov dptr,#$55
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FF
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$010E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$05
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$0E
-  mov dptr,#$0110
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0111
-  movx @dptr,a
-  lcall textfrommsg
-  ret
-Rect:
-  mov dptr,#$FE
-  movx a,@dptr
-  mov dptr,#$0498
-  movx @dptr,a
-  mov dptr,#$FF
-  movx a,@dptr
-  mov dptr,#$0499
-  movx @dptr,a
-  mov dptr,#$010E
-  movx a,@dptr
-  mov dptr,#$049A
-  movx @dptr,a
-  mov dptr,#$010F
-  movx a,@dptr
-  mov dptr,#$049B
-  movx @dptr,a
-  mov dptr,#$010C
-  movx a,@dptr
-  mov dptr,#$049C
-  movx @dptr,a
-  mov dptr,#$010D
-  movx a,@dptr
-  mov dptr,#$049D
-  movx @dptr,a
-  mov dptr,#$0110
-  movx a,@dptr
-  mov dptr,#$049E
-  movx @dptr,a
-  mov dptr,#$0111
-  movx a,@dptr
-  mov dptr,#$049F
-  movx @dptr,a
-  mov dptr,#$0498
-  movx a,@dptr
-  mov dptr,#$04A0
-  movx @dptr,a
-  mov dptr,#$0499
-  movx a,@dptr
-  mov dptr,#$04A1
-  movx @dptr,a
-  mov dptr,#$04A0
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F009
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$049A
-  movx a,@dptr
-  mov dptr,#$04A2
-  movx @dptr,a
-  mov dptr,#$049B
-  movx a,@dptr
-  mov dptr,#$04A3
-  movx @dptr,a
-  mov dptr,#$04A2
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F00A
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$049C
-  movx a,@dptr
-  mov dptr,#$04A4
-  movx @dptr,a
-  mov dptr,#$049D
-  movx a,@dptr
-  mov dptr,#$04A5
-  movx @dptr,a
-  mov dptr,#$04A4
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F00B
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$049E
-  movx a,@dptr
-  mov dptr,#$04A6
-  movx @dptr,a
-  mov dptr,#$049F
-  movx a,@dptr
-  mov dptr,#$04A7
-  movx @dptr,a
-  mov dptr,#$04A6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F00C
-  mov a,$58
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$04A8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04A8
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$04A9
-  movx @dptr,a
-  mov dptr,#$04A8
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F00E
-  mov a,$58
-  movx @dptr,a
-  ret
-DrawBitmap:
-  mov a,#$00
-  mov dptr,#$04AA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04AB
-  movx @dptr,a
-  mov dptr,#$04AA
-  movx a,@dptr
-  mov dptr,#$28
-  movx @dptr,a
-  mov dptr,#$04AB
-  movx a,@dptr
-  mov dptr,#$29
-  movx @dptr,a
-L23:
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$04AC
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$04AD
-  movx @dptr,a
-  mov a,#$10
-  mov dptr,#$04AE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04AF
-  movx @dptr,a
-  mov dptr,#$04AE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04AC
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$04AF
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$04AD
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_16
-  ljmp L24
-__i51_cond_16:
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$04B0
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$04B1
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$04B2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04B3
-  movx @dptr,a
-  mov dptr,#$04B2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04B0
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$04B0
-  movx @dptr,a
-  mov dptr,#$04B3
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04B1
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$04B1
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04B4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04B5
-  movx @dptr,a
-  mov dptr,#$04B4
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04B0
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$04B5
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$04B1
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_17
-  ljmp L25
-__i51_cond_17:
-  mov a,#$00
-  mov dptr,#$04B6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04B6
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$04B7
-  movx @dptr,a
-  mov dptr,#$04B6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F00D
-  mov a,$58
-  movx @dptr,a
-  ljmp L26
-L25:
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$04B8
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$04B9
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1131:
-  mov a,$55
-  jz __i8051_shd1131
-  mov dptr,#$04B8
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$04B8
-  movx @dptr,a
-  mov dptr,#$04B9
-  movx a,@dptr
-  rlc a
-  mov dptr,#$04B9
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1131
-__i8051_shd1131:
-  mov dptr,#$04B8
-  movx a,@dptr
-  mov dptr,#$FE
-  movx @dptr,a
-  mov dptr,#$04B9
-  movx a,@dptr
-  mov dptr,#$FF
-  movx @dptr,a
-  lcall rainbow
-  mov dptr,#$00
-  movx a,@dptr
-  mov dptr,#$04BA
-  movx @dptr,a
-  mov dptr,#$01
-  movx a,@dptr
-  mov dptr,#$04BB
-  movx @dptr,a
-  mov a,#$6D
-  mov dptr,#$04BC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04BD
-  movx @dptr,a
-  mov dptr,#$04BC
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04BA
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$04BA
-  movx @dptr,a
-  mov dptr,#$04BD
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04BB
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$04BB
-  movx @dptr,a
-  mov dptr,#$04BA
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$F00D
-  mov a,$58
-  movx @dptr,a
-L26:
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$04BE
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$04BF
-  movx @dptr,a
-  mov a,#$05
-  mov dptr,#$04C0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04C1
-  movx @dptr,a
-  mov dptr,#$04BE
-  movx a,@dptr
-  mov $40,a
-  mov dptr,#$04BF
-  movx a,@dptr
-  mov $41,a
-  mov dptr,#$04C0
-  movx a,@dptr
-  mov $42,a
-  mov dptr,#$04C1
-  movx a,@dptr
-  mov $43,a
-  lcall __i8051_mul16
-  mov a,$40
-  mov dptr,#$04BE
-  movx @dptr,a
-  mov a,$41
-  mov dptr,#$04BF
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$04C2
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$04C3
-  movx @dptr,a
-  mov a,#$02
-  mov $55,a
-__i8051_sh1142:
-  mov a,$55
-  jz __i8051_shd1142
-  mov dptr,#$04C2
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$04C2
-  movx @dptr,a
-  mov dptr,#$04C3
-  movx a,@dptr
-  rlc a
-  mov dptr,#$04C3
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1142
-__i8051_shd1142:
-  mov a,#$A0
-  mov dptr,#$04C4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04C5
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$04C6
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$04C7
-  movx @dptr,a
-  mov a,#$0A
-  mov dptr,#$04C8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04C9
-  movx @dptr,a
-  mov dptr,#$04C6
-  movx a,@dptr
-  mov $40,a
-  mov dptr,#$04C7
-  movx a,@dptr
-  mov $41,a
-  mov dptr,#$04C8
-  movx a,@dptr
-  mov $42,a
-  mov dptr,#$04C9
-  movx a,@dptr
-  mov $43,a
-  lcall __i8051_mul16
-  mov a,$40
-  mov dptr,#$04C6
-  movx @dptr,a
-  mov a,$41
-  mov dptr,#$04C7
-  movx @dptr,a
-  mov dptr,#$04C6
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04C4
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$04C4
-  movx @dptr,a
-  mov dptr,#$04C7
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04C5
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$04C5
-  movx @dptr,a
-  mov a,#$80
-  mov dptr,#$04CA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04CB
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$04CC
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$04CD
-  movx @dptr,a
-  mov a,#$03
-  mov $55,a
-__i8051_sh1150:
-  mov a,$55
-  jz __i8051_shd1150
-  mov dptr,#$04CC
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$04CC
-  movx @dptr,a
-  mov dptr,#$04CD
-  movx a,@dptr
-  rlc a
-  mov dptr,#$04CD
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1150
-__i8051_shd1150:
-  mov dptr,#$04CC
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04CA
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$04CA
-  movx @dptr,a
-  mov dptr,#$04CD
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04CB
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$04CB
-  movx @dptr,a
-  mov dptr,#$04BE
-  movx a,@dptr
-  mov dptr,#$FE
-  movx @dptr,a
-  mov dptr,#$04BF
-  movx a,@dptr
-  mov dptr,#$FF
-  movx @dptr,a
-  mov dptr,#$04C2
-  movx a,@dptr
-  mov dptr,#$010E
-  movx @dptr,a
-  mov dptr,#$04C3
-  movx a,@dptr
-  mov dptr,#$010F
-  movx @dptr,a
-  mov dptr,#$04C4
-  movx a,@dptr
-  mov dptr,#$010C
-  movx @dptr,a
-  mov dptr,#$04C5
-  movx a,@dptr
-  mov dptr,#$010D
-  movx @dptr,a
-  mov dptr,#$04CA
-  movx a,@dptr
-  mov dptr,#$0110
-  movx @dptr,a
-  mov dptr,#$04CB
-  movx a,@dptr
-  mov dptr,#$0111
-  movx @dptr,a
-  lcall rect
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$04CE
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$04CF
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$04D0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04D1
-  movx @dptr,a
-  mov dptr,#$04D0
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04CE
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$04CE
-  movx @dptr,a
-  mov dptr,#$04D1
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04CF
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$04CF
-  movx @dptr,a
-  mov dptr,#$04CE
-  movx a,@dptr
-  mov dptr,#$28
-  movx @dptr,a
-  mov dptr,#$04CF
-  movx a,@dptr
-  mov dptr,#$29
-  movx @dptr,a
-  ljmp L23
-L24:
-  mov a,#$00
-  mov dptr,#$04D2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04D3
-  movx @dptr,a
-  mov dptr,#$04D2
-  movx a,@dptr
-  mov dptr,#$10
-  movx @dptr,a
-  mov dptr,#$04D3
-  movx a,@dptr
-  mov dptr,#$11
-  movx @dptr,a
-L27:
-  mov dptr,#$10
-  movx a,@dptr
-  mov dptr,#$04D4
-  movx @dptr,a
-  mov dptr,#$11
-  movx a,@dptr
-  mov dptr,#$04D5
-  movx @dptr,a
-  mov a,#$80
-  mov dptr,#$04D6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04D7
-  movx @dptr,a
-  mov dptr,#$04D6
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04D4
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$04D7
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$04D5
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_18
-  ljmp L28
-__i51_cond_18:
-  mov dptr,#$10
-  movx a,@dptr
-  mov dptr,#$04D8
-  movx @dptr,a
-  mov dptr,#$11
-  movx a,@dptr
-  mov dptr,#$04D9
-  movx @dptr,a
-  mov a,#$02
-  mov $55,a
-__i8051_sh1170:
-  mov a,$55
-  jz __i8051_shd1170
-  mov dptr,#$04D9
-  movx a,@dptr
-  rlc a
-  mov dptr,#$04D9
-  movx a,@dptr
-  rrc a
-  mov dptr,#$04D9
-  movx @dptr,a
-  mov dptr,#$04D8
-  movx a,@dptr
-  rrc a
-  mov dptr,#$04D8
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1170
-__i8051_shd1170:
-  mov dptr,#$04D8
-  movx a,@dptr
-  mov dptr,#$FE
-  movx @dptr,a
-  mov dptr,#$04D9
-  movx a,@dptr
-  mov dptr,#$FF
-  movx @dptr,a
-  lcall rainbow
-  mov dptr,#$00
-  movx a,@dptr
-  mov dptr,#$04DA
-  movx @dptr,a
-  mov dptr,#$01
-  movx a,@dptr
-  mov dptr,#$04DB
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04DC
-  movx @dptr,a
-  mov a,#$DC
-  mov dptr,#$04DD
-  movx @dptr,a
-  mov dptr,#$10
-  movx a,@dptr
-  mov dptr,#$04DE
-  movx @dptr,a
-  mov dptr,#$11
-  movx a,@dptr
-  mov dptr,#$04DF
-  movx @dptr,a
-  mov dptr,#$04DE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04DC
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$04DC
-  movx @dptr,a
-  mov dptr,#$04DF
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04DD
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$04DD
-  movx @dptr,a
-  mov dptr,#$04DA
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$04DC
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$04DD
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$10
-  movx a,@dptr
-  mov dptr,#$04E0
-  movx @dptr,a
-  mov dptr,#$11
-  movx a,@dptr
-  mov dptr,#$04E1
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$04E2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04E3
-  movx @dptr,a
-  mov dptr,#$04E2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04E0
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$04E0
-  movx @dptr,a
-  mov dptr,#$04E3
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04E1
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$04E1
-  movx @dptr,a
-  mov dptr,#$04E0
-  movx a,@dptr
-  mov dptr,#$10
-  movx @dptr,a
-  mov dptr,#$04E1
-  movx a,@dptr
-  mov dptr,#$11
-  movx @dptr,a
-  ljmp L27
-L28:
-  ret
-DrawBalls:
-  mov a,#$00
-  mov dptr,#$04E4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04E5
-  movx @dptr,a
-  mov dptr,#$04E4
-  movx a,@dptr
-  mov dptr,#$04E6
-  movx @dptr,a
-  mov dptr,#$04E5
-  movx a,@dptr
-  mov dptr,#$04E7
-  movx @dptr,a
-  mov dptr,#$04E4
-  movx a,@dptr
-  mov dptr,#$04E8
-  movx @dptr,a
-  mov dptr,#$04E5
-  movx a,@dptr
-  mov dptr,#$04E9
-  movx @dptr,a
-  mov dptr,#$04E4
-  movx a,@dptr
-  mov dptr,#$04EA
-  movx @dptr,a
-  mov dptr,#$04E5
-  movx a,@dptr
-  mov dptr,#$04EB
-  movx @dptr,a
-  mov dptr,#$04E4
-  movx a,@dptr
-  mov dptr,#$04EC
-  movx @dptr,a
-  mov dptr,#$04E5
-  movx a,@dptr
-  mov dptr,#$04ED
-  movx @dptr,a
-  mov dptr,#$04E4
-  movx a,@dptr
-  mov dptr,#$04EE
-  movx @dptr,a
-  mov dptr,#$04E5
-  movx a,@dptr
-  mov dptr,#$04EF
-  movx @dptr,a
-  mov dptr,#$04E4
-  movx a,@dptr
-  mov dptr,#$04F0
-  movx @dptr,a
-  mov dptr,#$04E5
-  movx a,@dptr
-  mov dptr,#$04F1
-  movx @dptr,a
-L29:
-  mov dptr,#$04F0
-  movx a,@dptr
-  mov dptr,#$04F2
-  movx @dptr,a
-  mov dptr,#$04F1
-  movx a,@dptr
-  mov dptr,#$04F3
-  movx @dptr,a
-  mov a,#$04
-  mov dptr,#$04F4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04F5
-  movx @dptr,a
-  mov dptr,#$04F4
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04F2
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$04F5
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$04F3
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_19
-  ljmp L30
-__i51_cond_19:
-  mov a,#$00
-  mov dptr,#$04F6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04F7
-  movx @dptr,a
-  mov dptr,#$04F6
-  movx a,@dptr
-  mov dptr,#$04EE
-  movx @dptr,a
-  mov dptr,#$04F7
-  movx a,@dptr
-  mov dptr,#$04EF
-  movx @dptr,a
-L31:
-  mov dptr,#$04EE
-  movx a,@dptr
-  mov dptr,#$04F8
-  movx @dptr,a
-  mov dptr,#$04EF
-  movx a,@dptr
-  mov dptr,#$04F9
-  movx @dptr,a
-  mov a,#$08
-  mov dptr,#$04FA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04FB
-  movx @dptr,a
-  mov dptr,#$04FA
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04F8
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$04FB
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$04F9
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_20
-  ljmp L32
-__i51_cond_20:
-  mov a,#$00
-  mov dptr,#$04FC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$04FD
-  movx @dptr,a
-  mov dptr,#$04FC
-  movx a,@dptr
-  mov dptr,#$04E6
-  movx @dptr,a
-  mov dptr,#$04FD
-  movx a,@dptr
-  mov dptr,#$04E7
-  movx @dptr,a
-L33:
-  mov dptr,#$04E6
-  movx a,@dptr
-  mov dptr,#$04FE
-  movx @dptr,a
-  mov dptr,#$04E7
-  movx a,@dptr
-  mov dptr,#$04FF
-  movx @dptr,a
-  mov a,#$08
-  mov dptr,#$0500
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0501
-  movx @dptr,a
-  mov dptr,#$0500
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$04FE
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$0501
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$04FF
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_21
-  ljmp L34
-__i51_cond_21:
-  mov dptr,#$04E6
-  movx a,@dptr
-  mov dptr,#$0502
-  movx @dptr,a
-  mov dptr,#$04E7
-  movx a,@dptr
-  mov dptr,#$0503
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1209:
-  mov a,$55
-  jz __i8051_shd1209
-  mov dptr,#$0502
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0502
-  movx @dptr,a
-  mov dptr,#$0503
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0503
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1209
-__i8051_shd1209:
-  mov a,#$07
-  mov dptr,#$0504
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0505
-  movx @dptr,a
-  mov dptr,#$0504
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0502
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$0502
-  movx @dptr,a
-  mov dptr,#$0505
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0503
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$0503
-  movx @dptr,a
-  mov dptr,#$0502
-  movx a,@dptr
-  mov dptr,#$04EA
-  movx @dptr,a
-  mov dptr,#$0503
-  movx a,@dptr
-  mov dptr,#$04EB
-  movx @dptr,a
-  mov dptr,#$04EE
-  movx a,@dptr
-  mov dptr,#$0506
-  movx @dptr,a
-  mov dptr,#$04EF
-  movx a,@dptr
-  mov dptr,#$0507
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1214:
-  mov a,$55
-  jz __i8051_shd1214
-  mov dptr,#$0506
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0506
-  movx @dptr,a
-  mov dptr,#$0507
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0507
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1214
-__i8051_shd1214:
-  mov a,#$07
-  mov dptr,#$0508
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0509
-  movx @dptr,a
-  mov dptr,#$0508
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0506
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$0506
-  movx @dptr,a
-  mov dptr,#$0509
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0507
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$0507
-  movx @dptr,a
-  mov dptr,#$0506
-  movx a,@dptr
-  mov dptr,#$04EC
-  movx @dptr,a
-  mov dptr,#$0507
-  movx a,@dptr
-  mov dptr,#$04ED
-  movx @dptr,a
-  mov dptr,#$04EA
-  movx a,@dptr
-  mov dptr,#$050A
-  movx @dptr,a
-  mov dptr,#$04EB
-  movx a,@dptr
-  mov dptr,#$050B
-  movx @dptr,a
-  mov dptr,#$04EA
-  movx a,@dptr
-  mov dptr,#$050C
-  movx @dptr,a
-  mov dptr,#$04EB
-  movx a,@dptr
-  mov dptr,#$050D
-  movx @dptr,a
-  mov dptr,#$050A
-  movx a,@dptr
-  mov $40,a
-  mov dptr,#$050B
-  movx a,@dptr
-  mov $41,a
-  mov dptr,#$050C
-  movx a,@dptr
-  mov $42,a
-  mov dptr,#$050D
-  movx a,@dptr
-  mov $43,a
-  lcall __i8051_mul16
-  mov a,$40
-  mov dptr,#$050A
-  movx @dptr,a
-  mov a,$41
-  mov dptr,#$050B
-  movx @dptr,a
-  mov dptr,#$04EC
-  movx a,@dptr
-  mov dptr,#$050E
-  movx @dptr,a
-  mov dptr,#$04ED
-  movx a,@dptr
-  mov dptr,#$050F
-  movx @dptr,a
-  mov dptr,#$04EC
-  movx a,@dptr
-  mov dptr,#$0510
-  movx @dptr,a
-  mov dptr,#$04ED
-  movx a,@dptr
-  mov dptr,#$0511
-  movx @dptr,a
-  mov dptr,#$050E
-  movx a,@dptr
-  mov $40,a
-  mov dptr,#$050F
-  movx a,@dptr
-  mov $41,a
-  mov dptr,#$0510
-  movx a,@dptr
-  mov $42,a
-  mov dptr,#$0511
-  movx a,@dptr
-  mov $43,a
-  lcall __i8051_mul16
-  mov a,$40
-  mov dptr,#$050E
-  movx @dptr,a
-  mov a,$41
-  mov dptr,#$050F
-  movx @dptr,a
-  mov dptr,#$050E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$050A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$050A
-  movx @dptr,a
-  mov dptr,#$050F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$050B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$050B
-  movx @dptr,a
-  mov dptr,#$050A
-  movx a,@dptr
-  mov dptr,#$04E8
-  movx @dptr,a
-  mov dptr,#$050B
-  movx a,@dptr
-  mov dptr,#$04E9
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0512
-  movx @dptr,a
-  mov a,#$D8
-  mov dptr,#$0513
-  movx @dptr,a
-  mov dptr,#$04F0
-  movx a,@dptr
-  mov dptr,#$0514
-  movx @dptr,a
-  mov dptr,#$04F1
-  movx a,@dptr
-  mov dptr,#$0515
-  movx @dptr,a
-  mov a,#$06
-  mov $55,a
-__i8051_sh1228:
-  mov a,$55
-  jz __i8051_shd1228
-  mov dptr,#$0514
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0514
-  movx @dptr,a
-  mov dptr,#$0515
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0515
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1228
-__i8051_shd1228:
-  mov dptr,#$0514
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0512
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0512
-  movx @dptr,a
-  mov dptr,#$0515
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0513
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0513
-  movx @dptr,a
-  mov dptr,#$04EE
-  movx a,@dptr
-  mov dptr,#$0516
-  movx @dptr,a
-  mov dptr,#$04EF
-  movx a,@dptr
-  mov dptr,#$0517
-  movx @dptr,a
-  mov a,#$03
-  mov $55,a
-__i8051_sh1231:
-  mov a,$55
-  jz __i8051_shd1231
-  mov dptr,#$0516
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0516
-  movx @dptr,a
-  mov dptr,#$0517
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0517
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1231
-__i8051_shd1231:
-  mov dptr,#$0516
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0512
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0512
-  movx @dptr,a
-  mov dptr,#$0517
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0513
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0513
-  movx @dptr,a
-  mov dptr,#$04E6
-  movx a,@dptr
-  mov dptr,#$0518
-  movx @dptr,a
-  mov dptr,#$04E7
-  movx a,@dptr
-  mov dptr,#$0519
-  movx @dptr,a
-  mov dptr,#$0518
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0512
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0512
-  movx @dptr,a
-  mov dptr,#$0519
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0513
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0513
-  movx @dptr,a
-  mov dptr,#$0512
-  movx a,@dptr
-  mov dptr,#$24
-  movx @dptr,a
-  mov dptr,#$0513
-  movx a,@dptr
-  mov dptr,#$25
-  movx @dptr,a
-  mov dptr,#$04E8
-  movx a,@dptr
-  mov dptr,#$051A
-  movx @dptr,a
-  mov dptr,#$04E9
-  movx a,@dptr
-  mov dptr,#$051B
-  movx @dptr,a
-  mov a,#$38
-  mov dptr,#$051C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$051D
-  movx @dptr,a
-  mov dptr,#$051C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$051A
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$051D
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$051B
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_22_n
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_22
-__i51_cond_22_n:
-  ljmp L35
-__i51_cond_22:
-  mov a,#$00
-  mov dptr,#$051E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$051E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$051F
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$0520
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$0521
-  movx @dptr,a
-  mov dptr,#$051E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0520
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0521
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  ljmp L36
-L35:
-  mov dptr,#$04E8
-  movx a,@dptr
-  mov dptr,#$0522
-  movx @dptr,a
-  mov dptr,#$04E9
-  movx a,@dptr
-  mov dptr,#$0523
-  movx @dptr,a
-  mov a,#$0C
-  mov dptr,#$0524
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0525
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0526
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0526
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0527
-  movx @dptr,a
-  mov dptr,#$0524
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0522
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$0525
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$0523
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_23
-  ljmp L41
-__i51_cond_23:
-  mov a,#$01
-  mov dptr,#$0526
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0526
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0527
-  movx @dptr,a
-L41:
-  mov a,#$00
-  mov dptr,#$0528
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0528
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0529
-  movx @dptr,a
-  mov dptr,#$0526
-  movx a,@dptr
-  clr c
-  subb a,#$00
-  mov $50,a
-  mov dptr,#$0527
-  movx a,@dptr
-  xrl a,#$80
-  subb a,#$80
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_24
-  ljmp L40
-__i51_cond_24:
-  mov dptr,#$04EA
-  movx a,@dptr
-  mov dptr,#$052A
-  movx @dptr,a
-  mov dptr,#$04EB
-  movx a,@dptr
-  mov dptr,#$052B
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$052C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$052D
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$052E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$052E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$052F
-  movx @dptr,a
-  mov dptr,#$052C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$052A
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$052D
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$052B
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_25
-  ljmp L42
-__i51_cond_25:
-  mov a,#$01
-  mov dptr,#$052E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$052E
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$052F
-  movx @dptr,a
-L42:
-  mov dptr,#$052E
-  movx a,@dptr
-  clr c
-  subb a,#$00
-  mov $50,a
-  mov dptr,#$052F
-  movx a,@dptr
-  xrl a,#$80
-  subb a,#$80
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_26
-  ljmp L40
-__i51_cond_26:
-  mov a,#$01
-  mov dptr,#$0528
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0528
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0529
-  movx @dptr,a
-L40:
-  mov a,#$00
-  mov dptr,#$0530
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0530
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0531
-  movx @dptr,a
-  mov dptr,#$0528
-  movx a,@dptr
-  clr c
-  subb a,#$00
-  mov $50,a
-  mov dptr,#$0529
-  movx a,@dptr
-  xrl a,#$80
-  subb a,#$80
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_27
-  ljmp L39
-__i51_cond_27:
-  mov dptr,#$04EC
-  movx a,@dptr
-  mov dptr,#$0532
-  movx @dptr,a
-  mov dptr,#$04ED
-  movx a,@dptr
-  mov dptr,#$0533
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0534
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0535
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0536
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0536
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0537
-  movx @dptr,a
-  mov dptr,#$0534
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0532
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$0535
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$0533
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_28
-  ljmp L43
-__i51_cond_28:
-  mov a,#$01
-  mov dptr,#$0536
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0536
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0537
-  movx @dptr,a
-L43:
-  mov dptr,#$0536
-  movx a,@dptr
-  clr c
-  subb a,#$00
-  mov $50,a
-  mov dptr,#$0537
-  movx a,@dptr
-  xrl a,#$80
-  subb a,#$80
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_29
-  ljmp L39
-__i51_cond_29:
-  mov a,#$01
-  mov dptr,#$0530
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0530
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0531
-  movx @dptr,a
-L39:
-  mov a,#$00
-  mov dptr,#$0538
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0538
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0539
-  movx @dptr,a
-  mov dptr,#$0538
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0530
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$0539
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$0531
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_30
-  ljmp L37
-__i51_cond_30:
-  mov a,#$FF
-  mov dptr,#$053A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$053A
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$053B
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$053C
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$053D
-  movx @dptr,a
-  mov dptr,#$053A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$053C
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$053D
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  ljmp L38
-L37:
-  mov dptr,#$04F0
-  movx a,@dptr
-  mov dptr,#$053E
-  movx @dptr,a
-  mov dptr,#$04F1
-  movx a,@dptr
-  mov dptr,#$053F
-  movx @dptr,a
-  mov a,#$03
-  mov $55,a
-__i8051_sh1280:
-  mov a,$55
-  jz __i8051_shd1280
-  mov dptr,#$053E
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$053E
-  movx @dptr,a
-  mov dptr,#$053F
-  movx a,@dptr
-  rlc a
-  mov dptr,#$053F
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1280
-__i8051_shd1280:
-  mov a,#$02
-  mov dptr,#$0540
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0541
-  movx @dptr,a
-  mov dptr,#$0540
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$053E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$053E
-  movx @dptr,a
-  mov dptr,#$0541
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$053F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$053F
-  movx @dptr,a
-  mov dptr,#$053E
-  movx a,@dptr
-  mov dptr,#$FE
-  movx @dptr,a
-  mov dptr,#$053F
-  movx a,@dptr
-  mov dptr,#$FF
-  movx @dptr,a
-  lcall rainbow
-  mov dptr,#$00
-  movx a,@dptr
-  mov dptr,#$0542
-  movx @dptr,a
-  mov dptr,#$01
-  movx a,@dptr
-  mov dptr,#$0543
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$0544
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$0545
-  movx @dptr,a
-  mov dptr,#$0542
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0544
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0545
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-L38:
-L36:
-  mov dptr,#$04E6
-  movx a,@dptr
-  mov dptr,#$0546
-  movx @dptr,a
-  mov dptr,#$04E7
-  movx a,@dptr
-  mov dptr,#$0547
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0548
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0549
-  movx @dptr,a
-  mov dptr,#$0548
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0546
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0546
-  movx @dptr,a
-  mov dptr,#$0549
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0547
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0547
-  movx @dptr,a
-  mov dptr,#$0546
-  movx a,@dptr
-  mov dptr,#$04E6
-  movx @dptr,a
-  mov dptr,#$0547
-  movx a,@dptr
-  mov dptr,#$04E7
-  movx @dptr,a
-  ljmp L33
-L34:
-  mov dptr,#$04EE
-  movx a,@dptr
-  mov dptr,#$054A
-  movx @dptr,a
-  mov dptr,#$04EF
-  movx a,@dptr
-  mov dptr,#$054B
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$054C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$054D
-  movx @dptr,a
-  mov dptr,#$054C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$054A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$054A
-  movx @dptr,a
-  mov dptr,#$054D
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$054B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$054B
-  movx @dptr,a
-  mov dptr,#$054A
-  movx a,@dptr
-  mov dptr,#$04EE
-  movx @dptr,a
-  mov dptr,#$054B
-  movx a,@dptr
-  mov dptr,#$04EF
-  movx @dptr,a
-  ljmp L31
-L32:
-  mov dptr,#$04F0
-  movx a,@dptr
-  mov dptr,#$054E
-  movx @dptr,a
-  mov dptr,#$04F1
-  movx a,@dptr
-  mov dptr,#$054F
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0550
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0551
-  movx @dptr,a
-  mov dptr,#$0550
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$054E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$054E
-  movx @dptr,a
-  mov dptr,#$0551
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$054F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$054F
-  movx @dptr,a
-  mov dptr,#$054E
-  movx a,@dptr
-  mov dptr,#$04F0
-  movx @dptr,a
-  mov dptr,#$054F
-  movx a,@dptr
-  mov dptr,#$04F1
-  movx @dptr,a
-  ljmp L29
-L30:
-  mov a,#$00
-  mov dptr,#$0552
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0553
-  movx @dptr,a
-  mov dptr,#$0552
-  movx a,@dptr
-  mov dptr,#$28
-  movx @dptr,a
-  mov dptr,#$0553
-  movx a,@dptr
-  mov dptr,#$29
-  movx @dptr,a
-L44:
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0554
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0555
-  movx @dptr,a
-  mov a,#$08
-  mov dptr,#$0556
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0557
-  movx @dptr,a
-  mov dptr,#$0556
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0554
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$0557
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$0555
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_31
-  ljmp L45
-__i51_cond_31:
-  mov a,#$0A
-  mov dptr,#$0558
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0559
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$055A
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$055B
-  movx @dptr,a
-  mov a,#$11
-  mov dptr,#$055C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$055D
-  movx @dptr,a
-  mov dptr,#$055A
-  movx a,@dptr
-  mov $40,a
-  mov dptr,#$055B
-  movx a,@dptr
-  mov $41,a
-  mov dptr,#$055C
-  movx a,@dptr
-  mov $42,a
-  mov dptr,#$055D
-  movx a,@dptr
-  mov $43,a
-  lcall __i8051_mul16
-  mov a,$40
-  mov dptr,#$055A
-  movx @dptr,a
-  mov a,$41
-  mov dptr,#$055B
-  movx @dptr,a
-  mov dptr,#$055A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0558
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0558
-  movx @dptr,a
-  mov dptr,#$055B
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0559
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0559
-  movx @dptr,a
-  mov a,#$56
-  mov dptr,#$055E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$055F
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0560
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0561
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1320:
-  mov a,$55
-  jz __i8051_shd1320
-  mov dptr,#$0560
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0560
-  movx @dptr,a
-  mov dptr,#$0561
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0561
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1320
-__i8051_shd1320:
-  mov dptr,#$0560
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$055E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$055E
-  movx @dptr,a
-  mov dptr,#$0561
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$055F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$055F
-  movx @dptr,a
-  mov dptr,#$0558
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0559
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$055E
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$055F
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$14
-  mov dptr,#$0562
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0563
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0564
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0565
-  movx @dptr,a
-  mov a,#$0B
-  mov dptr,#$0566
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0567
-  movx @dptr,a
-  mov dptr,#$0564
-  movx a,@dptr
-  mov $40,a
-  mov dptr,#$0565
-  movx a,@dptr
-  mov $41,a
-  mov dptr,#$0566
-  movx a,@dptr
-  mov $42,a
-  mov dptr,#$0567
-  movx a,@dptr
-  mov $43,a
-  lcall __i8051_mul16
-  mov a,$40
-  mov dptr,#$0564
-  movx @dptr,a
-  mov a,$41
-  mov dptr,#$0565
-  movx @dptr,a
-  mov dptr,#$0564
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0562
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0562
-  movx @dptr,a
-  mov dptr,#$0565
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0563
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0563
-  movx @dptr,a
-  mov a,#$66
-  mov dptr,#$0568
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0569
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$056A
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$056B
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1330:
-  mov a,$55
-  jz __i8051_shd1330
-  mov dptr,#$056A
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$056A
-  movx @dptr,a
-  mov dptr,#$056B
-  movx a,@dptr
-  rlc a
-  mov dptr,#$056B
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1330
-__i8051_shd1330:
-  mov dptr,#$056A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0568
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0568
-  movx @dptr,a
-  mov dptr,#$056B
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0569
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0569
-  movx @dptr,a
-  mov dptr,#$0562
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0563
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0568
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0569
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$056C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$056D
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$056E
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$056F
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0570
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0571
-  movx @dptr,a
-  mov dptr,#$0570
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$056E
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$056E
-  movx @dptr,a
-  mov dptr,#$0571
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$056F
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$056F
-  movx @dptr,a
-  mov dptr,#$056E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$056C
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$056C
-  movx @dptr,a
-  mov dptr,#$056F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$056D
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$056D
-  movx @dptr,a
-  mov a,#$76
-  mov dptr,#$0572
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0573
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0574
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0575
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1340:
-  mov a,$55
-  jz __i8051_shd1340
-  mov dptr,#$0574
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0574
-  movx @dptr,a
-  mov dptr,#$0575
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0575
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1340
-__i8051_shd1340:
-  mov dptr,#$0574
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0572
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0572
-  movx @dptr,a
-  mov dptr,#$0575
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0573
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0573
-  movx @dptr,a
-  mov dptr,#$056C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$056D
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0572
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0573
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0576
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0577
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0578
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0579
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1345:
-  mov a,$55
-  jz __i8051_shd1345
-  mov dptr,#$0579
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0579
-  movx a,@dptr
-  rrc a
-  mov dptr,#$0579
-  movx @dptr,a
-  mov dptr,#$0578
-  movx a,@dptr
-  rrc a
-  mov dptr,#$0578
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1345
-__i8051_shd1345:
-  mov a,#$01
-  mov dptr,#$057A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$057B
-  movx @dptr,a
-  mov dptr,#$057A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0578
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0578
-  movx @dptr,a
-  mov dptr,#$057B
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0579
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0579
-  movx @dptr,a
-  mov dptr,#$0578
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0576
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0576
-  movx @dptr,a
-  mov dptr,#$0579
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0577
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0577
-  movx @dptr,a
-  mov a,#$86
-  mov dptr,#$057C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$057D
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$057E
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$057F
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1351:
-  mov a,$55
-  jz __i8051_shd1351
-  mov dptr,#$057E
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$057E
-  movx @dptr,a
-  mov dptr,#$057F
-  movx a,@dptr
-  rlc a
-  mov dptr,#$057F
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1351
-__i8051_shd1351:
-  mov dptr,#$057E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$057C
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$057C
-  movx @dptr,a
-  mov dptr,#$057F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$057D
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$057D
-  movx @dptr,a
-  mov dptr,#$0576
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0577
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$057C
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$057D
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0580
-  movx @dptr,a
-  mov a,#$D4
-  mov dptr,#$0581
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0582
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0583
-  movx @dptr,a
-  mov a,#$03
-  mov $55,a
-__i8051_sh1356:
-  mov a,$55
-  jz __i8051_shd1356
-  mov dptr,#$0582
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0582
-  movx @dptr,a
-  mov dptr,#$0583
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0583
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1356
-__i8051_shd1356:
-  mov dptr,#$0582
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0580
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0580
-  movx @dptr,a
-  mov dptr,#$0583
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0581
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0581
-  movx @dptr,a
-  mov dptr,#$0580
-  movx a,@dptr
-  mov dptr,#$24
-  movx @dptr,a
-  mov dptr,#$0581
-  movx a,@dptr
-  mov dptr,#$25
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0584
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0585
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$0586
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0587
-  movx @dptr,a
-  mov dptr,#$0586
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0584
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0584
-  movx @dptr,a
-  mov dptr,#$0587
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0585
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$0585
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$0588
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$0589
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$058A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$058B
-  movx @dptr,a
-  mov dptr,#$058A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0588
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0588
-  movx @dptr,a
-  mov dptr,#$058B
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0589
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0589
-  movx @dptr,a
-  mov dptr,#$0584
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0588
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0589
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$058C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$058C
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$058D
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$058E
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$058F
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$0590
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0591
-  movx @dptr,a
-  mov dptr,#$0590
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$058E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$058E
-  movx @dptr,a
-  mov dptr,#$0591
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$058F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$058F
-  movx @dptr,a
-  mov dptr,#$058C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$058E
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$058F
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0592
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0593
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0594
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0595
-  movx @dptr,a
-  mov dptr,#$0594
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0592
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0592
-  movx @dptr,a
-  mov dptr,#$0595
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0593
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0593
-  movx @dptr,a
-  mov dptr,#$0592
-  movx a,@dptr
-  mov dptr,#$28
-  movx @dptr,a
-  mov dptr,#$0593
-  movx a,@dptr
-  mov dptr,#$29
-  movx @dptr,a
-  ljmp L44
-L45:
-  ret
-MoveBalls:
-  mov a,#$00
-  mov dptr,#$0596
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0597
-  movx @dptr,a
-  mov dptr,#$0596
-  movx a,@dptr
-  mov dptr,#$28
-  movx @dptr,a
-  mov dptr,#$0597
-  movx a,@dptr
-  mov dptr,#$29
-  movx @dptr,a
-L46:
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0598
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0599
-  movx @dptr,a
-  mov a,#$08
-  mov dptr,#$059A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$059B
-  movx @dptr,a
-  mov dptr,#$059A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0598
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$059B
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$0599
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_32
-  ljmp L47
-__i51_cond_32:
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$059C
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$059D
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$059E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$059F
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05A0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05A0
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05A1
-  movx @dptr,a
-  mov dptr,#$059E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$059C
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$059F
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$059D
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jz __i51_cond_33
-  ljmp L51
-__i51_cond_33:
-  mov a,#$01
-  mov dptr,#$05A0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05A0
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05A1
-  movx @dptr,a
-L51:
-  mov a,#$00
-  mov dptr,#$05A2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05A2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05A3
-  movx @dptr,a
-  mov dptr,#$05A0
-  movx a,@dptr
-  clr c
-  subb a,#$00
-  mov $50,a
-  mov dptr,#$05A1
-  movx a,@dptr
-  xrl a,#$80
-  subb a,#$80
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_34
-  ljmp L50
-__i51_cond_34:
-  mov dptr,#$2C
-  movx a,@dptr
-  mov dptr,#$05A4
-  movx @dptr,a
-  mov dptr,#$2D
-  movx a,@dptr
-  mov dptr,#$05A5
-  movx @dptr,a
-  mov a,#$0F
-  mov dptr,#$05A6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05A7
-  movx @dptr,a
-  mov dptr,#$05A6
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05A4
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05A4
-  movx @dptr,a
-  mov dptr,#$05A7
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05A5
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05A5
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05A8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05A9
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05AA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05AA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05AB
-  movx @dptr,a
-  mov dptr,#$05A8
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05A4
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$05A9
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$05A5
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_35
-  ljmp L52
-__i51_cond_35:
-  mov a,#$01
-  mov dptr,#$05AA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05AA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05AB
-  movx @dptr,a
-L52:
-  mov dptr,#$05AA
-  movx a,@dptr
-  clr c
-  subb a,#$00
-  mov $50,a
-  mov dptr,#$05AB
-  movx a,@dptr
-  xrl a,#$80
-  subb a,#$80
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_36
-  ljmp L50
-__i51_cond_36:
-  mov a,#$01
-  mov dptr,#$05A2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05A2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05A3
-  movx @dptr,a
-L50:
-  mov a,#$00
-  mov dptr,#$05AC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05AC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05AD
-  movx @dptr,a
-  mov dptr,#$05AC
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05A2
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$05AD
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$05A3
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_37
-  ljmp L48
-__i51_cond_37:
-  mov dptr,#$2C
-  movx a,@dptr
-  mov dptr,#$05AE
-  movx @dptr,a
-  mov dptr,#$2D
-  movx a,@dptr
-  mov dptr,#$05AF
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$05B0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05B1
-  movx @dptr,a
-  mov dptr,#$05B0
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05AE
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05AE
-  movx @dptr,a
-  mov dptr,#$05B1
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05AF
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05AF
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05B2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05B3
-  movx @dptr,a
-  mov dptr,#$05B2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05AE
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$05B3
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$05AF
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_38
-  ljmp L53
-__i51_cond_38:
-  mov a,#$66
-  mov dptr,#$05B4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05B5
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05B6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05B6
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05B7
-  movx @dptr,a
-  mov dptr,#$05B6
-  movx a,@dptr
-  mov dptr,#$05B8
-  movx @dptr,a
-  clr a
-  mov dptr,#$05B9
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1414:
-  mov a,$55
-  jz __i8051_shd1414
-  mov dptr,#$05B8
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$05B8
-  movx @dptr,a
-  mov dptr,#$05B9
-  movx a,@dptr
-  rlc a
-  mov dptr,#$05B9
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1414
-__i8051_shd1414:
-  mov dptr,#$05B8
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05B4
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05B4
-  movx @dptr,a
-  mov dptr,#$05B9
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05B5
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05B5
-  movx @dptr,a
-  mov dptr,#$05B4
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$05B5
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$05BA
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$05BB
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$05BC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05BD
-  movx @dptr,a
-  mov dptr,#$05BC
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05BA
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$05BA
-  movx @dptr,a
-  mov dptr,#$05BD
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05BB
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$05BB
-  movx @dptr,a
-  mov a,#$66
-  mov dptr,#$05BE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05BF
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05C0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05C0
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05C1
-  movx @dptr,a
-  mov dptr,#$05C0
-  movx a,@dptr
-  mov dptr,#$05C2
-  movx @dptr,a
-  clr a
-  mov dptr,#$05C3
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1422:
-  mov a,$55
-  jz __i8051_shd1422
-  mov dptr,#$05C2
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$05C2
-  movx @dptr,a
-  mov dptr,#$05C3
-  movx a,@dptr
-  rlc a
-  mov dptr,#$05C3
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1422
-__i8051_shd1422:
-  mov dptr,#$05C2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05BE
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05BE
-  movx @dptr,a
-  mov dptr,#$05C3
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05BF
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05BF
-  movx @dptr,a
-  mov dptr,#$05BA
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$05BB
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$05BE
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$05BF
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  ljmp L54
-L53:
-L54:
-  mov dptr,#$2C
-  movx a,@dptr
-  mov dptr,#$05C4
-  movx @dptr,a
-  mov dptr,#$2D
-  movx a,@dptr
-  mov dptr,#$05C5
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$05C6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05C7
-  movx @dptr,a
-  mov dptr,#$05C6
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05C4
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05C4
-  movx @dptr,a
-  mov dptr,#$05C7
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05C5
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05C5
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05C8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05C9
-  movx @dptr,a
-  mov dptr,#$05C8
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05C4
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$05C9
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$05C5
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_39
-  ljmp L55
-__i51_cond_39:
-  mov a,#$66
-  mov dptr,#$05CA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05CB
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05CC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05CC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05CD
-  movx @dptr,a
-  mov dptr,#$05CC
-  movx a,@dptr
-  mov dptr,#$05CE
-  movx @dptr,a
-  clr a
-  mov dptr,#$05CF
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1436:
-  mov a,$55
-  jz __i8051_shd1436
-  mov dptr,#$05CE
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$05CE
-  movx @dptr,a
-  mov dptr,#$05CF
-  movx a,@dptr
-  rlc a
-  mov dptr,#$05CF
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1436
-__i8051_shd1436:
-  mov dptr,#$05CE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05CA
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05CA
-  movx @dptr,a
-  mov dptr,#$05CF
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05CB
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05CB
-  movx @dptr,a
-  mov dptr,#$05CA
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$05CB
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$05D0
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$05D1
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$05D2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05D3
-  movx @dptr,a
-  mov dptr,#$05D2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05D0
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05D0
-  movx @dptr,a
-  mov dptr,#$05D3
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05D1
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05D1
-  movx @dptr,a
-  mov a,#$66
-  mov dptr,#$05D4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05D5
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05D6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05D6
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05D7
-  movx @dptr,a
-  mov dptr,#$05D6
-  movx a,@dptr
-  mov dptr,#$05D8
-  movx @dptr,a
-  clr a
-  mov dptr,#$05D9
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1444:
-  mov a,$55
-  jz __i8051_shd1444
-  mov dptr,#$05D8
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$05D8
-  movx @dptr,a
-  mov dptr,#$05D9
-  movx a,@dptr
-  rlc a
-  mov dptr,#$05D9
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1444
-__i8051_shd1444:
-  mov dptr,#$05D8
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05D4
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05D4
-  movx @dptr,a
-  mov dptr,#$05D9
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05D5
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05D5
-  movx @dptr,a
-  mov dptr,#$05D0
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$05D1
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$05D4
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$05D5
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  ljmp L56
-L55:
-L56:
-  mov dptr,#$2C
-  movx a,@dptr
-  mov dptr,#$05DA
-  movx @dptr,a
-  mov dptr,#$2D
-  movx a,@dptr
-  mov dptr,#$05DB
-  movx @dptr,a
-  mov a,#$04
-  mov dptr,#$05DC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05DD
-  movx @dptr,a
-  mov dptr,#$05DC
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05DA
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05DA
-  movx @dptr,a
-  mov dptr,#$05DD
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05DB
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05DB
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05DE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05DF
-  movx @dptr,a
-  mov dptr,#$05DE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05DA
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$05DF
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$05DB
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_40
-  ljmp L57
-__i51_cond_40:
-  mov a,#$56
-  mov dptr,#$05E0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05E1
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05E2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05E2
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05E3
-  movx @dptr,a
-  mov dptr,#$05E2
-  movx a,@dptr
-  mov dptr,#$05E4
-  movx @dptr,a
-  clr a
-  mov dptr,#$05E5
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1458:
-  mov a,$55
-  jz __i8051_shd1458
-  mov dptr,#$05E4
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$05E4
-  movx @dptr,a
-  mov dptr,#$05E5
-  movx a,@dptr
-  rlc a
-  mov dptr,#$05E5
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1458
-__i8051_shd1458:
-  mov dptr,#$05E4
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05E0
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05E0
-  movx @dptr,a
-  mov dptr,#$05E5
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05E1
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05E1
-  movx @dptr,a
-  mov dptr,#$05E0
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$05E1
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$05E6
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$05E7
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$05E8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05E9
-  movx @dptr,a
-  mov dptr,#$05E8
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05E6
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$05E6
-  movx @dptr,a
-  mov dptr,#$05E9
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05E7
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$05E7
-  movx @dptr,a
-  mov a,#$56
-  mov dptr,#$05EA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05EB
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05EC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05EC
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05ED
-  movx @dptr,a
-  mov dptr,#$05EC
-  movx a,@dptr
-  mov dptr,#$05EE
-  movx @dptr,a
-  clr a
-  mov dptr,#$05EF
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1466:
-  mov a,$55
-  jz __i8051_shd1466
-  mov dptr,#$05EE
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$05EE
-  movx @dptr,a
-  mov dptr,#$05EF
-  movx a,@dptr
-  rlc a
-  mov dptr,#$05EF
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1466
-__i8051_shd1466:
-  mov dptr,#$05EE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05EA
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05EA
-  movx @dptr,a
-  mov dptr,#$05EF
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05EB
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05EB
-  movx @dptr,a
-  mov dptr,#$05E6
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$05E7
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$05EA
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$05EB
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  ljmp L58
-L57:
-L58:
-  mov dptr,#$2C
-  movx a,@dptr
-  mov dptr,#$05F0
-  movx @dptr,a
-  mov dptr,#$2D
-  movx a,@dptr
-  mov dptr,#$05F1
-  movx @dptr,a
-  mov a,#$08
-  mov dptr,#$05F2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05F3
-  movx @dptr,a
-  mov dptr,#$05F2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05F0
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05F0
-  movx @dptr,a
-  mov dptr,#$05F3
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05F1
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$05F1
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05F4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05F5
-  movx @dptr,a
-  mov dptr,#$05F4
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05F0
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$05F5
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$05F1
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_41
-  ljmp L59
-__i51_cond_41:
-  mov a,#$56
-  mov dptr,#$05F6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05F7
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05F8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05F8
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$05F9
-  movx @dptr,a
-  mov dptr,#$05F8
-  movx a,@dptr
-  mov dptr,#$05FA
-  movx @dptr,a
-  clr a
-  mov dptr,#$05FB
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1480:
-  mov a,$55
-  jz __i8051_shd1480
-  mov dptr,#$05FA
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$05FA
-  movx @dptr,a
-  mov dptr,#$05FB
-  movx a,@dptr
-  rlc a
-  mov dptr,#$05FB
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1480
-__i8051_shd1480:
-  mov dptr,#$05FA
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05F6
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05F6
-  movx @dptr,a
-  mov dptr,#$05FB
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05F7
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05F7
-  movx @dptr,a
-  mov dptr,#$05F6
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$05F7
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$05FC
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$05FD
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$05FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$05FF
-  movx @dptr,a
-  mov dptr,#$05FE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05FC
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$05FC
-  movx @dptr,a
-  mov dptr,#$05FF
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$05FD
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$05FD
-  movx @dptr,a
-  mov a,#$56
-  mov dptr,#$0600
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0601
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0602
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0602
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$0603
-  movx @dptr,a
-  mov dptr,#$0602
-  movx a,@dptr
-  mov dptr,#$0604
-  movx @dptr,a
-  clr a
-  mov dptr,#$0605
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1488:
-  mov a,$55
-  jz __i8051_shd1488
-  mov dptr,#$0604
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0604
-  movx @dptr,a
-  mov dptr,#$0605
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0605
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1488
-__i8051_shd1488:
-  mov dptr,#$0604
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0600
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0600
-  movx @dptr,a
-  mov dptr,#$0605
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0601
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0601
-  movx @dptr,a
-  mov dptr,#$05FC
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$05FD
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0600
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0601
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  ljmp L60
-L59:
-L60:
-  ljmp L49
-L48:
-  mov a,#$56
-  mov dptr,#$0606
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0607
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0608
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0609
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1498:
-  mov a,$55
-  jz __i8051_shd1498
-  mov dptr,#$0608
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0608
-  movx @dptr,a
-  mov dptr,#$0609
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0609
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1498
-__i8051_shd1498:
-  mov dptr,#$0608
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0606
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0606
-  movx @dptr,a
-  mov dptr,#$0609
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0607
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0607
-  movx @dptr,a
-  mov dptr,#$0606
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0607
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$060A
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$060B
-  movx @dptr,a
-  mov a,#$76
-  mov dptr,#$060C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$060D
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$060E
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$060F
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1503:
-  mov a,$55
-  jz __i8051_shd1503
-  mov dptr,#$060E
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$060E
-  movx @dptr,a
-  mov dptr,#$060F
-  movx a,@dptr
-  rlc a
-  mov dptr,#$060F
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1503
-__i8051_shd1503:
-  mov dptr,#$060E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$060C
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$060C
-  movx @dptr,a
-  mov dptr,#$060F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$060D
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$060D
-  movx @dptr,a
-  mov dptr,#$060C
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$060D
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$0610
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$0611
-  movx @dptr,a
-  mov dptr,#$0610
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$060A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$060A
-  movx @dptr,a
-  mov dptr,#$0611
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$060B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$060B
-  movx @dptr,a
-  mov a,#$56
-  mov dptr,#$0612
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0613
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0614
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0615
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1509:
-  mov a,$55
-  jz __i8051_shd1509
-  mov dptr,#$0614
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0614
-  movx @dptr,a
-  mov dptr,#$0615
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0615
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1509
-__i8051_shd1509:
-  mov dptr,#$0614
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0612
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0612
-  movx @dptr,a
-  mov dptr,#$0615
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0613
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0613
-  movx @dptr,a
-  mov dptr,#$060A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$060B
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0612
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0613
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$66
-  mov dptr,#$0616
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0617
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0618
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0619
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1514:
-  mov a,$55
-  jz __i8051_shd1514
-  mov dptr,#$0618
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0618
-  movx @dptr,a
-  mov dptr,#$0619
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0619
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1514
-__i8051_shd1514:
-  mov dptr,#$0618
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0616
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0616
-  movx @dptr,a
-  mov dptr,#$0619
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0617
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0617
-  movx @dptr,a
-  mov dptr,#$0616
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0617
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$061A
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$061B
-  movx @dptr,a
-  mov a,#$86
-  mov dptr,#$061C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$061D
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$061E
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$061F
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1519:
-  mov a,$55
-  jz __i8051_shd1519
-  mov dptr,#$061E
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$061E
-  movx @dptr,a
-  mov dptr,#$061F
-  movx a,@dptr
-  rlc a
-  mov dptr,#$061F
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1519
-__i8051_shd1519:
-  mov dptr,#$061E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$061C
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$061C
-  movx @dptr,a
-  mov dptr,#$061F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$061D
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$061D
-  movx @dptr,a
-  mov dptr,#$061C
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$061D
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$0620
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$0621
-  movx @dptr,a
-  mov dptr,#$0620
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$061A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$061A
-  movx @dptr,a
-  mov dptr,#$0621
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$061B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$061B
-  movx @dptr,a
-  mov a,#$66
-  mov dptr,#$0622
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0623
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0624
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0625
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1525:
-  mov a,$55
-  jz __i8051_shd1525
-  mov dptr,#$0624
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0624
-  movx @dptr,a
-  mov dptr,#$0625
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0625
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1525
-__i8051_shd1525:
-  mov dptr,#$0624
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0622
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0622
-  movx @dptr,a
-  mov dptr,#$0625
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0623
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0623
-  movx @dptr,a
-  mov dptr,#$061A
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$061B
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0622
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0623
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-L49:
-  mov a,#$56
-  mov dptr,#$0626
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0627
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0628
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0629
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1531:
-  mov a,$55
-  jz __i8051_shd1531
-  mov dptr,#$0628
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0628
-  movx @dptr,a
-  mov dptr,#$0629
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0629
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1531
-__i8051_shd1531:
-  mov dptr,#$0628
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0626
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0626
-  movx @dptr,a
-  mov dptr,#$0629
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0627
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0627
-  movx @dptr,a
-  mov dptr,#$0626
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0627
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$062A
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$062B
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$062C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$062D
-  movx @dptr,a
-  mov dptr,#$062C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$062A
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$062D
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$062B
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_42
-  ljmp L61
-__i51_cond_42:
-  mov a,#$00
-  mov dptr,#$062E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$062F
-  movx @dptr,a
-  mov a,#$56
-  mov dptr,#$0630
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0631
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0632
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0633
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1539:
-  mov a,$55
-  jz __i8051_shd1539
-  mov dptr,#$0632
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0632
-  movx @dptr,a
-  mov dptr,#$0633
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0633
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1539
-__i8051_shd1539:
-  mov dptr,#$0632
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0630
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0630
-  movx @dptr,a
-  mov dptr,#$0633
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0631
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0631
-  movx @dptr,a
-  mov dptr,#$062E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$062F
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0630
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0631
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0634
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0635
-  movx @dptr,a
-  mov a,#$76
-  mov dptr,#$0636
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0637
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0638
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0639
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1545:
-  mov a,$55
-  jz __i8051_shd1545
-  mov dptr,#$0638
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0638
-  movx @dptr,a
-  mov dptr,#$0639
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0639
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1545
-__i8051_shd1545:
-  mov dptr,#$0638
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0636
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0636
-  movx @dptr,a
-  mov dptr,#$0639
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0637
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0637
-  movx @dptr,a
-  mov dptr,#$0636
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0637
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$063A
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$063B
-  movx @dptr,a
-  mov dptr,#$063A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0634
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$0634
-  movx @dptr,a
-  mov dptr,#$063B
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0635
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$0635
-  movx @dptr,a
-  mov a,#$76
-  mov dptr,#$063C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$063D
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$063E
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$063F
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1551:
-  mov a,$55
-  jz __i8051_shd1551
-  mov dptr,#$063E
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$063E
-  movx @dptr,a
-  mov dptr,#$063F
-  movx a,@dptr
-  rlc a
-  mov dptr,#$063F
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1551
-__i8051_shd1551:
-  mov dptr,#$063E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$063C
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$063C
-  movx @dptr,a
-  mov dptr,#$063F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$063D
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$063D
-  movx @dptr,a
-  mov dptr,#$0634
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0635
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$063C
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$063D
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  ljmp L62
-L61:
-L62:
-  mov a,#$56
-  mov dptr,#$0640
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0641
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0642
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0643
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1559:
-  mov a,$55
-  jz __i8051_shd1559
-  mov dptr,#$0642
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0642
-  movx @dptr,a
-  mov dptr,#$0643
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0643
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1559
-__i8051_shd1559:
-  mov dptr,#$0642
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0640
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0640
-  movx @dptr,a
-  mov dptr,#$0643
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0641
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0641
-  movx @dptr,a
-  mov dptr,#$0640
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0641
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$0644
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$0645
-  movx @dptr,a
-  mov a,#$98
-  mov dptr,#$0646
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0647
-  movx @dptr,a
-  mov dptr,#$0646
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0644
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$0647
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$0645
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_43_n
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_43
-__i51_cond_43_n:
-  ljmp L63
-__i51_cond_43:
-  mov a,#$98
-  mov dptr,#$0648
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0649
-  movx @dptr,a
-  mov a,#$56
-  mov dptr,#$064A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$064B
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$064C
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$064D
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1567:
-  mov a,$55
-  jz __i8051_shd1567
-  mov dptr,#$064C
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$064C
-  movx @dptr,a
-  mov dptr,#$064D
-  movx a,@dptr
-  rlc a
-  mov dptr,#$064D
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1567
-__i8051_shd1567:
-  mov dptr,#$064C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$064A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$064A
-  movx @dptr,a
-  mov dptr,#$064D
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$064B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$064B
-  movx @dptr,a
-  mov dptr,#$0648
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0649
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$064A
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$064B
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$064E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$064F
-  movx @dptr,a
-  mov a,#$76
-  mov dptr,#$0650
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0651
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0652
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0653
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1573:
-  mov a,$55
-  jz __i8051_shd1573
-  mov dptr,#$0652
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0652
-  movx @dptr,a
-  mov dptr,#$0653
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0653
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1573
-__i8051_shd1573:
-  mov dptr,#$0652
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0650
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0650
-  movx @dptr,a
-  mov dptr,#$0653
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0651
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0651
-  movx @dptr,a
-  mov dptr,#$0650
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0651
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$0654
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$0655
-  movx @dptr,a
-  mov dptr,#$0654
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$064E
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$064E
-  movx @dptr,a
-  mov dptr,#$0655
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$064F
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$064F
-  movx @dptr,a
-  mov a,#$76
-  mov dptr,#$0656
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0657
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0658
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0659
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1579:
-  mov a,$55
-  jz __i8051_shd1579
-  mov dptr,#$0658
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0658
-  movx @dptr,a
-  mov dptr,#$0659
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0659
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1579
-__i8051_shd1579:
-  mov dptr,#$0658
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0656
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0656
-  movx @dptr,a
-  mov dptr,#$0659
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0657
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0657
-  movx @dptr,a
-  mov dptr,#$064E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$064F
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0656
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0657
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  ljmp L64
-L63:
-L64:
-  mov a,#$66
-  mov dptr,#$065A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$065B
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$065C
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$065D
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1587:
-  mov a,$55
-  jz __i8051_shd1587
-  mov dptr,#$065C
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$065C
-  movx @dptr,a
-  mov dptr,#$065D
-  movx a,@dptr
-  rlc a
-  mov dptr,#$065D
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1587
-__i8051_shd1587:
-  mov dptr,#$065C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$065A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$065A
-  movx @dptr,a
-  mov dptr,#$065D
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$065B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$065B
-  movx @dptr,a
-  mov dptr,#$065A
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$065B
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$065E
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$065F
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0660
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0661
-  movx @dptr,a
-  mov dptr,#$0660
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$065E
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$0661
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$065F
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_44
-  ljmp L65
-__i51_cond_44:
-  mov a,#$00
-  mov dptr,#$0662
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0663
-  movx @dptr,a
-  mov a,#$66
-  mov dptr,#$0664
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0665
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0666
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0667
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1595:
-  mov a,$55
-  jz __i8051_shd1595
-  mov dptr,#$0666
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0666
-  movx @dptr,a
-  mov dptr,#$0667
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0667
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1595
-__i8051_shd1595:
-  mov dptr,#$0666
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0664
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0664
-  movx @dptr,a
-  mov dptr,#$0667
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0665
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0665
-  movx @dptr,a
-  mov dptr,#$0662
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0663
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0664
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0665
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0668
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0669
-  movx @dptr,a
-  mov a,#$86
-  mov dptr,#$066A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$066B
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$066C
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$066D
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1601:
-  mov a,$55
-  jz __i8051_shd1601
-  mov dptr,#$066C
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$066C
-  movx @dptr,a
-  mov dptr,#$066D
-  movx a,@dptr
-  rlc a
-  mov dptr,#$066D
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1601
-__i8051_shd1601:
-  mov dptr,#$066C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$066A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$066A
-  movx @dptr,a
-  mov dptr,#$066D
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$066B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$066B
-  movx @dptr,a
-  mov dptr,#$066A
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$066B
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$066E
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$066F
-  movx @dptr,a
-  mov dptr,#$066E
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0668
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$0668
-  movx @dptr,a
-  mov dptr,#$066F
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0669
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$0669
-  movx @dptr,a
-  mov a,#$86
-  mov dptr,#$0670
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0671
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0672
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0673
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1607:
-  mov a,$55
-  jz __i8051_shd1607
-  mov dptr,#$0672
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0672
-  movx @dptr,a
-  mov dptr,#$0673
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0673
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1607
-__i8051_shd1607:
-  mov dptr,#$0672
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0670
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0670
-  movx @dptr,a
-  mov dptr,#$0673
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0671
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0671
-  movx @dptr,a
-  mov dptr,#$0668
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0669
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$0670
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0671
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  ljmp L66
-L65:
-L66:
-  mov a,#$66
-  mov dptr,#$0674
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0675
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0676
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0677
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1615:
-  mov a,$55
-  jz __i8051_shd1615
-  mov dptr,#$0676
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0676
-  movx @dptr,a
-  mov dptr,#$0677
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0677
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1615
-__i8051_shd1615:
-  mov dptr,#$0676
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0674
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0674
-  movx @dptr,a
-  mov dptr,#$0677
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0675
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0675
-  movx @dptr,a
-  mov dptr,#$0674
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0675
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$0678
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$0679
-  movx @dptr,a
-  mov a,#$78
-  mov dptr,#$067A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$067B
-  movx @dptr,a
-  mov dptr,#$067A
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0678
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$067B
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$0679
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_45_n
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_45
-__i51_cond_45_n:
-  ljmp L67
-__i51_cond_45:
-  mov a,#$78
-  mov dptr,#$067C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$067D
-  movx @dptr,a
-  mov a,#$66
-  mov dptr,#$067E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$067F
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0680
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0681
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1623:
-  mov a,$55
-  jz __i8051_shd1623
-  mov dptr,#$0680
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0680
-  movx @dptr,a
-  mov dptr,#$0681
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0681
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1623
-__i8051_shd1623:
-  mov dptr,#$0680
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$067E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$067E
-  movx @dptr,a
-  mov dptr,#$0681
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$067F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$067F
-  movx @dptr,a
-  mov dptr,#$067C
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$067D
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$067E
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$067F
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0682
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0683
-  movx @dptr,a
-  mov a,#$86
-  mov dptr,#$0684
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0685
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0686
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0687
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1629:
-  mov a,$55
-  jz __i8051_shd1629
-  mov dptr,#$0686
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0686
-  movx @dptr,a
-  mov dptr,#$0687
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0687
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1629
-__i8051_shd1629:
-  mov dptr,#$0686
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0684
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0684
-  movx @dptr,a
-  mov dptr,#$0687
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0685
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0685
-  movx @dptr,a
-  mov dptr,#$0684
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0685
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$0688
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$0689
-  movx @dptr,a
-  mov dptr,#$0688
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0682
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov dptr,#$0682
-  movx @dptr,a
-  mov dptr,#$0689
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0683
-  movx a,@dptr
-  subb a,$30
-  mov dptr,#$0683
-  movx @dptr,a
-  mov a,#$86
-  mov dptr,#$068A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$068B
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$068C
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$068D
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1635:
-  mov a,$55
-  jz __i8051_shd1635
-  mov dptr,#$068C
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$068C
-  movx @dptr,a
-  mov dptr,#$068D
-  movx a,@dptr
-  rlc a
-  mov dptr,#$068D
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1635
-__i8051_shd1635:
-  mov dptr,#$068C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$068A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$068A
-  movx @dptr,a
-  mov dptr,#$068D
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$068B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$068B
-  movx @dptr,a
-  mov dptr,#$0682
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0683
-  movx a,@dptr
-  mov $59,a
-  mov dptr,#$068A
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$068B
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  inc dptr
-  mov a,$59
-  movx @dptr,a
-  ljmp L68
-L67:
-L68:
-  mov a,#$00
-  mov dptr,#$068E
-  movx @dptr,a
-  mov a,#$D4
-  mov dptr,#$068F
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0690
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0691
-  movx @dptr,a
-  mov a,#$03
-  mov $55,a
-__i8051_sh1643:
-  mov a,$55
-  jz __i8051_shd1643
-  mov dptr,#$0690
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0690
-  movx @dptr,a
-  mov dptr,#$0691
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0691
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1643
-__i8051_shd1643:
-  mov dptr,#$0690
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$068E
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$068E
-  movx @dptr,a
-  mov dptr,#$0691
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$068F
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$068F
-  movx @dptr,a
-  mov dptr,#$068E
-  movx a,@dptr
-  mov dptr,#$24
-  movx @dptr,a
-  mov dptr,#$068F
-  movx a,@dptr
-  mov dptr,#$25
-  movx @dptr,a
-  mov a,#$56
-  mov dptr,#$0692
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0693
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$0694
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$0695
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1648:
-  mov a,$55
-  jz __i8051_shd1648
-  mov dptr,#$0694
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$0694
-  movx @dptr,a
-  mov dptr,#$0695
-  movx a,@dptr
-  rlc a
-  mov dptr,#$0695
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1648
-__i8051_shd1648:
-  mov dptr,#$0694
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0692
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$0692
-  movx @dptr,a
-  mov dptr,#$0695
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$0693
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$0693
-  movx @dptr,a
-  mov dptr,#$0692
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0693
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$0696
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$0697
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$0698
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$0699
-  movx @dptr,a
-  mov dptr,#$0696
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$0698
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$0699
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov a,#$66
-  mov dptr,#$069A
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$069B
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$069C
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$069D
-  movx @dptr,a
-  mov a,#$01
-  mov $55,a
-__i8051_sh1655:
-  mov a,$55
-  jz __i8051_shd1655
-  mov dptr,#$069C
-  movx a,@dptr
-  clr c
-  rlc a
-  mov dptr,#$069C
-  movx @dptr,a
-  mov dptr,#$069D
-  movx a,@dptr
-  rlc a
-  mov dptr,#$069D
-  movx @dptr,a
-  dec $55
-  sjmp __i8051_sh1655
-__i8051_shd1655:
-  mov dptr,#$069C
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$069A
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$069A
-  movx @dptr,a
-  mov dptr,#$069D
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$069B
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$069B
-  movx @dptr,a
-  mov dptr,#$069A
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$069B
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  inc dptr
-  movx a,@dptr
-  mov $59,a
-  mov a,$58
-  mov dptr,#$069E
-  movx @dptr,a
-  mov a,$59
-  mov dptr,#$069F
-  movx @dptr,a
-  mov dptr,#$24
-  movx a,@dptr
-  mov dptr,#$06A0
-  movx @dptr,a
-  mov dptr,#$25
-  movx a,@dptr
-  mov dptr,#$06A1
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$06A2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06A3
-  movx @dptr,a
-  mov dptr,#$06A2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06A0
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$06A0
-  movx @dptr,a
-  mov dptr,#$06A3
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06A1
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$06A1
-  movx @dptr,a
-  mov dptr,#$069E
-  movx a,@dptr
-  mov $58,a
-  mov dptr,#$06A0
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$06A1
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  mov a,$58
-  movx @dptr,a
-  mov dptr,#$28
-  movx a,@dptr
-  mov dptr,#$06A4
-  movx @dptr,a
-  mov dptr,#$29
-  movx a,@dptr
-  mov dptr,#$06A5
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$06A6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06A7
-  movx @dptr,a
-  mov dptr,#$06A6
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06A4
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$06A4
-  movx @dptr,a
-  mov dptr,#$06A7
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06A5
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$06A5
-  movx @dptr,a
-  mov dptr,#$06A4
-  movx a,@dptr
-  mov dptr,#$28
-  movx @dptr,a
-  mov dptr,#$06A5
-  movx a,@dptr
-  mov dptr,#$29
-  movx @dptr,a
-  ljmp L46
-L47:
-  ret
-Music:
-  mov dptr,#$38
-  movx a,@dptr
-  mov dptr,#$06A8
-  movx @dptr,a
-  mov dptr,#$39
-  movx a,@dptr
-  mov dptr,#$06A9
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06AA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06AB
-  movx @dptr,a
-  mov dptr,#$06AA
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06A8
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$06AB
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$06A9
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_46
-  ljmp L69
-__i51_cond_46:
-  mov a,#$00
-  mov dptr,#$FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FF
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0110
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0111
-  movx @dptr,a
-  lcall voice
-  mov a,#$01
-  mov dptr,#$FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FF
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0110
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0111
-  movx @dptr,a
-  lcall voice
-  mov a,#$02
-  mov dptr,#$FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FF
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$0110
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0111
-  movx @dptr,a
-  lcall voice
-  ret
-  ljmp L70
-L69:
-L70:
-  mov dptr,#$0C
-  movx a,@dptr
-  mov dptr,#$06AC
-  movx @dptr,a
-  mov dptr,#$0D
-  movx a,@dptr
-  mov dptr,#$06AD
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$06AE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06AF
-  movx @dptr,a
-  mov dptr,#$06AE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06AC
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$06AC
-  movx @dptr,a
-  mov dptr,#$06AF
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06AD
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$06AD
-  movx @dptr,a
-  mov dptr,#$06AC
-  movx a,@dptr
-  mov dptr,#$0C
-  movx @dptr,a
-  mov dptr,#$06AD
-  movx a,@dptr
-  mov dptr,#$0D
-  movx @dptr,a
-  mov dptr,#$0C
-  movx a,@dptr
-  mov dptr,#$06B0
-  movx @dptr,a
-  mov dptr,#$0D
-  movx a,@dptr
-  mov dptr,#$06B1
-  movx @dptr,a
-  mov a,#$06
-  mov dptr,#$06B2
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06B3
-  movx @dptr,a
-  mov dptr,#$06B2
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06B0
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$06B3
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$06B1
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jnc __i51_cond_47
-  ljmp L71
-__i51_cond_47:
-  mov a,#$00
-  mov dptr,#$06B4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06B5
-  movx @dptr,a
-  mov dptr,#$06B4
-  movx a,@dptr
-  mov dptr,#$0C
-  movx @dptr,a
-  mov dptr,#$06B5
-  movx a,@dptr
-  mov dptr,#$0D
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06B6
-  movx @dptr,a
-  mov a,#$E0
-  mov dptr,#$06B7
-  movx @dptr,a
-  mov dptr,#$08
-  movx a,@dptr
-  mov dptr,#$06B8
-  movx @dptr,a
-  mov dptr,#$09
-  movx a,@dptr
-  mov dptr,#$06B9
-  movx @dptr,a
-  mov dptr,#$06B8
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06B6
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$06B6
-  movx @dptr,a
-  mov dptr,#$06B9
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06B7
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$06B7
-  movx @dptr,a
-  mov dptr,#$06B6
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$06B7
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  mov a,$58
-  mov dptr,#$06BA
-  movx @dptr,a
-  mov dptr,#$06BA
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$06BB
-  movx @dptr,a
-  mov dptr,#$06BA
-  movx a,@dptr
-  mov dptr,#$06BC
-  movx @dptr,a
-  clr a
-  mov dptr,#$06BD
-  movx @dptr,a
-  mov dptr,#$06BC
-  movx a,@dptr
-  mov dptr,#$20
-  movx @dptr,a
-  mov dptr,#$06BD
-  movx a,@dptr
-  mov dptr,#$21
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$06BE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06BF
-  movx @dptr,a
-  mov dptr,#$06BE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06BC
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$06BF
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$06BD
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jz __i51_cond_48
-  ljmp L73
-__i51_cond_48:
-  mov a,#$00
-  mov dptr,#$06C0
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06C1
-  movx @dptr,a
-  mov dptr,#$06C0
-  movx a,@dptr
-  mov dptr,#$44
-  movx @dptr,a
-  mov dptr,#$06C1
-  movx a,@dptr
-  mov dptr,#$45
-  movx @dptr,a
-  ljmp L74
-L73:
-  mov dptr,#$20
-  movx a,@dptr
-  mov dptr,#$06C2
-  movx @dptr,a
-  mov dptr,#$21
-  movx a,@dptr
-  mov dptr,#$06C3
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06C4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06C5
-  movx @dptr,a
-  mov dptr,#$06C4
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06C2
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$06C5
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$06C3
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_49
-  ljmp L75
-__i51_cond_49:
-  mov dptr,#$20
-  movx a,@dptr
-  mov dptr,#$06C6
-  movx @dptr,a
-  mov dptr,#$21
-  movx a,@dptr
-  mov dptr,#$06C7
-  movx @dptr,a
-  mov dptr,#$06C6
-  movx a,@dptr
-  mov dptr,#$FE
-  movx @dptr,a
-  mov dptr,#$06C7
-  movx a,@dptr
-  mov dptr,#$FF
-  movx @dptr,a
-  lcall notehz
-  mov dptr,#$00
-  movx a,@dptr
-  mov dptr,#$06C8
-  movx @dptr,a
-  mov dptr,#$01
-  movx a,@dptr
-  mov dptr,#$06C9
-  movx @dptr,a
-  mov dptr,#$06C8
-  movx a,@dptr
-  mov dptr,#$010E
-  movx @dptr,a
-  mov dptr,#$06C9
-  movx a,@dptr
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FF
-  movx @dptr,a
-  mov a,#$0B
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0110
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0111
-  movx @dptr,a
-  lcall voice
-  mov a,#$0B
-  mov dptr,#$06CA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06CB
-  movx @dptr,a
-  mov dptr,#$06CA
-  movx a,@dptr
-  mov dptr,#$44
-  movx @dptr,a
-  mov dptr,#$06CB
-  movx a,@dptr
-  mov dptr,#$45
-  movx @dptr,a
-  ljmp L76
-L75:
-L76:
-L74:
-  mov a,#$40
-  mov dptr,#$06CC
-  movx @dptr,a
-  mov a,#$E0
-  mov dptr,#$06CD
-  movx @dptr,a
-  mov dptr,#$08
-  movx a,@dptr
-  mov dptr,#$06CE
-  movx @dptr,a
-  mov dptr,#$09
-  movx a,@dptr
-  mov dptr,#$06CF
-  movx @dptr,a
-  mov dptr,#$06CE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06CC
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$06CC
-  movx @dptr,a
-  mov dptr,#$06CF
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06CD
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$06CD
-  movx @dptr,a
-  mov dptr,#$06CC
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$06CD
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  mov a,$58
-  mov dptr,#$06D0
-  movx @dptr,a
-  mov dptr,#$06D0
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$06D1
-  movx @dptr,a
-  mov dptr,#$06D0
-  movx a,@dptr
-  mov dptr,#$06D2
-  movx @dptr,a
-  clr a
-  mov dptr,#$06D3
-  movx @dptr,a
-  mov dptr,#$06D2
-  movx a,@dptr
-  mov dptr,#$20
-  movx @dptr,a
-  mov dptr,#$06D3
-  movx a,@dptr
-  mov dptr,#$21
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$06D4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06D5
-  movx @dptr,a
-  mov dptr,#$06D4
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06D2
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$06D5
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$06D3
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  jc __i51_cond_50_n
-  mov a,$50
-  orl a,$51
-  jnz __i51_cond_50
-__i51_cond_50_n:
-  ljmp L77
-__i51_cond_50:
-  mov dptr,#$20
-  movx a,@dptr
-  mov dptr,#$06D6
-  movx @dptr,a
-  mov dptr,#$21
-  movx a,@dptr
-  mov dptr,#$06D7
-  movx @dptr,a
-  mov dptr,#$06D6
-  movx a,@dptr
-  mov dptr,#$FE
-  movx @dptr,a
-  mov dptr,#$06D7
-  movx a,@dptr
-  mov dptr,#$FF
-  movx @dptr,a
-  lcall notehz
-  mov dptr,#$00
-  movx a,@dptr
-  mov dptr,#$06D8
-  movx @dptr,a
-  mov dptr,#$01
-  movx a,@dptr
-  mov dptr,#$06D9
-  movx @dptr,a
-  mov dptr,#$06D8
-  movx a,@dptr
-  mov dptr,#$010E
-  movx @dptr,a
-  mov dptr,#$06D9
-  movx a,@dptr
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FF
-  movx @dptr,a
-  mov a,#$0C
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$0110
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0111
-  movx @dptr,a
-  lcall voice
-  mov a,#$0C
-  mov dptr,#$06DA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06DB
-  movx @dptr,a
-  mov dptr,#$06DA
-  movx a,@dptr
-  mov dptr,#$48
-  movx @dptr,a
-  mov dptr,#$06DB
-  movx a,@dptr
-  mov dptr,#$49
-  movx @dptr,a
-  ljmp L78
-L77:
-L78:
-  mov a,#$80
-  mov dptr,#$06DC
-  movx @dptr,a
-  mov a,#$E0
-  mov dptr,#$06DD
-  movx @dptr,a
-  mov dptr,#$08
-  movx a,@dptr
-  mov dptr,#$06DE
-  movx @dptr,a
-  mov dptr,#$09
-  movx a,@dptr
-  mov dptr,#$06DF
-  movx @dptr,a
-  mov dptr,#$06DE
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06DC
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$06DC
-  movx @dptr,a
-  mov dptr,#$06DF
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06DD
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$06DD
-  movx @dptr,a
-  mov dptr,#$06DC
-  movx a,@dptr
-  mov $56,a
-  mov dptr,#$06DD
-  movx a,@dptr
-  mov $57,a
-  mov $82,$56
-  mov $83,$57
-  movx a,@dptr
-  mov $58,a
-  mov a,$58
-  mov dptr,#$06E0
-  movx @dptr,a
-  mov dptr,#$06E0
-  movx a,@dptr
-  rlc a
-  clr a
-  subb a,#$00
-  mov dptr,#$06E1
-  movx @dptr,a
-  mov dptr,#$06E0
-  movx a,@dptr
-  mov dptr,#$06E2
-  movx @dptr,a
-  clr a
-  mov dptr,#$06E3
-  movx @dptr,a
-  mov dptr,#$06E2
-  movx a,@dptr
-  mov dptr,#$50
-  movx @dptr,a
-  mov dptr,#$06E3
-  movx a,@dptr
-  mov dptr,#$51
-  movx @dptr,a
-  mov a,#$01
-  mov dptr,#$06E4
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06E5
-  movx @dptr,a
-  mov dptr,#$06E4
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06E2
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$06E5
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$06E3
-  movx a,@dptr
-  xrl a,#$80
-  subb a,$30
-  mov $51,a
-  mov a,$50
-  orl a,$51
-  jz __i51_cond_51
-  ljmp L79
-__i51_cond_51:
-  mov a,#$02
-  mov dptr,#$FE
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$FF
-  movx @dptr,a
-  mov a,#$B4
-  mov dptr,#$010E
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$0E
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$03
-  mov dptr,#$0110
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0111
-  movx @dptr,a
-  lcall voice
-  mov a,#$0E
-  mov dptr,#$06E6
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06E7
-  movx @dptr,a
-  mov dptr,#$06E6
-  movx a,@dptr
-  mov dptr,#$4C
-  movx @dptr,a
-  mov dptr,#$06E7
-  movx a,@dptr
-  mov dptr,#$4D
-  movx @dptr,a
-  ljmp L80
-L79:
-  mov dptr,#$50
-  movx a,@dptr
-  mov dptr,#$06E8
-  movx @dptr,a
-  mov dptr,#$51
-  movx a,@dptr
-  mov dptr,#$06E9
-  movx @dptr,a
-  mov a,#$02
-  mov dptr,#$06EA
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06EB
-  movx @dptr,a
-  mov dptr,#$06EA
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06E8
-  movx a,@dptr
-  clr c
-  subb a,$30
-  mov $50,a
-  mov dptr,#$06EB
-  movx a,@dptr
-  xrl a,#$80
-  mov $30,a
-  mov dptr,#$06E9
+  mov dptr,#$0411
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -16206,76 +10091,76 @@ L79:
   mov a,$50
   orl a,$51
   jz __i51_cond_52
-  ljmp L81
+  ljmp L82
 __i51_cond_52:
   mov a,#$02
-  mov dptr,#$FE
+  mov dptr,#$0102
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$FF
+  mov dptr,#$0103
   movx @dptr,a
-  mov a,#$28
-  mov dptr,#$010E
-  movx @dptr,a
-  mov a,#$0A
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$0C
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$03
+  mov a,#$B4
   mov dptr,#$0110
   movx @dptr,a
   mov a,#$00
   mov dptr,#$0111
   movx @dptr,a
-  lcall voice
-  mov a,#$0C
-  mov dptr,#$06EC
+  mov a,#$0E
+  mov dptr,#$010E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$06ED
+  mov dptr,#$010F
   movx @dptr,a
-  mov dptr,#$06EC
+  mov a,#$03
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall voice
+  mov a,#$0E
+  mov dptr,#$0414
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0415
+  movx @dptr,a
+  mov dptr,#$0414
   movx a,@dptr
   mov dptr,#$4C
   movx @dptr,a
-  mov dptr,#$06ED
+  mov dptr,#$0415
   movx a,@dptr
   mov dptr,#$4D
   movx @dptr,a
-  ljmp L82
-L81:
+  ljmp L83
+L82:
   mov dptr,#$50
   movx a,@dptr
-  mov dptr,#$06EE
+  mov dptr,#$0416
   movx @dptr,a
   mov dptr,#$51
   movx a,@dptr
-  mov dptr,#$06EF
+  mov dptr,#$0417
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$06F0
+  mov a,#$02
+  mov dptr,#$0418
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$06F1
+  mov dptr,#$0419
   movx @dptr,a
-  mov dptr,#$06F0
+  mov dptr,#$0418
   movx a,@dptr
   mov $30,a
-  mov dptr,#$06EE
+  mov dptr,#$0416
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$06F1
+  mov dptr,#$0419
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$06EF
+  mov dptr,#$0417
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -16283,222 +10168,219 @@ L81:
   mov a,$50
   orl a,$51
   jz __i51_cond_53
-  ljmp L83
+  ljmp L84
 __i51_cond_53:
   mov a,#$02
-  mov dptr,#$FE
+  mov dptr,#$0102
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$FF
+  mov dptr,#$0103
   movx @dptr,a
-  mov a,#$58
-  mov dptr,#$010E
-  movx @dptr,a
-  mov a,#$1B
-  mov dptr,#$010F
-  movx @dptr,a
-  mov a,#$05
-  mov dptr,#$010C
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$010D
-  movx @dptr,a
-  mov a,#$03
+  mov a,#$28
   mov dptr,#$0110
   movx @dptr,a
-  mov a,#$00
+  mov a,#$0A
   mov dptr,#$0111
   movx @dptr,a
-  lcall voice
-  mov a,#$05
-  mov dptr,#$06F2
+  mov a,#$0C
+  mov dptr,#$010E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$06F3
+  mov dptr,#$010F
   movx @dptr,a
-  mov dptr,#$06F2
+  mov a,#$03
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall voice
+  mov a,#$0C
+  mov dptr,#$041A
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$041B
+  movx @dptr,a
+  mov dptr,#$041A
   movx a,@dptr
   mov dptr,#$4C
   movx @dptr,a
-  mov dptr,#$06F3
+  mov dptr,#$041B
   movx a,@dptr
   mov dptr,#$4D
   movx @dptr,a
-  ljmp L84
-L83:
+  ljmp L85
 L84:
-L82:
-L80:
-  mov dptr,#$08
+  mov dptr,#$50
   movx a,@dptr
-  mov dptr,#$06F4
+  mov dptr,#$041C
   movx @dptr,a
-  mov dptr,#$09
+  mov dptr,#$51
   movx a,@dptr
-  mov dptr,#$06F5
+  mov dptr,#$041D
   movx @dptr,a
-  mov a,#$01
-  mov dptr,#$06F6
+  mov a,#$03
+  mov dptr,#$041E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$06F7
+  mov dptr,#$041F
   movx @dptr,a
-  mov dptr,#$06F6
+  mov dptr,#$041E
   movx a,@dptr
   mov $30,a
-  mov dptr,#$06F4
-  movx a,@dptr
-  clr c
-  addc a,$30
-  mov dptr,#$06F4
-  movx @dptr,a
-  mov dptr,#$06F7
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06F5
-  movx a,@dptr
-  addc a,$30
-  mov dptr,#$06F5
-  movx @dptr,a
-  mov a,#$3F
-  mov dptr,#$06F8
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06F9
-  movx @dptr,a
-  mov dptr,#$06F8
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06F4
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$06F4
-  movx @dptr,a
-  mov dptr,#$06F9
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06F5
-  movx a,@dptr
-  anl a,$30
-  mov dptr,#$06F5
-  movx @dptr,a
-  mov dptr,#$06F4
-  movx a,@dptr
-  mov dptr,#$08
-  movx @dptr,a
-  mov dptr,#$06F5
-  movx a,@dptr
-  mov dptr,#$09
-  movx @dptr,a
-  ljmp L72
-L71:
-  mov dptr,#$44
-  movx a,@dptr
-  mov dptr,#$06FA
-  movx @dptr,a
-  mov dptr,#$45
-  movx a,@dptr
-  mov dptr,#$06FB
-  movx @dptr,a
-  mov a,#$05
-  mov dptr,#$06FC
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$06FD
-  movx @dptr,a
-  mov dptr,#$06FC
-  movx a,@dptr
-  mov $30,a
-  mov dptr,#$06FA
+  mov dptr,#$041C
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$06FD
+  mov dptr,#$041F
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$06FB
+  mov dptr,#$041D
   movx a,@dptr
   xrl a,#$80
   subb a,$30
   mov $51,a
-  jc __i51_cond_54_n
   mov a,$50
   orl a,$51
-  jnz __i51_cond_54
-__i51_cond_54_n:
-  ljmp L85
+  jz __i51_cond_54
+  ljmp L86
 __i51_cond_54:
-  mov dptr,#$44
-  movx a,@dptr
-  mov dptr,#$06FE
+  mov a,#$02
+  mov dptr,#$0102
   movx @dptr,a
-  mov dptr,#$45
+  mov a,#$00
+  mov dptr,#$0103
+  movx @dptr,a
+  mov a,#$58
+  mov dptr,#$0110
+  movx @dptr,a
+  mov a,#$1B
+  mov dptr,#$0111
+  movx @dptr,a
+  mov a,#$05
+  mov dptr,#$010E
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$010F
+  movx @dptr,a
+  mov a,#$03
+  mov dptr,#$0112
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0113
+  movx @dptr,a
+  lcall voice
+  mov a,#$05
+  mov dptr,#$0420
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0421
+  movx @dptr,a
+  mov dptr,#$0420
   movx a,@dptr
-  mov dptr,#$06FF
+  mov dptr,#$4C
+  movx @dptr,a
+  mov dptr,#$0421
+  movx a,@dptr
+  mov dptr,#$4D
+  movx @dptr,a
+  ljmp L87
+L86:
+L87:
+L85:
+L83:
+  mov dptr,#$08
+  movx a,@dptr
+  mov dptr,#$0422
+  movx @dptr,a
+  mov dptr,#$09
+  movx a,@dptr
+  mov dptr,#$0423
   movx @dptr,a
   mov a,#$01
-  mov dptr,#$0700
+  mov dptr,#$0424
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0701
+  mov dptr,#$0425
   movx @dptr,a
-  mov dptr,#$0700
+  mov dptr,#$0424
   movx a,@dptr
   mov $30,a
-  mov dptr,#$06FE
+  mov dptr,#$0422
   movx a,@dptr
   clr c
-  subb a,$30
-  mov dptr,#$06FE
+  addc a,$30
+  mov dptr,#$0422
   movx @dptr,a
-  mov dptr,#$0701
+  mov dptr,#$0425
   movx a,@dptr
   mov $30,a
-  mov dptr,#$06FF
+  mov dptr,#$0423
   movx a,@dptr
-  subb a,$30
-  mov dptr,#$06FF
+  addc a,$30
+  mov dptr,#$0423
   movx @dptr,a
-  mov dptr,#$06FE
-  movx a,@dptr
-  mov dptr,#$44
-  movx @dptr,a
-  mov dptr,#$06FF
-  movx a,@dptr
-  mov dptr,#$45
-  movx @dptr,a
-  ljmp L86
-L85:
-L86:
-  mov dptr,#$48
-  movx a,@dptr
-  mov dptr,#$0702
-  movx @dptr,a
-  mov dptr,#$49
-  movx a,@dptr
-  mov dptr,#$0703
-  movx @dptr,a
-  mov a,#$07
-  mov dptr,#$0704
+  mov a,#$3F
+  mov dptr,#$0426
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0705
+  mov dptr,#$0427
   movx @dptr,a
-  mov dptr,#$0704
+  mov dptr,#$0426
   movx a,@dptr
   mov $30,a
-  mov dptr,#$0702
+  mov dptr,#$0422
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0422
+  movx @dptr,a
+  mov dptr,#$0427
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0423
+  movx a,@dptr
+  anl a,$30
+  mov dptr,#$0423
+  movx @dptr,a
+  mov dptr,#$0422
+  movx a,@dptr
+  mov dptr,#$08
+  movx @dptr,a
+  mov dptr,#$0423
+  movx a,@dptr
+  mov dptr,#$09
+  movx @dptr,a
+  ljmp L75
+L74:
+  mov dptr,#$44
+  movx a,@dptr
+  mov dptr,#$0428
+  movx @dptr,a
+  mov dptr,#$45
+  movx a,@dptr
+  mov dptr,#$0429
+  movx @dptr,a
+  mov a,#$05
+  mov dptr,#$042A
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$042B
+  movx @dptr,a
+  mov dptr,#$042A
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0428
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$0705
+  mov dptr,#$042B
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$0703
+  mov dptr,#$0429
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -16508,77 +10390,77 @@ L86:
   orl a,$51
   jnz __i51_cond_55
 __i51_cond_55_n:
-  ljmp L87
+  ljmp L88
 __i51_cond_55:
-  mov dptr,#$48
+  mov dptr,#$44
   movx a,@dptr
-  mov dptr,#$0706
+  mov dptr,#$042C
   movx @dptr,a
-  mov dptr,#$49
+  mov dptr,#$45
   movx a,@dptr
-  mov dptr,#$0707
+  mov dptr,#$042D
   movx @dptr,a
   mov a,#$01
-  mov dptr,#$0708
+  mov dptr,#$042E
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0709
+  mov dptr,#$042F
   movx @dptr,a
-  mov dptr,#$0708
+  mov dptr,#$042E
   movx a,@dptr
   mov $30,a
-  mov dptr,#$0706
+  mov dptr,#$042C
   movx a,@dptr
   clr c
   subb a,$30
-  mov dptr,#$0706
+  mov dptr,#$042C
   movx @dptr,a
-  mov dptr,#$0709
+  mov dptr,#$042F
   movx a,@dptr
   mov $30,a
-  mov dptr,#$0707
+  mov dptr,#$042D
   movx a,@dptr
   subb a,$30
-  mov dptr,#$0707
+  mov dptr,#$042D
   movx @dptr,a
-  mov dptr,#$0706
+  mov dptr,#$042C
   movx a,@dptr
-  mov dptr,#$48
+  mov dptr,#$44
   movx @dptr,a
-  mov dptr,#$0707
+  mov dptr,#$042D
   movx a,@dptr
-  mov dptr,#$49
+  mov dptr,#$45
   movx @dptr,a
-  ljmp L88
-L87:
+  ljmp L89
 L88:
-  mov dptr,#$4C
+L89:
+  mov dptr,#$48
   movx a,@dptr
-  mov dptr,#$070A
+  mov dptr,#$0430
   movx @dptr,a
-  mov dptr,#$4D
+  mov dptr,#$49
   movx a,@dptr
-  mov dptr,#$070B
+  mov dptr,#$0431
   movx @dptr,a
-  mov a,#$03
-  mov dptr,#$070C
+  mov a,#$07
+  mov dptr,#$0432
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$070D
+  mov dptr,#$0433
   movx @dptr,a
-  mov dptr,#$070C
+  mov dptr,#$0432
   movx a,@dptr
   mov $30,a
-  mov dptr,#$070A
+  mov dptr,#$0430
   movx a,@dptr
   clr c
   subb a,$30
   mov $50,a
-  mov dptr,#$070D
+  mov dptr,#$0433
   movx a,@dptr
   xrl a,#$80
   mov $30,a
-  mov dptr,#$070B
+  mov dptr,#$0431
   movx a,@dptr
   xrl a,#$80
   subb a,$30
@@ -16588,73 +10470,153 @@ L88:
   orl a,$51
   jnz __i51_cond_56
 __i51_cond_56_n:
-  ljmp L89
+  ljmp L90
 __i51_cond_56:
-  mov dptr,#$4C
+  mov dptr,#$48
   movx a,@dptr
-  mov dptr,#$070E
+  mov dptr,#$0434
   movx @dptr,a
-  mov dptr,#$4D
+  mov dptr,#$49
   movx a,@dptr
-  mov dptr,#$070F
+  mov dptr,#$0435
   movx @dptr,a
-  mov a,#$04
-  mov dptr,#$0710
+  mov a,#$01
+  mov dptr,#$0436
   movx @dptr,a
   mov a,#$00
-  mov dptr,#$0711
+  mov dptr,#$0437
   movx @dptr,a
-  mov dptr,#$0710
+  mov dptr,#$0436
   movx a,@dptr
   mov $30,a
-  mov dptr,#$070E
+  mov dptr,#$0434
   movx a,@dptr
   clr c
   subb a,$30
-  mov dptr,#$070E
+  mov dptr,#$0434
   movx @dptr,a
-  mov dptr,#$0711
+  mov dptr,#$0437
   movx a,@dptr
   mov $30,a
-  mov dptr,#$070F
+  mov dptr,#$0435
   movx a,@dptr
   subb a,$30
-  mov dptr,#$070F
+  mov dptr,#$0435
   movx @dptr,a
-  mov dptr,#$070E
+  mov dptr,#$0434
   movx a,@dptr
-  mov dptr,#$4C
+  mov dptr,#$48
   movx @dptr,a
-  mov dptr,#$070F
+  mov dptr,#$0435
   movx a,@dptr
-  mov dptr,#$4D
+  mov dptr,#$49
   movx @dptr,a
-  ljmp L90
-L89:
-  mov a,#$00
-  mov dptr,#$0712
-  movx @dptr,a
-  mov a,#$00
-  mov dptr,#$0713
-  movx @dptr,a
-  mov dptr,#$0712
-  movx a,@dptr
-  mov dptr,#$4C
-  movx @dptr,a
-  mov dptr,#$0713
-  movx a,@dptr
-  mov dptr,#$4D
-  movx @dptr,a
+  ljmp L91
 L90:
+L91:
+  mov dptr,#$4C
+  movx a,@dptr
+  mov dptr,#$0438
+  movx @dptr,a
+  mov dptr,#$4D
+  movx a,@dptr
+  mov dptr,#$0439
+  movx @dptr,a
+  mov a,#$03
+  mov dptr,#$043A
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$043B
+  movx @dptr,a
+  mov dptr,#$043A
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$0438
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov $50,a
+  mov dptr,#$043B
+  movx a,@dptr
+  xrl a,#$80
+  mov $30,a
+  mov dptr,#$0439
+  movx a,@dptr
+  xrl a,#$80
+  subb a,$30
+  mov $51,a
+  jc __i51_cond_57_n
+  mov a,$50
+  orl a,$51
+  jnz __i51_cond_57
+__i51_cond_57_n:
+  ljmp L92
+__i51_cond_57:
+  mov dptr,#$4C
+  movx a,@dptr
+  mov dptr,#$043C
+  movx @dptr,a
+  mov dptr,#$4D
+  movx a,@dptr
+  mov dptr,#$043D
+  movx @dptr,a
+  mov a,#$04
+  mov dptr,#$043E
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$043F
+  movx @dptr,a
+  mov dptr,#$043E
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$043C
+  movx a,@dptr
+  clr c
+  subb a,$30
+  mov dptr,#$043C
+  movx @dptr,a
+  mov dptr,#$043F
+  movx a,@dptr
+  mov $30,a
+  mov dptr,#$043D
+  movx a,@dptr
+  subb a,$30
+  mov dptr,#$043D
+  movx @dptr,a
+  mov dptr,#$043C
+  movx a,@dptr
+  mov dptr,#$4C
+  movx @dptr,a
+  mov dptr,#$043D
+  movx a,@dptr
+  mov dptr,#$4D
+  movx @dptr,a
+  ljmp L93
+L92:
+  mov a,#$00
+  mov dptr,#$0440
+  movx @dptr,a
+  mov a,#$00
+  mov dptr,#$0441
+  movx @dptr,a
+  mov dptr,#$0440
+  movx a,@dptr
+  mov dptr,#$4C
+  movx @dptr,a
+  mov dptr,#$0441
+  movx a,@dptr
+  mov dptr,#$4D
+  movx @dptr,a
+L93:
   mov dptr,#$44
   movx a,@dptr
-  mov dptr,#$0714
+  mov dptr,#$0442
   movx @dptr,a
   mov dptr,#$45
   movx a,@dptr
-  mov dptr,#$0715
+  mov dptr,#$0443
   movx @dptr,a
-  mov dptr,#$0714
+  mov dptr,#$0442
   movx a,@dptr
   mov $58,a
   mov dptr,#$F012
@@ -16662,13 +10624,13 @@ L90:
   movx @dptr,a
   mov dptr,#$48
   movx a,@dptr
-  mov dptr,#$0716
+  mov dptr,#$0444
   movx @dptr,a
   mov dptr,#$49
   movx a,@dptr
-  mov dptr,#$0717
+  mov dptr,#$0445
   movx @dptr,a
-  mov dptr,#$0716
+  mov dptr,#$0444
   movx a,@dptr
   mov $58,a
   mov dptr,#$F016
@@ -16676,19 +10638,19 @@ L90:
   movx @dptr,a
   mov dptr,#$4C
   movx a,@dptr
-  mov dptr,#$0718
+  mov dptr,#$0446
   movx @dptr,a
   mov dptr,#$4D
   movx a,@dptr
-  mov dptr,#$0719
+  mov dptr,#$0447
   movx @dptr,a
-  mov dptr,#$0718
+  mov dptr,#$0446
   movx a,@dptr
   mov $58,a
   mov dptr,#$F01A
   mov a,$58
   movx @dptr,a
-L72:
+L75:
   ret
 __i8051_end:
   sjmp __i8051_end
@@ -16712,3 +10674,7 @@ __i8051_mul16:
   mov $40,$44
   mov $41,$45
   ret
+.fixed
+.org $03
+  ljmp ext0
+.code
