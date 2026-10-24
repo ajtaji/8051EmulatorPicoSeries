@@ -175,8 +175,10 @@ repository does not have. On the desktop the picture is drawn in the window,
 the keyboard is the buttons (arrows, Z = A, X = B, Enter = start, Space =
 select) and the sound plays through Windows.
 
-The demo (`demo/`) is a PureMetal program built by PureMetal Forge's 8051
-target: `py -3 demo/make_demo.py` writes `demo/pm51_demo.i8051` (its tables
+The board is in the compiler (from main `9fda90ac8`): "PM51 display board
+(8052, 24 MHz)", source extension `.pm51`, which keeps a program's variables in
+XDATA $0000-$7FFF. The demo (`demo/`) is a PureMetal program built for it:
+`py -3 demo/make_demo.py` writes `demo/pm51_demo.pm51` (its tables
 go into XDATA with one constant `PokeA` each, because the 8051 target has no
 DataSection), the compiler makes `pm51_demo.hex`/`.bin`, and
 `py -3 tools/embed_program.py demo/pm51_demo.bin` puts it in the Pico

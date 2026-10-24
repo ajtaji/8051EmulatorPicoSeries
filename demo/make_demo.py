@@ -1,5 +1,5 @@
-"""Writes demo/pm51_demo.i8051: the PM51 board demo, a PureMetal program for
-PureMetal Forge's 8051 target. The 8051 target has no DataSection, so the
+"""Writes demo/pm51_demo.pm51: the PM51 board demo, a PureMetal program for
+PureMetal Forge's PM51 display board (an 8052 target, extension .pm51). The 8051 target has no DataSection, so the
 music and the tables are written into XDATA by InitTables(), one PokeA a byte.
 
 The tune is original (written for this demo): four bars in A minor,
@@ -79,8 +79,8 @@ def main():
     lines = [f'  PokeA(${a:04X}, {v})' for a, v in sorted(data.items()) if v != 0]
     src = (HERE / 'pm51_demo.template').read_text()
     src = src.replace('@@MSGLEN@@', str(len(MESSAGE))).replace('@@TABLES@@', '\n'.join(lines))
-    (HERE / 'pm51_demo.i8051').write_text(src, newline='\n')
-    print('demo/pm51_demo.i8051 written,', len(lines), 'table bytes')
+    (HERE / 'pm51_demo.pm51').write_text(src, newline='\n')
+    print('demo/pm51_demo.pm51 written,', len(lines), 'table bytes')
 
 
 if __name__ == '__main__':
