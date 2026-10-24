@@ -1,0 +1,236 @@
+; The PM51 display board: the machine around the MCS-51 core (README, "The
+; PM51 display board"). Valid PureMetal AND PureBasic: the Pico firmware and
+; the desktop program include this same file. The front end supplies the
+; picture's pixels (PM51ComposeLine fills one line), the sound (PM51Mix fills
+; samples) and the buttons (PM51Buttons, 1 = pressed).
+;
+; Include after the core, which must be configured with
+;   #M51_TIMING = 1, #M51_XDATA_HOOK = 2, #M51_XIO_PAGE = $F000.
+; and after pm51_font (the label PM51Font).
+
+#PM51_CYCLES_PER_FRAME = 40000      ; 24 MHz / 12 = 2,000,000 machine cycles a second, 50 frames
+#PM51_W = 160
+#PM51_H = 128
+
+Global PM51Enabled.i = 1            ; 0: the I/O page is plain memory (the test suites)
+Global PM51Frame.i, PM51Status.i, PM51Buttons.i, PM51Carry.i, PM51Noise.i = $ACE1
+Global Dim PM51Line.a(160)          ; the composed line, RGB332
+Global Dim PM51Phase.i(3)
+Global Dim PM51Inc.i(3)
+
+; ---- memory-mapped I/O ------------------------------------------------------
+Procedure.i M51HookXRead(adr.i)
+  Protected v.i
+  If PM51Enabled = 0
+    ProcedureReturn M51XData(adr)
+  EndIf
+  If adr = $F000
+    ProcedureReturn PM51Frame & 255
+  ElseIf adr = $F001
+    v = PM51Status
+    PM51Status = 0
+    ProcedureReturn v
+  ElseIf adr = $F008
+    ProcedureReturn PM51Buttons & 255
+  EndIf
+  ProcedureReturn M51XData(adr)
+EndProcedure
+
+; The rectangle unit: X, Y, W, H, COLOUR, clipped to the 160x128 bitmap.
+Procedure PM51Rect(x.i, y.i, w.i, h.i, colour.i)
+  Protected r.i, c.i, x1.i, y1.i, a.i
+  x1 = x + w
+  y1 = y + h
+  If x1 > 160
+    x1 = 160
+  EndIf
+  If y1 > 128
+    y1 = 128
+  EndIf
+  For r = y To y1 - 1
+    a = $8000 + (r * 160)
+    For c = x To x1 - 1
+      M51XData(a + c) = colour
+    Next
+  Next
+EndProcedure
+
+Procedure M51HookXWrite(adr.i, v.i)
+  Protected i.i
+  If PM51Enabled = 0
+    ProcedureReturn
+  EndIf
+  If adr = $F006
+    For i = $8000 To $CFFF
+      M51XData(i) = v
+    Next
+  ElseIf adr = $F007
+    For i = $D000 To $D13F
+      M51XData(i) = 0
+    Next
+  ElseIf adr = $F00E
+    PM51Rect(M51XData($F009), M51XData($F00A), M51XData($F00B), M51XData($F00C), M51XData($F00D))
+  EndIf
+EndProcedure
+
+; Power-on: registers at their reset values, the picture cleared. The program
+; image in M51Code is left alone.
+Procedure PM51Reset()
+  Protected i.i
+  For i = $8000 To $FFFF
+    M51XData(i) = 0
+  Next
+  M51XData($F005) = 7
+  M51XData($F01C) = 12
+  PM51Frame = 0 : PM51Status = 0 : PM51Carry = 0
+  For i = 0 To 2
+    PM51Phase(i) = 0
+  Next
+  M51Reset()
+EndProcedure
+
+; One 50 Hz frame: the frame begins (FRAME, STATUS, a falling edge on INT0),
+; then 40,000 machine cycles run. Overshoot past the frame is taken off the next.
+Procedure PM51RunFrame()
+  M51SetPins(1, (~PM51Buttons) & 255)
+  PM51Frame = PM51Frame + 1
+  PM51Status = 1
+  M51SetInt0(0)
+  M51SetInt0(1)
+  PM51Carry = M51Run(#PM51_CYCLES_PER_FRAME - PM51Carry) - (#PM51_CYCLES_PER_FRAME - PM51Carry)
+  If PM51Carry < 0
+    PM51Carry = 0
+  EndIf
+EndProcedure
+
+; ---- the picture ------------------------------------------------------------
+; Line y (0-127) of the 160x128 picture into PM51Line(): the bitmap (scrolled,
+; pixel value 0 drawn in the line's colour), then text, then sprites.
+Procedure PM51ComposeLine(y.i)
+  Protected layers.i, sx.i, row.i, base.i, x.i, v.i, line0.i
+  Protected trow.i, gy.i, col.i, ch.i, bits.i, colour.i, px.i
+  Protected s.i, sa.i, sy.i, sxp.i, fl.i, pat.i, r.i, c.i, cc.i
+  layers = M51XData($F005)
+  line0 = M51XData($DC00 + ((y + M51XData($F00F)) & 127))
+  If layers & 1
+    sx = M51XData($F002)
+    row = (y + M51XData($F003)) % 128
+    base = $8000 + (row * 160)
+    For x = 0 To 159
+      v = M51XData(base + ((x + sx) % 160))
+      If v = 0
+        v = line0
+      EndIf
+      PM51Line(x) = v
+    Next
+  Else
+    For x = 0 To 159
+      PM51Line(x) = line0
+    Next
+  EndIf
+  If layers & 2
+    trow = $D000 + ((y >> 3) * 20)
+    gy = y & 7
+    For col = 0 To 19
+      ch = M51XData(trow + col)
+      If ch >= 32 And ch < 127
+        bits = PeekA(?PM51Font + ((ch - 32) * 8) + gy) & 255
+        If bits
+          colour = M51XData(trow + col + $200)
+          For px = 0 To 7
+            If bits & (1 << px)
+              PM51Line((col * 8) + px) = colour
+            EndIf
+          Next
+        EndIf
+      EndIf
+    Next
+  EndIf
+  If layers & 4
+    For s = 0 To 7
+      sa = $D400 + (s * 8)
+      fl = M51XData(sa + 3)
+      If fl & 1
+        sy = M51XData(sa + 1)
+        r = y - sy
+        If r >= 0 And r < 8
+          If fl & 4
+            r = 7 - r
+          EndIf
+          sxp = M51XData(sa)
+          pat = $D800 + ((M51XData(sa + 2) & 15) * 64) + (r * 8)
+          For c = 0 To 7
+            cc = c
+            If fl & 2
+              cc = 7 - c
+            EndIf
+            v = M51XData(pat + cc)
+            If v <> 0 And sxp + c < 160
+              PM51Line(sxp + c) = v
+            EndIf
+          Next
+        EndIf
+      EndIf
+    Next
+  EndIf
+EndProcedure
+
+; ---- the sound --------------------------------------------------------------
+; n signed 16-bit mono samples at rate Hz into memory at *dst, from the three
+; voices. Phases are 16.16 fractions of a cycle; noise steps a 16-bit LFSR
+; each time its phase wraps.
+Procedure PM51Mix(*dst, n.i, rate.i)
+  Protected i.i, k.i, a.i, f.i, vol.i, wave.i, inc.i, ph.i, sample.i, out.i, master.i, amp.i
+
+  master = M51XData($F01C) & 15
+  For k = 0 To 2
+    f = M51XData($F010 + (k * 4)) | (M51XData($F011 + (k * 4)) << 8)
+    PM51Inc(k) = (f * 65536) / rate
+  Next
+  For i = 0 To n - 1
+    out = 0
+    For k = 0 To 2
+      a = $F010 + (k * 4)
+      vol = M51XData(a + 2) & 15
+      inc = PM51Inc(k)
+      If vol <> 0 And inc <> 0
+        ph = PM51Phase(k) + inc
+        wave = M51XData(a + 3) & 3
+        If wave = 3 And ph >= 65536
+          If PM51Noise & 1
+            PM51Noise = (PM51Noise >> 1) ! $B400
+          Else
+            PM51Noise = PM51Noise >> 1
+          EndIf
+        EndIf
+        ph = ph & 65535
+        PM51Phase(k) = ph
+        If wave = 0
+          If ph < 32768
+            sample = 4095
+          Else
+            sample = -4095
+          EndIf
+        ElseIf wave = 1
+          If ph < 32768
+            sample = (ph >> 2) - 4096
+          Else
+            sample = 12287 - (ph >> 2)
+          EndIf
+        ElseIf wave = 2
+          sample = (ph >> 3) - 4096
+        Else
+          If PM51Noise & 1
+            sample = 4095
+          Else
+            sample = -4095
+          EndIf
+        EndIf
+        out = out + (sample * vol)
+      EndIf
+    Next
+    ; Three voices at full volume: 3 * 4095 * 15 = 184,275; master 15 maps that to ~27,600.
+    out = (out * master) / 100
+    PokeW(*dst + (i * 2), out)
+  Next
+EndProcedure

@@ -165,11 +165,22 @@ left, P1.3 right, P1.4 A, P1.5 B, P1.6 start, P1.7 select. **Serial**: what the
 program writes to SBUF appears on the Pico's USB serial and in the desktop's
 serial pane.
 
-On the Pico W the picture is drawn on the LAFVIN ST7796 panel at twice the
-size (320x256, centred), the buttons are the panel board's buttons, and the
-sound goes to the Bluetooth speaker the NES uses. On the desktop the picture
-is drawn in the window, the keyboard is the buttons (arrows, Z = A, X = B,
-Enter = start, Space = select) and the sound plays through Windows.
+On the Pico W (`machine/pm51_picow.picow`; `pm51_pico2w.pico2w` for the
+Pico 2 W) the picture is drawn on the LAFVIN ST7796 panel at twice the size
+(320x256, centred), and the LAFVIN controls are the buttons: the stick is
+up/down/left/right, BTN1 (GP15) is A, BTN2 (GP14) is B, both together are
+start. The Pico build is **silent for now**: its sound would go to the
+Bluetooth speaker the NES uses, whose address lives in a private wrapper this
+repository does not have. On the desktop the picture is drawn in the window,
+the keyboard is the buttons (arrows, Z = A, X = B, Enter = start, Space =
+select) and the sound plays through Windows.
+
+The demo (`demo/`) is a PureMetal program built by PureMetal Forge's 8051
+target: `py -3 demo/make_demo.py` writes `demo/pm51_demo.i8051` (its tables
+go into XDATA with one constant `PokeA` each, because the 8051 target has no
+DataSection), the compiler makes `pm51_demo.hex`/`.bin`, and
+`py -3 tools/embed_program.py demo/pm51_demo.bin` puts it in the Pico
+firmware. The desktop loads the `.hex` directly.
 
 ## Configure and include
 

@@ -1,0 +1,163 @@
+; The PM51 display board on a Pico W with the LAFVIN ST7796 panel: the picture
+; at twice the size (320x256, centred on the 480x320 panel), the LAFVIN
+; buttons and stick as the board's buttons, SBUF on the USB serial port.
+; Emulated time follows the wall clock at 50 frames a second; the panel is
+; redrawn between frames as often as time allows.
+;
+; LAFVIN controls: stick = up/down/left/right, BTN1 (GP15) = A, BTN2 (GP14) = B;
+; both buttons together = start.
+
+Global Dim PM51Pal.i(256)
+Global Dim PM51Strip.w(640)
+Global PM51Start.i, PM51Done.i, PM51Shown.i, PM51Second.i, PM51ShownLast.i, PM51Border.i = -1
+Global PM51StickX.i = 2048, PM51StickY.i = 2048, PM51Now.i, PM51Due.i, PM51Burst.i, PM51Tx.i
+Global PM51RenderUs.i, PM51EmuUs.i, PM51T.i
+
+Procedure PM51PanelBegin()
+  Protected v.i, r.i, g.i, b.i
+  SpiPeriFromSys(#CLOCK_KHZ)
+  SpiBegin(0, 2, 3, -1, 100000)
+  Tft796Begin(0, 5, 6, 7)
+  Tft796Rotate(1)
+  Tft796Fill(0)
+  ; RGB332 -> RGB565, each channel scaled to full range.
+  For v = 0 To 255
+    r = ((v >> 5) * 31) / 7
+    g = (((v >> 2) & 7) * 63) / 7
+    b = ((v & 3) * 31) / 3
+    PM51Pal(v) = (r << 11) | (g << 5) | b
+  Next
+EndProcedure
+
+Procedure PM51InputBegin()
+  pinMode(15, #INPUT_PULLUP)
+  pinMode(14, #INPUT_PULLUP)
+  analogReadResolution(12)
+  PM51StickX = analogRead(26)
+  PM51StickY = analogRead(27)
+  ; A stick held at power-on is not taken as its centre.
+  If PM51StickX < 1400 Or PM51StickX > 2700
+    PM51StickX = 2048
+  EndIf
+  If PM51StickY < 1400 Or PM51StickY > 2700
+    PM51StickY = 2048
+  EndIf
+EndProcedure
+
+Procedure PM51InputPoll()
+  Protected x.i, y.i, b.i
+  x = analogRead(26)
+  y = analogRead(27)
+  b = 0
+  If y > PM51StickY + 750
+    b = b | 1
+  EndIf
+  If y < PM51StickY - 750
+    b = b | 2
+  EndIf
+  If x < PM51StickX - 750
+    b = b | 4
+  EndIf
+  If x > PM51StickX + 750
+    b = b | 8
+  EndIf
+  If digitalRead(15) = 0
+    b = b | 16
+  EndIf
+  If digitalRead(14) = 0
+    b = b | 32
+  EndIf
+  If (b & 48) = 48
+    b = (b & $CF) | 64
+  EndIf
+  PM51Buttons = b
+EndProcedure
+
+; The picture: the border when it changes, then 128 lines, each sent twice as wide and twice.
+Procedure PM51Render()
+  Protected y.i, x.i, c.i
+  If M51XData($F004) <> PM51Border
+    PM51Border = M51XData($F004)
+    c = PM51Pal(PM51Border)
+    Tft796Rect(0, 0, 480, 32, c)
+    Tft796Rect(0, 288, 480, 32, c)
+    Tft796Rect(0, 32, 80, 256, c)
+    Tft796Rect(400, 32, 80, 256, c)
+  EndIf
+  For y = 0 To 127
+    PM51ComposeLine(y)
+    For x = 0 To 159
+      c = PM51Pal(PM51Line(x))
+      PM51Strip(x * 2) = c
+      PM51Strip((x * 2) + 1) = c
+      PM51Strip(320 + (x * 2)) = c
+      PM51Strip(321 + (x * 2)) = c
+    Next
+    Tft796BlitRect(80, 32 + (y * 2), 320, 2, @PM51Strip(0))
+  Next
+EndProcedure
+
+Procedure PM51DrainSerial()
+  PM51Tx = M51SerialTxGet()
+  While PM51Tx >= 0
+    UsbSerialWrite(PM51Tx & 255)
+    PM51Tx = M51SerialTxGet()
+  Wend
+EndProcedure
+
+Procedure Main()
+  Protected i.i
+  SafetyBoot()
+  ClockInitKhz(#CLOCK_KHZ)
+  TimerInit()
+  UsbSerialInit()
+  ; The board runs on its own: wait for a USB host only briefly.
+  PM51Now = Micros()
+  While UsbSerialReady() = 0 And Micros() - PM51Now < 2000000
+    UsbSerialTask() : SafetyPet()
+  Wend
+  PM51PanelBegin()
+  PM51InputBegin()
+  For i = 0 To #PM51_PROGRAM_SIZE - 1
+    M51Code(i) = PeekA(?PM51Program + i) & 255
+  Next
+  PM51Reset()
+  Say("PM51 board on the Pico W: running ") : SayAt(?PM51ProgramName)
+  Say(", ") : Num(#PM51_PROGRAM_SIZE) : Say(" bytes") : Eol()
+  PM51Start = Micros()
+  PM51Second = PM51Start
+  Repeat
+    ; Emulated frames due by the wall clock (at most 8 at a time: a slow
+    ; panel draw is caught up, a long stall is not).
+    PM51Now = Micros()
+    PM51Due = (PM51Now - PM51Start) / 20000
+    If PM51Due - PM51Done > 25
+      PM51Start = PM51Now - (PM51Done * 20000)
+      PM51Due = PM51Done + 1
+    EndIf
+    PM51Burst = 0
+    PM51T = Micros()
+    While PM51Done < PM51Due And PM51Burst < 8
+      PM51InputPoll()
+      PM51RunFrame()
+      PM51Done = PM51Done + 1
+      PM51Burst = PM51Burst + 1
+    Wend
+    PM51EmuUs = PM51EmuUs + Micros() - PM51T
+    PM51DrainSerial()
+    PM51T = Micros()
+    PM51Render()
+    PM51RenderUs = PM51RenderUs + Micros() - PM51T
+    PM51Shown = PM51Shown + 1
+    If Micros() - PM51Second >= 5000000
+      Say("board frames=") : Num(PM51Done)
+      Say(" panel frames in the last 5 s=") : Num(PM51Shown - PM51ShownLast)
+      Say(" emulation us=") : Num(PM51EmuUs) : Say(" panel us=") : Num(PM51RenderUs)
+      Say(" buttons=") : Num(PM51Buttons) : Eol()
+      PM51EmuUs = 0 : PM51RenderUs = 0
+      PM51ShownLast = PM51Shown
+      PM51Second = Micros()
+    EndIf
+    UsbSerialTask() : SafetyPet()
+  ForEver
+EndProcedure

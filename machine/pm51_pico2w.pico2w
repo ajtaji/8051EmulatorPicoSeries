@@ -1,0 +1,27 @@
+; The PM51 display board on a Pico 2 W (LAFVIN ST7796 panel), running the 8051
+; program embedded by tools/embed_program.py (the demo by default).
+#CLOCK_KHZ = 150000
+#M51_TIMING = 1
+#M51_ASM_TAIL = 1
+#M51_8052 = 1
+#M51_SFR_HOOK = 0
+#M51_XDATA_HOOK = 2
+#M51_XIO_PAGE = $F000
+#M51_CODE_HOOK = 0
+#M51_SERIAL_HOOK = 0
+EnableExplicit
+XIncludeFile "RP2350/Lib/clocks.pico2"
+XIncludeFile "RP2350/Lib/timer.pico2"
+XIncludeFile "RP2350/Lib/uart.pico2"
+XIncludeFile "RP2350/Lib/usb_serial.pico2"
+XIncludeFile "RP2350/Lib/safety.pico2"
+XIncludeFile "RP2350/Lib/bits.pico2"
+XIncludeFile "RP2350/Lib/wiring.pico2"
+XIncludeFile "RP2350/Lib/spi.pico2"
+XIncludeFile "RP2350/Lib/st7796.pico2"
+XIncludeFile "../src/mcs51.pico2"
+XIncludeFile "../src/io.pico2"
+XIncludeFile "pm51_font.pico2"
+XIncludeFile "pm51_board.pico2"
+XIncludeFile "pm51_program.pico2"
+XIncludeFile "pm51_picow_body.pico2"
