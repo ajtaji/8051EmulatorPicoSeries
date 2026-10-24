@@ -1,0 +1,6 @@
+8051 PureMetal clk_sys kHz=150001 untimed asm-tail
+sum test A=55 R0=0 PC=7 PASS
+register/branch DJNZ instructions=1000000 us=246208 instructions/s=4061606
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=281115 instructions/s=3557263
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=233626 instructions/s=4280345
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=231108 instructions/s=4326981

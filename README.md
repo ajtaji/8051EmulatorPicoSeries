@@ -113,6 +113,60 @@ reset pins, ALE/PSEN bus timing, the 8052's T2 output and T2MOD of later
 derivatives, and anything beyond the Intel 8051/8052 SFR set (the SFR hook is
 there for that).
 
+## The PM51 display board (the machine around the core)
+
+A small 8051 computer defined for this emulator, so programs (and the demo in
+`demo/`) have a screen, sound and buttons. It is shown on the Pico's panel and
+in the desktop program. Everything is reached the way an 8051 reaches external
+hardware: MOVX into XDATA, and port P1. A compiled PureMetal program, whose
+variables all live in XDATA from $0000, uses `PokeA`/`PeekA` on these
+addresses; it has no interrupt handlers (the compiler's 8051 target refuses
+them), so everything can be polled. Assembly programs may also take INT0.
+
+**CPU**: an 8052 at 24 MHz, 12 clocks a machine cycle: 2,000,000 machine
+cycles a second, 40,000 per frame. Code: 64 KB at $0000.
+
+**Frames**: 50 a second. At the start of each frame the board latches the
+picture as it is in memory, increments FRAME, sets STATUS bit 0 and pulls INT0
+low for one cycle (a falling edge: IE0 when IT0 = 1).
+
+| XDATA | Size | What |
+|---|---|---|
+| $0000-$7FFF | 32 KB | RAM (the compiler's variables start at $0000) |
+| $8000-$CFFF | 20,480 | **Bitmap**, 160 x 128, one byte a pixel, RGB332 (bits 7-5 red, 4-2 green, 1-0 blue): $8000 + y*160 + x |
+| $D000-$D13F | 320 | **Text**: 20 columns x 16 rows of 8x8 characters over the bitmap, $D000 + row*20 + col. ASCII 32-126 in the board's font; 0 = no character |
+| $D200-$D33F | 320 | **Text colour**, one RGB332 byte per cell (the character's pixels; its background is transparent) |
+| $D400-$D43F | 64 | **Sprites**: 8 x 8 bytes - X, Y (top-left, in bitmap pixels; X 0-159, Y 0-127), PATTERN (0-15), FLAGS (bit 0 shown, bit 1 mirror X, bit 2 mirror Y), 4 spare |
+| $D800-$DBFF | 1,024 | **Sprite patterns**: 16 x 8x8 pixels, one RGB332 byte each, 0 = transparent |
+| $DC00-$DC7F | 128 | **Line colours**: bitmap pixel value 0 on line y is drawn in colour LINE[y] (rainbows and raster bars for 128 writes a frame) |
+| $DD00-$EFFF | | RAM |
+| $F000-$F0FF | | **I/O registers** (below) |
+| $F100-$FFFF | | RAM |
+
+| I/O | R/W | What |
+|---|---|---|
+| $F000 FRAME | R | frame counter, +1 every frame (wraps) |
+| $F001 STATUS | R | bit 0: a frame began since the last read (cleared by the read) |
+| $F002 SCROLLX | R/W | the bitmap is shown from column SCROLLX, wrapping at 160 |
+| $F003 SCROLLY | R/W | the bitmap is shown from line SCROLLY, wrapping at 128 |
+| $F004 BORDER | R/W | colour around the 160x128 picture |
+| $F005 LAYERS | R/W | bit 0 bitmap, bit 1 text, bit 2 sprites (reset: 7) |
+| $F006 FILL | W | fills the whole bitmap with the value written (takes no CPU time) |
+| $F007 TEXTCLR | W | any value: clears the text layer |
+| $F010-$F01B TONE 0-2 | R/W | per voice, 4 bytes at $F010 + 4*n: FREQ low, FREQ high (Hz, 0 = silent), VOLUME (0-15), WAVE (0 square, 1 triangle, 2 sawtooth, 3 noise) |
+| $F01C MASTER | R/W | master volume 0-15 (reset: 12) |
+
+**Port P1** (inputs, a pressed button reads 0): P1.0 up, P1.1 down, P1.2
+left, P1.3 right, P1.4 A, P1.5 B, P1.6 start, P1.7 select. **Serial**: what the
+program writes to SBUF appears on the Pico's USB serial and in the desktop's
+serial pane.
+
+On the Pico W the picture is drawn on the LAFVIN ST7796 panel at twice the
+size (320x256, centred), the buttons are the panel board's buttons, and the
+sound goes to the Bluetooth speaker the NES uses. On the desktop the picture
+is drawn in the window, the keyboard is the buttons (arrows, Z = A, X = B,
+Enter = start, Space = select) and the sound plays through Windows.
+
 ## Configure and include
 
 Every constant must be defined before `XIncludeFile "src/mcs51.pico"` (Pico W)

@@ -14,13 +14,18 @@
 ;                       model, port pin reads and port latch writes
 ;   #M51_XDATA_HOOK  1: MOVX goes through M51HookXRead(adr) / M51HookXWrite(adr, v)
 ;                    0: 64 KB array M51XData
+;                    2: the array, except the 256-byte page #M51_XIO_PAGE (also
+;                       to be defined, e.g. $F000): a read there comes from
+;                       M51HookXRead(adr), a write is stored and then passed to
+;                       M51HookXWrite(adr, v) - memory-mapped I/O at the cost of
+;                       one compare per MOVX
 ;   #M51_CODE_HOOK   1: MOVC reads go through M51HookCodeRead(adr)
 ;                       (instruction fetch always reads M51Code)
 ;   #M51_SERIAL_HOOK 1: each byte written to SBUF goes to M51HookSerialTx(w)
 ;                    0: it is queued; read it with M51SerialTxGet()
 EnableExplicit
 Global Dim M51Code.a(65536)
-CompilerIf #M51_XDATA_HOOK = 0
+CompilerIf #M51_XDATA_HOOK <> 1
   Global Dim M51XData.a(65536)
 CompilerEndIf
 Global Dim M51IRam.a(256)
@@ -91,6 +96,20 @@ CompilerIf #M51_XDATA_HOOK = 1
   EndMacro
   Macro M51XWr(adr, val)
     M51HookXWrite(adr, val)
+  EndMacro
+CompilerElseIf #M51_XDATA_HOOK = 2
+  Macro M51XRd(dst, adr)
+    If (adr & $FF00) = #M51_XIO_PAGE
+      dst = M51HookXRead(adr)
+    Else
+      dst = M51XData(adr)
+    EndIf
+  EndMacro
+  Macro M51XWr(adr, val)
+    M51XData(adr) = val
+    If (adr & $FF00) = #M51_XIO_PAGE
+      M51HookXWrite(adr, val)
+    EndIf
   EndMacro
 CompilerElse
   Macro M51XRd(dst, adr)

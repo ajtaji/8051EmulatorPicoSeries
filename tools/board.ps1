@@ -9,6 +9,8 @@ param(
     [string]$Owner = 'cg-8051'
 )
 $ErrorActionPreference = 'Stop'
+# From powershell.exe -File a comma list arrives as ONE string.
+$Jobs = @($Jobs | ForEach-Object { $_ -split ',' } | Where-Object { $_ })
 $build = Join-Path $PSScriptRoot 'build.ps1'
 $minutes = 1
 foreach ($job in $Jobs) {

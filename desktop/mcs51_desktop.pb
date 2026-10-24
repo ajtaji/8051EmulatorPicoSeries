@@ -16,7 +16,8 @@
 #M51_TIMING = 1             ; machine cycles, as the timers need
 #M51_8052 = 1
 #M51_SFR_HOOK = 0
-#M51_XDATA_HOOK = 0
+#M51_XDATA_HOOK = 2          ; XDATA is an array; the board's I/O page goes to its hooks
+#M51_XIO_PAGE = $F000
 #M51_CODE_HOOK = 0
 #M51_SERIAL_HOOK = 0
 EnableExplicit
@@ -33,7 +34,13 @@ XIncludeFile #GL_ENGINE_DIR$ + "GlSpriteFunctions.pbi"
 XIncludeFile #GL_ENGINE_DIR$ + "GlUI.pbi"
 XIncludeFile #GL_ENGINE_DIR$ + "GlUIChrome.pbi"
 
+; The board's I/O hooks, called from the core's MOVX macros.
+Declare.i M51HookXRead(adr.i)
+Declare M51HookXWrite(adr.i, v.i)
 XIncludeFile "mcs51_core.pbi"
+XIncludeFile "../machine/pm51_font.pico"
+XIncludeFile "../machine/pm51_board.pico"
+XIncludeFile "pm51_audio.pbi"
 XIncludeFile "mcs51_distable.pbi"
 XIncludeFile "mcs51_tests.pbi"
 
@@ -180,7 +187,7 @@ Procedure.i LoadProgram(path.s)
     LoadedTop = n
   EndIf
   LoadedName$ = GetFilePart(path)
-  M51Reset()
+  PM51Reset()
   ProcedureReturn 1
 EndProcedure
 
@@ -208,6 +215,7 @@ Procedure.i ConsoleMain()
   If arg = "--test"
     OpenConsole()
     M51TestConsole = 1
+    PM51Enabled = 0
     ProcedureReturn Bool(M51RunAllTests() <> 0)
   ElseIf arg = "--bench"
     OpenConsole()
@@ -231,6 +239,7 @@ Global RateCycles.d, RateShown.d, RateWindowCycles.i, RateWindowStart.q
 Global DisTop.i, MemTab.i, MemTop.i, LogTab.i, LogTop.i, SerialLog$
 Global Wheel.i, KeyCode.i, KeyChar.i
 Global TestsRun.i, TestsFailed.i, ShotPath$, ShotFrames.i
+Global Turbo.i, BoardFrames.i, BoardClock.q, ScreenSpr.GLSprite, *ScreenBuf
 
 Procedure DrainSerial()
   Protected w.i
@@ -260,23 +269,51 @@ Procedure StepOne()
   DrainSerial()
 EndProcedure
 
-; Runs for about budgetMs of wall time, stopping at the breakpoint, at the
+; One 50 Hz board frame; with a breakpoint set, instruction by instruction.
+Procedure BoardFrame()
+  Protected target.i, ran.i, c0.i = M51Cycles
+  If BreakAt >= 0
+    M51SetPins(1, (~PM51Buttons) & 255)
+    PM51Frame + 1 : PM51Status = 1
+    M51SetInt0(0) : M51SetInt0(1)
+    target = #PM51_CYCLES_PER_FRAME - PM51Carry
+    While ran < target
+      ran + M51Run(1)
+      If M51PC = BreakAt
+        Running = 0 : Status$ = "Stopped at the breakpoint " + H4(BreakAt) + "h."
+        Break
+      EndIf
+      If M51Stopped Or M51PowerDown : Break : EndIf
+    Wend
+    PM51Carry = ran - target
+    If PM51Carry < 0 : PM51Carry = 0 : EndIf
+  Else
+    PM51RunFrame()
+  EndIf
+  BoardFrames + 1
+  PM51AudioFrame()
+  RateWindowCycles + (M51Cycles - c0)
+EndProcedure
+
+; Runs the board in real time (50 frames a second by the wall clock), or as
+; fast as it goes for about budgetMs with Turbo; stops at the breakpoint, at the
 ; program's final jump-to-self, on $A5 or in power-down.
 Procedure RunFor(budgetMs.i)
-  Protected t0.q = ElapsedMilliseconds(), ran.i, k.i
-  While Running And ElapsedMilliseconds() - t0 < budgetMs
-    If BreakAt >= 0
-      For k = 1 To 20000
-        ran + M51Run(1)
-        If M51PC = BreakAt
-          Running = 0 : Status$ = "Stopped at the breakpoint " + H4(BreakAt) + "h."
-          Break
-        EndIf
-        If M51Stopped Or M51PowerDown : Break : EndIf
-      Next
+  Protected t0.q = ElapsedMilliseconds(), due.i, n.i
+  If BoardClock = 0 : BoardClock = t0 - (BoardFrames * 20) : EndIf
+  While Running
+    If Turbo
+      If ElapsedMilliseconds() - t0 >= budgetMs : Break : EndIf
     Else
-      ran + M51Run(200000)
+      due = (ElapsedMilliseconds() - BoardClock) / 20
+      If due - BoardFrames > 10        ; far behind (a breakpoint, a stall): carry on from now
+        BoardClock = ElapsedMilliseconds() - (BoardFrames * 20)
+        due = BoardFrames + 1
+      EndIf
+      If BoardFrames >= due Or n >= 6 : Break : EndIf
     EndIf
+    BoardFrame()
+    n + 1
     If M51Stopped
       Running = 0 : Status$ = "Stopped: $A5 at " + H4(M51PC) + "h is not an instruction."
     ElseIf M51PowerDown
@@ -285,8 +322,61 @@ Procedure RunFor(budgetMs.i)
       Running = 0 : Status$ = "The program ended: a jump to itself at " + H4(M51PC) + "h."
     EndIf
   Wend
-  RateWindowCycles + ran
   DrainSerial()
+EndProcedure
+
+Procedure.i ColourOf332(v.i, part.i)
+  Select part
+    Case 0 : ProcedureReturn ((v >> 5) * 255) / 7
+    Case 1 : ProcedureReturn (((v >> 2) & 7) * 255) / 7
+  EndSelect
+  ProcedureReturn ((v & 3) * 255) / 3
+EndProcedure
+
+; The board's picture into the screen texture (BGRA), line by line.
+Procedure UpdateScreen()
+  Protected y.i, x.i, v.i, *p
+  If ScreenSpr\TextureID = 0
+    *ScreenBuf = AllocateMemory(160 * 128 * 4)
+    ScreenSpr\Width = 160 : ScreenSpr\Height = 128
+    glGenTextures_(1, @ScreenSpr\TextureID)
+    glBindTexture_(#GL_TEXTURE_2D, ScreenSpr\TextureID)
+    glTexParameteri_(#GL_TEXTURE_2D, #GL_TEXTURE_MIN_FILTER, #GL_NEAREST)
+    glTexParameteri_(#GL_TEXTURE_2D, #GL_TEXTURE_MAG_FILTER, #GL_NEAREST)
+    glTexParameteri_(#GL_TEXTURE_2D, #GL_TEXTURE_WRAP_S, #GL_CLAMP_TO_EDGE)
+    glTexParameteri_(#GL_TEXTURE_2D, #GL_TEXTURE_WRAP_T, #GL_CLAMP_TO_EDGE)
+    glTexImage2D_(#GL_TEXTURE_2D, 0, #GL_RGBA, 160, 128, 0, #GL_BGRA_EXT, #GL_UNSIGNED_BYTE, *ScreenBuf)
+  EndIf
+  ; DrawGLSprite takes rows bottom-up (as from a DIB): line y goes to row 127 - y.
+  For y = 0 To 127
+    PM51ComposeLine(y)
+    *p = *ScreenBuf + ((127 - y) * 640)
+    For x = 0 To 159
+      v = PM51Line(x)
+      PokeL(*p, $FF000000 | (ColourOf332(v, 0) << 16) | (ColourOf332(v, 1) << 8) | ColourOf332(v, 2))
+      *p + 4
+    Next
+  Next
+  glBindTexture_(#GL_TEXTURE_2D, ScreenSpr\TextureID)
+  glTexSubImage2D_(#GL_TEXTURE_2D, 0, 0, 0, 160, 128, #GL_BGRA_EXT, #GL_UNSIGNED_BYTE, *ScreenBuf)
+EndProcedure
+
+; Keyboard -> the board's buttons (P1, read active low by the program).
+Procedure ReadButtons()
+  Protected b.i
+  If GetForegroundWindow_() <> WindowID(Win) Or Neon_FocusID <> 0
+    PM51Buttons = 0
+    ProcedureReturn
+  EndIf
+  If GetAsyncKeyState_(#VK_UP) & $8000 : b | 1 : EndIf
+  If GetAsyncKeyState_(#VK_DOWN) & $8000 : b | 2 : EndIf
+  If GetAsyncKeyState_(#VK_LEFT) & $8000 : b | 4 : EndIf
+  If GetAsyncKeyState_(#VK_RIGHT) & $8000 : b | 8 : EndIf
+  If GetAsyncKeyState_('Z') & $8000 : b | 16 : EndIf
+  If GetAsyncKeyState_('X') & $8000 : b | 32 : EndIf
+  If GetAsyncKeyState_(#VK_RETURN) & $8000 : b | 64 : EndIf
+  If GetAsyncKeyState_(#VK_SPACE) & $8000 : b | 128 : EndIf
+  PM51Buttons = b
 EndProcedure
 
 Procedure.s FlagString(p.i)
@@ -373,12 +463,27 @@ EndProcedure
 
 Procedure DrawMemory(x.f, y.f, w.f, h.f)
   Protected lh.f = Neon_S(18), rows.i, total.i, r.i, c.i, a.i, s.s, yy.f, base.i
-  Neon_Panel(x, y, w, h, "Memory", Neon_C_GrnR, Neon_C_GrnG, Neon_C_GrnB)
-  MemTab = Neon_TabStrip(101, x + Neon_S(2), y + Neon_S(28), w - Neon_S(4), Neon_S(26), "Internal RAM|SFR|XDATA|Code", MemTab)
+  Protected sc.f, bx.f, by.f, bw.f, bh.f, bv.i
+  Neon_Panel(x, y, w, h, "PM51 board and memory", Neon_C_GrnR, Neon_C_GrnG, Neon_C_GrnB)
+  MemTab = Neon_TabStrip(101, x + Neon_S(2), y + Neon_S(28), w - Neon_S(4), Neon_S(26), "Screen|Internal RAM|SFR|XDATA|Code", MemTab)
+  If MemTab = 0
+    UpdateScreen()
+    sc = (w - Neon_S(40)) / 160.0
+    If (h - Neon_S(110)) / 128.0 < sc : sc = (h - Neon_S(110)) / 128.0 : EndIf
+    sc = Int(sc)
+    If sc < 1 : sc = 1 : EndIf
+    bw = 160 * sc : bh = 128 * sc
+    bx = x + (w - bw) / 2 : by = y + Neon_S(70)
+    bv = M51XData($F004)
+    Neon_Box(bx - Neon_S(12), by - Neon_S(12), bw + Neon_S(24), bh + Neon_S(24), ColourOf332(bv, 0) / 255.0, ColourOf332(bv, 1) / 255.0, ColourOf332(bv, 2) / 255.0)
+    DrawGLSprite(@ScreenSpr, bx, by, 0, sc, 1, 1, 1, 1, #True, -1, -1, -1, -1, #True)
+    DrawLine(x + Neon_S(12), by + bh + Neon_S(22), "frame " + Str(PM51Frame) + "   buttons " + RSet(Bin(PM51Buttons), 8, "0") + "   keys: arrows, Z = A, X = B, Enter = start, Space = select", Neon_C_DimR, Neon_C_DimG, Neon_C_DimB)
+    ProcedureReturn
+  EndIf
   rows = Int((h - Neon_S(70)) / lh)
   Select MemTab
-    Case 0 : total = 16
-    Case 1 : total = 8
+    Case 1 : total = 16
+    Case 2 : total = 8
     Default : total = 4096
   EndSelect
   If Neon_Hit(x, y, w, h) And Wheel : MemTop - Wheel * 3 : EndIf
@@ -389,14 +494,14 @@ Procedure DrawMemory(x.f, y.f, w.f, h.f)
   For r = MemTop To MemTop + rows - 1
     If r >= total : Break : EndIf
     base = r * 16
-    If MemTab = 1 : base + $80 : EndIf
+    If MemTab = 2 : base + $80 : EndIf
     s = H4(base) + "  "
     For c = 0 To 15
       a = base + c
       Select MemTab
-        Case 0 : s + H2(M51IRam(a)) + " "
-        Case 1 : s + H2(M51Sfr(a & $7F)) + " "
-        Case 2 : s + H2(M51XData(a)) + " "
+        Case 1 : s + H2(M51IRam(a)) + " "
+        Case 2 : s + H2(M51Sfr(a & $7F)) + " "
+        Case 3 : s + H2(M51XData(a)) + " "
         Default : s + H2(M51Code(a)) + " "
       EndSelect
     Next
@@ -438,11 +543,13 @@ Procedure RunTestsInWindow()
   ; The suites load their own programs into the core; keep the user's.
   saveCode = AllocateMemory(65536)
   CopyMemory(@M51Code(0), saveCode, 65536)
+  PM51Enabled = 0
   TestsFailed = M51RunAllTests()
+  PM51Enabled = 1
   TestsRun = 1
   CopyMemory(saveCode, @M51Code(0), 65536)
   FreeMemory(saveCode)
-  M51Reset()
+  PM51Reset()
   LogTab = 0 : LogTop = 0
   If TestsFailed = 0
     Status$ = "All test suites passed on the desktop core (the same suites as the board)."
@@ -464,7 +571,7 @@ Procedure DrawToolbar(w.f)
   EndIf
   x + Neon_S(94)
   If Neon_Button(x, y, Neon_S(70), bh, "Reset")
-    Running = 0 : M51Reset() : SerialLog$ = "" : Status$ = "Reset."
+    Running = 0 : PM51Reset() : SerialLog$ = "" : Status$ = "Reset." : BoardFrames = 0
   EndIf
   x + Neon_S(78)
   label = "Run"
@@ -505,6 +612,10 @@ Procedure DrawToolbar(w.f)
   x + Neon_S(88)
   If Neon_Button(x, y, Neon_S(110), bh, "Run tests", Bool(TestsRun And TestsFailed = 0))
     RunTestsInWindow()
+  EndIf
+  x + Neon_S(118)
+  If Neon_Button(x, y, Neon_S(80), bh, "Turbo", Turbo)
+    Turbo = Bool(Turbo = 0) : BoardClock = 0
   EndIf
   r = RateShown / 1000000.0
   Neon_TextRight(*Neon_FontUI, w - Neon_S(12), y + Neon_S(6), StrF(r, 1) + " M machine cycles/s  =  " + StrF(r, 0) + "x a 12 MHz 8051",
@@ -557,7 +668,8 @@ Procedure Frame()
   glClearColor_(Neon_C_BgR, Neon_C_BgG, Neon_C_BgB, 1.0)
   glClear_(#GL_COLOR_BUFFER_BIT)
 
-  If Running : RunFor(12) : EndIf
+  ReadButtons()
+  If Running : RunFor(12) : Else : BoardClock = 0 : EndIf
   now = ElapsedMilliseconds()
   If now - RateWindowStart >= 500
     RateShown = RateWindowCycles * 1000.0 / (now - RateWindowStart)
@@ -622,6 +734,7 @@ Procedure WindowMain()
   GLFontSetSnapToPixel(*Neon_FontBold, #True)
   GLFontSetSnapToPixel(*Neon_FontMono, #True)
   RateWindowStart = ElapsedMilliseconds()
+  PM51AudioOpen()
   Repeat
     Repeat
       ev = WindowEvent()
@@ -641,11 +754,12 @@ Procedure WindowMain()
     If ShotFrames < 0 : quit = 1 : EndIf
     If Running = 0 : Delay(10) : EndIf
   Until quit
+  PM51AudioClose()
 EndProcedure
 
 UsePNGImageEncoder()
 M51DisInit()
-M51Reset()
+PM51Reset()
 Define rc.i = ConsoleMain()
 If rc >= 0
   End rc
