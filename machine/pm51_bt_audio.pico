@@ -1,0 +1,108 @@
+; The PM51 board's sound on a Bluetooth speaker (A2DP), the NES's way: core 0
+; runs the board and mixes each frame's 960 samples (48 kHz) into a ring; core
+; 1 drives the radio and the library reads the ring itself (BtAudioSource).
+;
+; Silent unless a PRIVATE wrapper (my-*.picow, never in git) names the speaker
+; before Main(), exactly as the NES does it:
+;     DataSection
+;     MySpeaker:
+;       Data.a <6 bytes, least significant first (HCI order)>
+;     EndDataSection
+;     PM51SetSpeaker(?MySpeaker)
+; The link key lives where the NES and PureMetal Forge's examples keep it: the
+; record "BTK1" + 22 bytes in the flash chip's last sector ($1FF000), so a
+; speaker paired once reconnects without pairing again.
+
+#PM51_RING = 8192                   ; 170 ms: room for a catch-up burst of 8 frames
+#PM51_KEY_SECTOR = $1FF000
+
+Global Dim PM51Pcm.w(#PM51_RING)
+Global PM51PcmCount.l, PM51AudioOn.i, PM51SpeakerSet.i, PM51AudioRc.i
+Global Dim PM51Speaker.a(6)
+Global Dim PM51KeyPage.a(256)
+
+; The speaker's address in HCI order (as the NES's private wrapper keeps it).
+Procedure PM51SetSpeaker(src.i)
+  Protected i.i
+  For i = 0 To 5
+    PM51Speaker(i) = PeekA(src + 5 - i)
+  Next
+  PM51SpeakerSet = 1
+EndProcedure
+
+Procedure.i PM51SaveKey()
+  Protected i.i
+  For i = 0 To 255
+    PM51KeyPage(i) = 255
+  Next
+  PM51KeyPage(0) = 66 : PM51KeyPage(1) = 84 : PM51KeyPage(2) = 75 : PM51KeyPage(3) = 49
+  If BtAudioKey(@PM51KeyPage(4)) = 0
+    ProcedureReturn 0
+  EndIf
+  If FlashRangeErase(#PM51_KEY_SECTOR, 4096) = 0
+    ProcedureReturn 0
+  EndIf
+  ProcedureReturn FlashRangeProgram(#PM51_KEY_SECTOR, @PM51KeyPage(0), 256)
+EndProcedure
+
+; Core 1: the radio, the encoder and the sender, as often as it can. From
+; SRAM, as the NES's core 1 runs: it keeps running while core 0 takes an
+; upload's reboot. (On 2026-10-24 a Pico W running this loop from flash left
+; USB entirely after the reboot that followed a speaker test; whether flash
+; execution was the cause is not proven.)
+ProcedureRAM Core1Main()
+  Repeat
+    BtAudioPoll()
+  ForEver
+EndProcedure
+
+; Connects (up to 45 s), then hands the radio to core 1. Silent and harmless
+; without a speaker.
+Procedure PM51AudioBegin()
+  Protected k.i
+  If PM51SpeakerSet = 0
+    Say("PM51 sound: no speaker named (a private wrapper names it); silent") : Eol()
+    ProcedureReturn
+  EndIf
+  k = $10000000 + #PM51_KEY_SECTOR
+  If PeekA(k) = 66 And PeekA(k + 1) = 84 And PeekA(k + 2) = 75 And PeekA(k + 3) = 49
+    BtAudioSetKey(k + 4)
+  EndIf
+  BtAudioStereo(1)
+  Say("PM51 sound: connecting to the speaker") : Eol()
+  PM51AudioRc = BtAudioBegin(@PM51Speaker(0))
+  Say("PM51 sound: BtAudioBegin=") : Num(PM51AudioRc) : Eol()
+  If PM51AudioRc <> 0
+    ProcedureReturn
+  EndIf
+  If BtAudioKeyNew()
+    ; Core 1 is not running yet, so flash may be written now.
+    If PM51SaveKey()
+      Say("PM51 sound: paired; link key saved") : Eol()
+    EndIf
+  EndIf
+  PM51PcmCount = 0
+  BtAudioSource(@PM51Pcm(0), #PM51_RING, @PM51PcmCount)
+  BtAudioLead(60000)
+  BtAudioPumps(0)
+  PM51AudioOn = 1
+  multicore_launch()
+EndProcedure
+
+; After each board frame: its 960 samples into the ring, then the count.
+Procedure PM51AudioFrame()
+  Protected pos.i, n1.i
+  If PM51AudioOn = 0
+    ProcedureReturn
+  EndIf
+  pos = PM51PcmCount & (#PM51_RING - 1)
+  n1 = #PM51_RING - pos
+  If n1 > 960
+    n1 = 960
+  EndIf
+  PM51Mix(@PM51Pcm(pos), n1, 48000)
+  If n1 < 960
+    PM51Mix(@PM51Pcm(0), 960 - n1, 48000)
+  EndIf
+  PM51PcmCount = PM51PcmCount + 960
+EndProcedure

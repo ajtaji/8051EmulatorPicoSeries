@@ -1,5 +1,6 @@
 ; The PM51 display board on a Pico W (LAFVIN ST7796 panel), running the 8051
-; program embedded by tools/embed_program.py (the demo by default).
+; program embedded by tools/embed_program.py (the demo by default). Silent:
+; a private my-*.picow wrapper that names the Bluetooth speaker gives it sound.
 #CLOCK_KHZ = 200000
 #M51_TIMING = 1
 #M51_ASM_TAIL = 1
@@ -10,13 +11,22 @@
 #M51_CODE_HOOK = 0
 #M51_SERIAL_HOOK = 0
 EnableExplicit
+XIncludeFile "RP2040/Lib/cyw43_nvram.pico"
+XIncludeFile "RP2040/Lib/bits.pico"
 XIncludeFile "RP2040/Lib/clocks.pico"
 XIncludeFile "RP2040/Lib/timer.pico"
 XIncludeFile "RP2040/Lib/uart.pico"
-XIncludeFile "RP2040/Lib/usb_serial.pico"
 XIncludeFile "RP2040/Lib/safety.pico"
-XIncludeFile "RP2040/Lib/bits.pico"
+XIncludeFile "RP2040/Lib/usb_serial.pico"
 XIncludeFile "RP2040/Lib/wiring.pico"
+XIncludeFile "RP2040/Lib/string_out.pico"
+XIncludeFile "RP2040/Lib/flashid.pico"
+XIncludeFile "RP2040/Lib/flash.pico"
+XIncludeFile "RP2040/Lib/cyw43.pico"
+XIncludeFile "RP2040/Lib/cyw43_btfw.pico"
+XIncludeFile "RP2040/Lib/bluetooth.pico"
+XIncludeFile "Shared/Bluetooth/sbc.pmi"
+XIncludeFile "Shared/Bluetooth/bt_audio.pmi"
 XIncludeFile "RP2040/Lib/spi.pico"
 XIncludeFile "RP2040/Lib/st7796.pico"
 XIncludeFile "../src/mcs51.pico"
@@ -24,4 +34,5 @@ XIncludeFile "../src/io.pico"
 XIncludeFile "pm51_font.pico"
 XIncludeFile "pm51_board.pico"
 XIncludeFile "pm51_program.pico"
+XIncludeFile "pm51_bt_audio.pico"
 XIncludeFile "pm51_picow_body.pico"

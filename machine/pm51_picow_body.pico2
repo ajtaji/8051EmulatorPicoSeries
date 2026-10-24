@@ -118,6 +118,7 @@ Procedure Main()
   Wend
   PM51PanelBegin()
   PM51InputBegin()
+  PM51AudioBegin()
   For i = 0 To #PM51_PROGRAM_SIZE - 1
     M51Code(i) = PeekA(?PM51Program + i) & 255
   Next
@@ -140,6 +141,7 @@ Procedure Main()
     While PM51Done < PM51Due And PM51Burst < 8
       PM51InputPoll()
       PM51RunFrame()
+      PM51AudioFrame()
       PM51Done = PM51Done + 1
       PM51Burst = PM51Burst + 1
     Wend
@@ -154,6 +156,9 @@ Procedure Main()
       Say(" panel frames in the last 5 s=") : Num(PM51Shown - PM51ShownLast)
       Say(" emulation us=") : Num(PM51EmuUs) : Say(" panel us=") : Num(PM51RenderUs)
       Say(" interrupts=") : Num(M51IntCount)
+      If PM51AudioOn
+        Say(" bt_packets=") : Num(BtAudioPackets()) : Say(" bt_underruns=") : Num(BtAudioUnderruns())
+      EndIf
       Say(" buttons=") : Num(PM51Buttons) : Eol()
       PM51EmuUs = 0 : PM51RenderUs = 0
       PM51ShownLast = PM51Shown

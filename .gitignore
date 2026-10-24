@@ -16,3 +16,7 @@ tests/programs/*.hex.asm
 tests/programs/*.slots.txt
 tests/asm/*.ihx
 tests/asm/*.lst
+# A private wrapper names the Bluetooth speaker: never in git
+my-*.picow
+my-*.pico2w
+firmware/my-*
