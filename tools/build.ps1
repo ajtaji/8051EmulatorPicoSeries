@@ -1,5 +1,6 @@
 param(
-    [string]$Compiler = 'C:\Users\ajtaj\Desktop\Github\PureBasicCode\OpenGl Work\ArduinoBasic\PureMetalForge.exe',
+    # PureMetal Forge: PMF_COMPILER, or PureMetalForge.exe on PATH.
+    [string]$Compiler = $(if ($env:PMF_COMPILER) { $env:PMF_COMPILER } else { 'PureMetalForge.exe' }),
     [string]$Source = 'src/demo.picow',
     [string]$Output = 'firmware/8051-picow.uf2',
     [string]$Port = '',

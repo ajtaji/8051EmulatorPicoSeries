@@ -19,6 +19,7 @@ cycle per interrupt taken.
 
 Run from the repository root:  py -3 tools/make_asm_tests.py
 """
+import os
 import re
 import struct
 import subprocess
@@ -26,7 +27,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ASM = ROOT / 'tests' / 'asm'
-BIN = Path(r'C:\PMFBuild\downloads\sdcc\extract\bin')
+# SDCC's bin folder (sdas8051, sdld, ucsim_51); unset: they are on PATH.
+BIN = Path(os.environ.get('SDCC_BIN', ''))
 # (name, flags, interrupts the program takes by design)
 TESTS = [('irq_order', 1, 6), ('irq_nest', 1, 3), ('timers', 2, 0), ('serial', 2, 0)]
 

@@ -1,5 +1,5 @@
 # A short speaker test of the PM51 board firmware, then the silent firmware back
-# (the vault's rule for audio tests: short, and a silent program flashed back
+# (audio tests are kept short, and a silent program is flashed back
 # every time). Holds the SPEAKER and board leases only for that.
 #   .\tools\speaker_test.ps1 -Private machine/my-pm51-picow.picow -Seconds 40
 param(
@@ -15,7 +15,7 @@ $privOut = 'firmware/my-pm51-speaker-test.uf2'
 $pubOut = 'firmware/pm51-picow.uf2'
 & $build -Source $Private -Output $privOut | Out-Null
 & $build -Source $Public -Output $pubOut | Out-Null
-. C:\PMFBuild\board-leases\lease.ps1
+. (Join-Path $PSScriptRoot 'lease.ps1')
 $speaker = Get-BoardLease -Port SPEAKER -Owner $Owner -Minutes 4
 try {
     $board = Get-BoardLease -Port $Port -Owner $Owner -Minutes 4

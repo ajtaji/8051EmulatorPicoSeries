@@ -17,6 +17,7 @@ changed uCsim's answer is counted and reported.
 
 Run from the repository root:  py -3 tools/make_vectors.py [ucsim_51.exe]
 """
+import os
 import random
 import re
 import struct
@@ -25,7 +26,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-UCSIM = Path(sys.argv[1] if len(sys.argv) > 1 else r'C:\PMFBuild\downloads\sdcc\extract\bin\ucsim_51.exe')
+UCSIM = Path(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.environ.get('SDCC_BIN', ''), 'ucsim_51'))
 OUT_BIN = ROOT / 'tests' / 'vectors.bin'
 OUT_COUNT = ROOT / 'tests' / 'vector_count.pico'
 

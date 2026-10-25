@@ -21,3 +21,5 @@ my-*.picow
 my-*.pico2w
 firmware/my-*
 scratch/
+# Publishing metadata, kept out of the repository
+PUBLISH-META.txt

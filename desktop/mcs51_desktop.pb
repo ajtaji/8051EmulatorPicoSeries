@@ -26,7 +26,7 @@ EnableExplicit
 ; The engine first: the verification code's globals have plain names
 ; (Index, Count, ...) that the engine's procedures use as locals.
 CompilerIf Not Defined(GL_ENGINE_DIR$, #PB_Constant)
-  #GL_ENGINE_DIR$ = "C:/Users/ajtaj/Desktop/Neon-Arcade-Dispay-Engine/"
+  #GL_ENGINE_DIR$ = "../../Neon-Arcade-Dispay-Engine/"   ; a checkout beside this repository
 CompilerEndIf
 XIncludeFile #GL_ENGINE_DIR$ + "GlTypes.pbi"
 XIncludeFile #GL_ENGINE_DIR$ + "GlUtilities.pbi"

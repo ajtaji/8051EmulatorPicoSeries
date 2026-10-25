@@ -1,5 +1,5 @@
-# Uploads and captures on the shared board under ONE lease, taken and given
-# back only through the shared C:\PMFBuild\board-leases\lease.ps1.
+# Uploads and captures on a board under ONE lease (tools/lease.ps1), taken and given
+# back around the uploads and runs.
 #   .\tools\board.ps1 -Port COM7 -Jobs 'tests/verify.picow:firmware/verify.uf2:45', 'src/demo.picow:firmware/8051-picow.uf2:25'
 # Every image is compiled first, off the board, so a compile error never
 # holds the lease. Each job's serial capture is in <output>.build.log.
@@ -18,7 +18,7 @@ foreach ($job in $Jobs) {
     & $build -Source $src -Output $out | Out-Null
     $minutes += [math]::Ceiling(([int]$secs + 40) / 60)
 }
-. C:\PMFBuild\board-leases\lease.ps1
+. (Join-Path $PSScriptRoot 'lease.ps1')
 $lease = Get-BoardLease -Port $Port -Owner $Owner -Minutes $minutes
 "lease taken $(Get-Date -Format o)"
 try {

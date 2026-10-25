@@ -1,0 +1,7 @@
+font8x8 - 8x8 monochrome bitmap fonts
+https://github.com/dhepper/font8x8
+Daniel Hepper, based on the IBM PC VGA font as distributed by Marcel Sondaar.
+
+The font8x8 project releases these fonts into the public domain.
+machine/pm51_font.pico and machine/pm51_font.pico2 are generated from its
+font8x8_basic.h (ASCII 32-126) by tools/make_font.py.

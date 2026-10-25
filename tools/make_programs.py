@@ -23,8 +23,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PROGRAMS = ROOT / 'tests' / 'programs'
 # PMF_COMPILER overrides it, to build with a compiler under test.
-COMPILER = Path(os.environ.get('PMF_COMPILER', r'C:\Users\ajtaj\Desktop\Github\PureBasicCode\OpenGl Work\ArduinoBasic\PureMetalForge.exe'))
-UCSIM = Path(r'C:\PMFBuild\downloads\sdcc\extract\bin\ucsim_51.exe')
+COMPILER = Path(os.environ.get('PMF_COMPILER', 'PureMetalForge.exe'))
+# SDCC_BIN: SDCC's bin folder; unset: ucsim_51 is on PATH.
+UCSIM = Path(os.environ.get('SDCC_BIN', '')) / 'ucsim_51'
 
 
 def primes():

@@ -2,7 +2,8 @@
 # mcs51_console.exe (the same program with a console, for --test / --bench).
 param(
     [string]$Compiler = 'C:\Program Files\PureBasic\Compilers\pbcompilerc.exe',
-    [string]$Engine = 'C:/Users/ajtaj/Desktop/Neon-Arcade-Dispay-Engine/'
+    # The Neon Arcade Display Engine checkout: NEON_ENGINE_DIR, or one beside this repository.
+    [string]$Engine = $(if ($env:NEON_ENGINE_DIR) { $env:NEON_ENGINE_DIR } else { ((Join-Path $PSScriptRoot '..\..\Neon-Arcade-Dispay-Engine') -replace '\\', '/') + '/' })
 )
 $ErrorActionPreference = 'Stop'
 $here = $PSScriptRoot
