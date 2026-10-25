@@ -1,17 +1,36 @@
 ; The PM51 display board on a Pico W with the LAFVIN ST7796 panel: the picture
 ; at twice the size (320x256, centred on the 480x320 panel), the LAFVIN
 ; buttons and stick as the board's buttons, SBUF on the USB serial port.
-; Emulated time follows the wall clock at 50 frames a second; the panel is
-; redrawn between frames as often as time allows.
+;
+; TWO CORES. Core 0 runs the board: emulated time follows the wall clock at 50
+; frames a second, and after a frame, whenever core 1 is free, it copies the
+; picture's memory (XDATA $8000-$DC7F and the I/O registers) into a snapshot,
+; so a frame on the panel is always one whole emulated frame, never half of
+; two. Core 1 draws each snapshot whole: one panel window for the 320x256
+; picture, filled by DMA from two line buffers in turn while it composes the
+; next line. (A whole-frame RGB565 buffer is 160 KB, more than the Pico W has
+; free.) Core 0 keeps USB and the watchdog; core 1 also drives the Bluetooth
+; radio between lines when a speaker is on.
 ;
 ; LAFVIN controls: stick = up/down/left/right, BTN1 (GP15) = A, BTN2 (GP14) = B;
 ; both buttons together = start.
 
+#PM51_SNAP = $5C80                  ; XDATA $8000-$DC7F: bitmap, text, colours, sprites, patterns, line colours
+
 Global Dim PM51Pal.i(256)
-Global Dim PM51Strip.w(640)
-Global PM51Start.i, PM51Done.i, PM51Shown.i, PM51Second.i, PM51ShownLast.i, PM51Border.i = -1
+Global Dim PM51Pal2.l(256)          ; the RGB565 colour twice: two panel pixels in one word
+Global Dim PM51Snap.a(#PM51_SNAP)   ; core 0 -> core 1: the picture's memory at the end of a frame
+Global Dim PM51SnapReg.a(16)        ; and XDATA $F000-$F00F
+Global Dim PM51CLine.a(160)         ; core 1: the line being composed (RGB332)
+Global Dim PM51Strips.l(640)        ; core 1: two lines of the panel picture (two rows each), sent by DMA in turn
+Global PM51SnapReady.i              ; 1: a snapshot waits for core 1 (core 0 sets it, core 1 clears it)
+Global PM51SnapFrame.i = -1         ; core 0: the board frame in the last snapshot
+Global PM51Presented.i, PM51PresentUs.i, PM51DmaTimeouts.i, PM51Core1Parked.i, PM51Border.i = -1  ; core 1's
+Global PM51PresentedLast.i, PM51PresentUsLast.i, PM51SnapUs.i                                   ; core 0's
+Global PM51Start.i, PM51Done.i, PM51Second.i
 Global PM51StickX.i = 2048, PM51StickY.i = 2048, PM51Now.i, PM51Due.i, PM51Burst.i, PM51Tx.i
-Global PM51RenderUs.i, PM51EmuUs.i, PM51T.i
+Global PM51EmuUs.i, PM51T.i
+Global PM51Hash.i, PM51HashAt.i = 500
 
 Procedure PM51PanelBegin()
   Protected v.i, r.i, g.i, b.i
@@ -20,12 +39,14 @@ Procedure PM51PanelBegin()
   Tft796Begin(0, 5, 6, 7)
   Tft796Rotate(1)
   Tft796Fill(0)
+  SpiDmaInit()
   ; RGB332 -> RGB565, each channel scaled to full range.
   For v = 0 To 255
     r = ((v >> 5) * 31) / 7
     g = (((v >> 2) & 7) * 63) / 7
     b = ((v & 3) * 31) / 3
     PM51Pal(v) = (r << 11) | (g << 5) | b
+    PM51Pal2(v) = PM51Pal(v) | (PM51Pal(v) << 16)
   Next
 EndProcedure
 
@@ -73,32 +94,37 @@ Procedure PM51InputPoll()
   PM51Buttons = b
 EndProcedure
 
-; The picture: the border when it changes, then 128 lines, each sent twice as wide and twice.
-Procedure PM51Render()
-  Protected y.i, x.i, c.i
-  If M51XData($F004) <> PM51Border
-    PM51Border = M51XData($F004)
-    c = PM51Pal(PM51Border)
-    Tft796Rect(0, 0, 480, 32, c)
-    Tft796Rect(0, 288, 480, 32, c)
-    Tft796Rect(0, 32, 80, 256, c)
-    Tft796Rect(400, 32, 80, 256, c)
-  EndIf
-  For y = 0 To 127
-    PM51ComposeLine(y)
-    For x = 0 To 159
-      c = PM51Pal(PM51Line(x))
-      PM51Strip(x * 2) = c
-      PM51Strip((x * 2) + 1) = c
-      PM51Strip(320 + (x * 2)) = c
-      PM51Strip(321 + (x * 2)) = c
+; Orders memory between the cores: everything written before it is seen by the
+; other core before anything written after it.
+Procedure PM51Barrier()
+  ASM
+    dmb
+  EndASM
+EndProcedure
+
+; ---- core 0 -------------------------------------------------------------------
+; The picture's memory into the snapshot, then the flag that hands it over.
+Procedure PM51TakeSnapshot()
+  Protected i.i, src.i, dst.i
+  src = @M51XData($8000)
+  dst = @PM51Snap(0)
+  If ((src | dst) & 3) = 0
+    i = 0
+    While i < #PM51_SNAP
+      PokeL(dst + i, PeekL(src + i))
+      i = i + 4
+    Wend
+  Else
+    For i = 0 To #PM51_SNAP - 1
+      PM51Snap(i) = M51XData($8000 + i)
     Next
-    Tft796BlitRect(80, 32 + (y * 2), 320, 2, @PM51Strip(0))
-    ; A redraw takes ~70 ms: answer USB (an upload's touch) along the way.
-    If (y & 15) = 15
-      UsbSerialTask()
-    EndIf
+  EndIf
+  For i = 0 To 15
+    PM51SnapReg(i) = M51XData($F000 + i)
   Next
+  PM51SnapFrame = PM51Done
+  PM51Barrier()
+  PM51SnapReady = 1
 EndProcedure
 
 Procedure PM51DrainSerial()
@@ -107,6 +133,190 @@ Procedure PM51DrainSerial()
     UsbSerialWrite(PM51Tx & 255)
     PM51Tx = M51SerialTxGet()
   Wend
+EndProcedure
+
+; Once, at board frame 500: the machine's state, to compare two builds of the
+; core (or two boards) - equal lines mean the same instructions ran.
+Procedure PM51StateHash()
+  Protected i.i
+  PM51Hash = 0
+  For i = 0 To 65535
+    PM51Hash = ((PM51Hash * 31) + M51XData(i)) & $FFFFFF
+  Next
+  Say("state at board frame ") : Num(PM51Done) : Say(": cycles=") : Num(M51Cycles)
+  Say(" interrupts=") : Num(M51IntCount) : Say(" pc=") : Num(M51PC) : Say(" a=") : Num(M51A)
+  Say(" sp=") : Num(M51SP) : Say(" xdata hash=") : Num(PM51Hash) : Eol()
+EndProcedure
+
+; ---- core 1 -------------------------------------------------------------------
+; Line y (0-127) of the snapshot's picture into PM51CLine: PM51ComposeLine's
+; rules (pm51_board), read from the snapshot (its offsets are XDATA - $8000),
+; with the bitmap's scroll done as two runs instead of a remainder per pixel.
+Procedure PM51ComposeSnap(y.i)
+  Protected layers.i, sx.i, base.i, x.i, v.i, line0.i, n1.i
+  Protected trow.i, gy.i, col.i, ch.i, bits.i, colour.i, px.i
+  Protected s.i, sa.i, sy.i, sxp.i, fl.i, pat.i, r.i, c.i, cc.i
+  layers = PM51SnapReg(5)
+  line0 = PM51Snap($5C00 + ((y + PM51SnapReg(15)) & 127))
+  If layers & 1
+    sx = PM51SnapReg(2) % 160
+    base = ((y + PM51SnapReg(3)) % 128) * 160
+    n1 = 160 - sx
+    For x = 0 To n1 - 1
+      v = PM51Snap(base + sx + x)
+      If v = 0
+        v = line0
+      EndIf
+      PM51CLine(x) = v
+    Next
+    For x = n1 To 159
+      v = PM51Snap(base + x - n1)
+      If v = 0
+        v = line0
+      EndIf
+      PM51CLine(x) = v
+    Next
+  Else
+    For x = 0 To 159
+      PM51CLine(x) = line0
+    Next
+  EndIf
+  If layers & 2
+    trow = $5000 + ((y >> 3) * 20)
+    gy = y & 7
+    For col = 0 To 19
+      ch = PM51Snap(trow + col)
+      If ch >= 32 And ch < 127
+        bits = PeekA(?PM51Font + ((ch - 32) * 8) + gy) & 255
+        If bits
+          colour = PM51Snap(trow + col + $200)
+          For px = 0 To 7
+            If bits & (1 << px)
+              PM51CLine((col * 8) + px) = colour
+            EndIf
+          Next
+        EndIf
+      EndIf
+    Next
+  EndIf
+  If layers & 4
+    For s = 0 To 7
+      sa = $5400 + (s * 8)
+      fl = PM51Snap(sa + 3)
+      If fl & 1
+        sy = PM51Snap(sa + 1)
+        r = y - sy
+        If r >= 0 And r < 8
+          If fl & 4
+            r = 7 - r
+          EndIf
+          sxp = PM51Snap(sa)
+          pat = $5800 + ((PM51Snap(sa + 2) & 15) * 64) + (r * 8)
+          For c = 0 To 7
+            cc = c
+            If fl & 2
+              cc = 7 - c
+            EndIf
+            v = PM51Snap(pat + cc)
+            If v <> 0 And sxp + c < 160
+              PM51CLine(sxp + c) = v
+            EndIf
+          Next
+        EndIf
+      EndIf
+    Next
+  EndIf
+EndProcedure
+
+; The composed line into line buffer `half`, twice as wide and on two rows.
+Procedure PM51Expand(half.i)
+  Protected x.i, w.i, d.i
+  d = half * 320
+  For x = 0 To 159
+    w = PM51Pal2(PM51CLine(x))
+    PM51Strips(d + x) = w
+    PM51Strips(d + 160 + x) = w
+  Next
+EndProcedure
+
+; Waits for the DMA channel to take its last halfword. Bounded: a stall is
+; counted, the transfer torn down, and the frame goes on.
+Procedure PM51DmaIdle()
+  Protected n.i
+  While (PeekL(#SPI_DMA_CH0_CTRL) & #SPI_DMA_BUSY) <> 0
+    n = n + 1
+    If n > 4000000
+      PM51DmaTimeouts = PM51DmaTimeouts + 1
+      SpiDmaAbort(0)
+      ProcedureReturn 0
+    EndIf
+  Wend
+  ProcedureReturn 1
+EndProcedure
+
+; Starts n halfwords from *buf to SPI0 and returns at once.
+Procedure PM51DmaStart(*buf, n.i)
+  PokeL(#SPI_DMA_CH0_READ, buf)
+  PokeL(#SPI_DMA_CH0_WRITE, __SpiBase(0) + 8)
+  PokeL(#SPI_DMA_CH0_COUNT, n)
+  PokeL(#SPI_DMA_CH0_CTRL, #SPI_DMA_EN | #SPI_DMA_SIZE_HALF | #SPI_DMA_INCR_READ | (SpiDmaTreq(0) << #PM51_TREQ_SHIFT))
+EndProcedure
+
+; One whole frame: the border when it changes, then the picture as one window
+; of 320x256 pixels, 128 DMA transfers of two rows each, back to back.
+Procedure PM51Present()
+  Protected y.i, half.i, c.i, t.i, spi.i
+  t = Micros()
+  If PM51SnapReg(4) <> PM51Border
+    PM51Border = PM51SnapReg(4)
+    c = PM51Pal(PM51Border)
+    Tft796Rect(0, 0, 480, 32, c)
+    Tft796Rect(0, 288, 480, 32, c)
+    Tft796Rect(0, 32, 80, 256, c)
+    Tft796Rect(400, 32, 80, 256, c)
+  EndIf
+  Tft796Window(80, 32, 399, 287)
+  Tft796PinSet(tft796_dc, 1)
+  Tft796PinSet(tft796_cs, 0)
+  SpiSetBits(0, 16)
+  spi = __SpiBase(0)
+  PokeL(spi + 36, PeekL(spi + 36) | #SPI_SSPDMACR_TXDMAE)
+  half = 0
+  For y = 0 To 127
+    PM51ComposeSnap(y)
+    PM51Expand(half)
+    ; Only the other buffer's transfer can still be running.
+    PM51DmaIdle()
+    PM51DmaStart(@PM51Strips(half * 320), 640)
+    half = 1 - half
+    PM51AudioPoll()
+  Next
+  PM51DmaIdle()
+  SpiDmaRestore(0)
+  Tft796PinSet(tft796_cs, 1)
+  PM51PresentUs = PM51PresentUs + Micros() - t
+  PM51Presented = PM51Presented + 1
+EndProcedure
+
+; Core 1: each snapshot to the panel, and the radio when there is a speaker.
+; When an upload's reboot is pending (the 1200-baud touch, seen through USB
+; serial's flags) and the radio is quiet, core 1 PARKS in this SRAM loop, so
+; core 0 takes the reboot with nothing else running. The flags themselves are
+; read, not their getters: on the RP2040 the getters run from flash.
+ProcedureRAM Core1Main()
+  Repeat
+    If PM51SnapReady
+      PM51Present()
+      PM51Barrier()
+      PM51SnapReady = 0
+    EndIf
+    PM51AudioPoll()
+    If (usbser_bootpend Or usbser_resetpend) And PM51AudioQuiet()
+      PM51Core1Parked = 1
+      Repeat
+      ForEver
+    EndIf
+  ForEver
 EndProcedure
 
 Procedure Main()
@@ -129,11 +339,15 @@ Procedure Main()
   PM51Reset()
   Say("PM51 board on the Pico W: running ") : SayAt(?PM51ProgramName)
   Say(", ") : Num(#PM51_PROGRAM_SIZE) : Say(" bytes") : Eol()
+  ; From here on the panel (SPI0, DMA channel 0) is core 1's alone.
+  If PM51StartCore1() = 0
+    Say("PM51: core 1 did not start - no picture") : Eol()
+  EndIf
   PM51Start = Micros()
   PM51Second = PM51Start
   Repeat
-    ; Emulated frames due by the wall clock (at most 8 at a time: a slow
-    ; panel draw is caught up, a long stall is not).
+    ; Emulated frames due by the wall clock (at most 8 at a time: a stall is
+    ; caught up a little, a long one is not).
     PM51Now = Micros()
     PM51Due = (PM51Now - PM51Start) / 20000
     If PM51Due - PM51Done > 25
@@ -148,24 +362,34 @@ Procedure Main()
       PM51AudioFrame()
       PM51Done = PM51Done + 1
       PM51Burst = PM51Burst + 1
+      If PM51Done = PM51HashAt
+        PM51StateHash()
+      EndIf
     Wend
     PM51EmuUs = PM51EmuUs + Micros() - PM51T
+    ; The newest frame to core 1 as soon as it has finished the last one.
+    If PM51SnapReady = 0 And PM51SnapFrame <> PM51Done
+      PM51T = Micros()
+      PM51TakeSnapshot()
+      PM51SnapUs = PM51SnapUs + Micros() - PM51T
+    EndIf
     PM51DrainSerial()
-    PM51T = Micros()
-    PM51Render()
-    PM51RenderUs = PM51RenderUs + Micros() - PM51T
-    PM51Shown = PM51Shown + 1
     If Micros() - PM51Second >= 5000000
       Say("board frames=") : Num(PM51Done)
-      Say(" panel frames in the last 5 s=") : Num(PM51Shown - PM51ShownLast)
-      Say(" emulation us=") : Num(PM51EmuUs) : Say(" panel us=") : Num(PM51RenderUs)
+      Say(" panel frames in the last 5 s=") : Num(PM51Presented - PM51PresentedLast)
+      Say(" emulation us=") : Num(PM51EmuUs) : Say(" snapshot us=") : Num(PM51SnapUs)
+      Say(" core 1 panel us=") : Num(PM51PresentUs - PM51PresentUsLast)
       Say(" interrupts=") : Num(M51IntCount)
+      If PM51DmaTimeouts
+        Say(" dma_timeouts=") : Num(PM51DmaTimeouts)
+      EndIf
       If PM51AudioOn
         Say(" bt_packets=") : Num(BtAudioPackets()) : Say(" bt_underruns=") : Num(BtAudioUnderruns())
       EndIf
       Say(" buttons=") : Num(PM51Buttons) : Eol()
-      PM51EmuUs = 0 : PM51RenderUs = 0
-      PM51ShownLast = PM51Shown
+      PM51EmuUs = 0 : PM51SnapUs = 0
+      PM51PresentedLast = PM51Presented
+      PM51PresentUsLast = PM51PresentUs
       PM51Second = Micros()
     EndIf
     UsbSerialTask() : SafetyPet()

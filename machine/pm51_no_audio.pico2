@@ -1,0 +1,34 @@
+; The PM51 board on a Pico 2 W: no sound yet, so the body's audio calls do
+; nothing; and the RP2350's half of the panel code (DMA's TREQ field, core 1's
+; start through multicore_smp).
+Global PM51AudioOn.i
+
+Procedure PM51AudioBegin()
+EndProcedure
+
+Procedure PM51AudioFrame()
+EndProcedure
+
+Procedure PM51AudioPoll()
+EndProcedure
+
+Procedure.i PM51AudioQuiet()
+  ProcedureReturn 1
+EndProcedure
+
+Procedure.i BtAudioPackets()
+  ProcedureReturn 0
+EndProcedure
+
+Procedure.i BtAudioUnderruns()
+  ProcedureReturn 0
+EndProcedure
+
+#PM51_TREQ_SHIFT = #SPI_DMA_TREQ_SHIFT
+Procedure.i PM51StartCore1()
+  McCore1ReleaseHold()
+  If McLaunchCore1() = 6
+    ProcedureReturn 1
+  EndIf
+  ProcedureReturn 0
+EndProcedure

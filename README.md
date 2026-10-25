@@ -1,19 +1,19 @@
 # Intel 8051 (MCS-51) on the Raspberry Pi Pico — PureMetal
 
 A fast MCS-51 instruction-set core for the Raspberry Pi Pico series, written in
-PureMetal. The Pico W (RP2040) is the tested board; the Pico 2 W (RP2350)
-build compiles from the same generator.
+PureMetal. It runs on the Pico W (RP2040) and on the RP2350 boards (Pico 2 W,
+Feather RP2350), both tested on silicon.
 
 The CPU loop runs from SRAM and dispatches through a 256-entry `.Label` table.
 Every handler ends in its own copy of the dispatch tail, so there is no
-procedure call per guest instruction. Instruction semantics are PureMetal; only
-the dispatch tail is inline assembly, and a plain computed-`Goto` tail is
-available and tested too.
+procedure call per guest instruction. Instruction semantics are PureMetal; on
+the RP2040 only the dispatch tail is inline assembly, on the RP2350 the hot
+opcodes are hand-written Thumb-2 as well, and a plain computed-`Goto` build is
+available and tested on both.
 
-Every test below ran on a physical Pico W (RP2040 at 200 MHz) on 2026-10-23,
-and all three builds pass every suite. The Pico 2 W (RP2350, 150 MHz) builds
-compile from the same sources; no Pico 2 W was available to this work, so they
-have not been run on a board yet.
+Every test below ran on physical boards: the Pico W (RP2040 at 200 MHz) from
+2026-10-23, the Pico 2 W (RP2350 at 150 MHz) on 2026-10-23 and the Feather
+RP2350 (150 MHz) on 2026-10-25. All three builds pass every suite on each.
 
 ## Measured speed (Pico W, 200 MHz)
 
@@ -47,6 +47,49 @@ out of r11 and back). Each arm of a conditional branch dispatches by itself
 instead of jumping to a shared tail, and branch offsets use a signed byte load.
 Putting the bank base in r6 as well starved the compiler of low registers (it
 spilled to the stack inside the handlers), so the bank base stays in r8.
+
+## Measured speed (RP2350, 150 MHz): Thumb-2
+
+The RP2350's Cortex-M33 runs the whole Thumb-2 instruction set, and the
+inline assembler takes all of it (compiler main `9777f6cd6`). Measured on the
+Feather RP2350 (COM20), 2026-10-25, the same tests before and after
+(`docs/pico2-thumb2-benchmark.log`, `docs/pico2-feather-verification-*.log`):
+
+| Instruction mix (untimed) | Before | Thumb-2 tail only | **Thumb-2 tail + handlers** |
+|---|---:|---:|---:|
+| `DJNZ R7,$` / `SJMP` | 4.06 M instructions/s | 3.01 M | **6.01 M (+48%)** |
+| `ADD #` / `ADDC Rn` / `XRL #` / `RLC A` / `SUBB Rn` | 3.56 M | 3.04 M | **5.77 M (+62%)** |
+| `MOV A,@R0` / `MOV dir,A` / `MOV dir,dir` / `INC R0` / `CJNE` | 4.28 M | 4.01 M | **6.54 M (+53%)** |
+| `MOVX` / `CPL A` / `INC DPTR` / `MOV A,DPH` / `CJNE` | 4.33 M | 4.50 M | **5.00 M (+15%)** |
+
+| Program, timed build | Before | **After** |
+|---|---:|---:|
+| fibcrc | 9.14 M machine cycles/s | **11.15 M (+22%)** |
+| primes | 8.19 M | **10.01 M (+22%)** |
+| sort | 8.09 M | **9.82 M (+21%)** |
+
+The PM51 demo's emulation takes 20% less of core 0 (1.37 s in every 5 s,
+from 1.72 s), and its state at board frame 500 is the same with both cores.
+
+What it is: the dispatch tail keeps the code base in r10, so fetching the next
+opcode is `ldrb r2, [r10, r4]` (no literal load), and the scaled
+`ldr r1, [r6, r2, lsl #2]` replaces LSLS + LDR - five instructions from fetch
+to the next handler, seven before. (`ldr pc, [r6, r2, lsl #2]` would save the
+BX; the assembler at `9777f6cd6` refuses it, forum 1413.) The tail alone was
+SLOWER: with two more registers reserved the compiler spilled to the stack
+inside the PureMetal handlers. So the 138 hottest opcodes are written in
+Thumb-2 by hand (`tools/thumb2_handlers.py`): every MOV/INC/DEC/DJNZ/CJNE/ALU
+form on Rn, the immediates, MOV A,@Ri / MOV @Ri,A / INC @Ri, the accumulator
+operations, CLR/SETB C, SJMP/JZ/JNZ/JC/JNC (an IT block, no branch), MOV
+DPTR / INC DPTR, MOVX @DPTR and MOV between direct bytes. A direct byte that is
+an SFR, and MOVX into the PM51's I/O page, branch to the PureMetal path. Each
+hand handler has its PureMetal one as the `CompilerElse` arm, which the
+plain-`Goto` build uses, and the same 7,680 vectors check both. M51Res is an
+ordinary Global on the RP2350: the ST7796 library cannot be compiled with r5
+and r6 both reserved, and r12 is written by the flash-to-RAM call veneers. The
+RP2040 core is unchanged (its Thumb-1 tail, byte for byte); on the Pico W it
+measures as before, 4.36 / 3.91 / 4.14 / 4.55 M instructions/s (MOVX 2% below
+10-23's 4.63 M with an identical core source: the newer compiler's code).
 
 ## Desktop version
 
@@ -169,16 +212,33 @@ On the Pico W (`machine/pm51_picow.picow`; `pm51_pico2w.pico2w` for the
 Pico 2 W) the picture is drawn on the LAFVIN ST7796 panel at twice the size
 (320x256, centred), and the LAFVIN controls are the buttons: the stick is
 up/down/left/right, BTN1 (GP15) is A, BTN2 (GP14) is B, both together are
-start. Sound goes to a Bluetooth speaker (A2DP), the NES's way: core 0 mixes
-each frame's 960 samples (48 kHz) into a ring that core 1's radio loop reads
-(`machine/pm51_bt_audio.pico`). The published firmware names no speaker and is
+start.
+
+**Both cores.** Core 0 runs the board, 50 frames a second by the wall clock,
+and after each frame, whenever core 1 is free, copies the picture's memory
+(XDATA $8000-$DC7F and the I/O registers, 0.6 ms) into a snapshot, so the
+panel always shows one whole emulated frame. Core 1 draws every snapshot
+whole: one 320x256 panel window, filled by DMA from two line buffers in turn
+while it composes the next line (a whole-frame RGB565 buffer would be 160 KB,
+more than the Pico W has free). Measured on the Pico W, 2026-10-25: **250
+panel frames in 5 s - all 50 a second, every emulated frame** - at 14.5 ms of
+core 1 per frame against the 13 ms the 100 MHz SPI wire needs for the 160 KB;
+it was 52 in 5 s (~10 a second, 71 ms a redraw) when core 0 drew between
+frames. The machine's state at board frame 500 (cycles, interrupts, PC, A, SP
+and a hash of all 64 KB of XDATA, printed once) is the same in both builds.
+
+Sound goes to a Bluetooth speaker (A2DP), the NES's way: core 0 mixes
+each frame's 960 samples (48 kHz) into a ring that the radio code reads, and
+core 1 drives the radio between panel lines (`machine/pm51_bt_audio.pico`).
+The published firmware names no speaker and is
 silent; a private, git-ignored `machine/my-*.picow` wrapper names it
 (`PM51SetSpeaker(?MySpeaker)` before `Main()`), and the link key is the shared
-"BTK1" record at flash $1FF000. On the Pico W: about 126 packets a second,
-~40 underruns while the stream starts and then almost none, 50 board frames a
-second (the panel then redraws ~7 times a second). For an upload, core 1 parks
-in SRAM once the speaker is disconnected, and core 0 answers USB during the
-panel redraw: the 1200-baud touch reaches boot mode with the stream playing
+"BTK1" record at flash $1FF000. Measured on the Pico W with the speaker,
+2026-10-25 (60 s): 250 panel frames in every 5 s, about 125 packets a second
+and **no underruns at all**, the same state at board frame 500; with the old
+single-core panel it had been ~7 panel frames a second and ~40 underruns while
+the stream started. For an upload, core 1 parks in SRAM once the radio is quiet,
+and core 0 answers USB: the 1200-baud touch reaches boot mode
 (`tools/speaker_test.ps1` runs a short test and flashes the silent firmware
 back). On the desktop the picture is drawn in the window,
 the keyboard is the buttons (arrows, Z = A, X = B, Enter = start, Space =
@@ -245,8 +305,8 @@ between `M51Run` calls; it is taken at the start of the next one.
 
 The core has one global CPU and is not reentrant; keep it on one core.
 **Reserved registers** (application-wide): Pico W r4 `M51PC`, r5 `M51Left`,
-r8 `M51RB`, r9 `M51A`, r10 `M51Res`; Pico 2 W r4 `M51PC`, r6 `M51Table`,
-r8 `M51RB`, r9 `M51A`, r10 `M51Res`, r11 `M51Left`. PureMetal checks every
+r8 `M51RB`, r9 `M51A`, r10 `M51Res`; RP2350 r4 `M51PC`, r6 `M51Table`,
+r8 `M51RB`, r9 `M51A`, r10 `M51CodeBase`, r11 `M51Left`. PureMetal checks every
 library and assembly block against them.
 
 ## Verification

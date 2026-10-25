@@ -1,0 +1,20 @@
+Feather RP2350 (COM20), 150 MHz, 2026-10-25, compiler main 9777f6cd6. Untimed asm-tail build, 1,000,000 instructions each.
+
+BEFORE: Thumb-1 style tail (literal load + LSLS + LDR + BX), PureMetal handlers
+register/branch DJNZ instructions=1000000 us=246208 instructions/s=4061606
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=281115 instructions/s=3557263
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=233626 instructions/s=4280345
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=231107 instructions/s=4327000
+
+TAIL ONLY: Thumb-2 tail (code base in a register, LDR [r6, r2, LSL #2]), PureMetal handlers, M51Res and M51CodeBase reserved
+register/branch DJNZ instructions/s=3007889
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions/s=3040493
+internal-memory MOV/@R0/dir,dir/CJNE instructions/s=4013791
+external-memory MOVX/INC DPTR/CJNE instructions/s=4495877
+
+AFTER: Thumb-2 tail + hand-written Thumb-2 hot handlers (tools/thumb2_handlers.py)
+8051 PureMetal clk_sys kHz=150000 untimed asm-tail
+register/branch DJNZ instructions=1000000 us=166493 instructions/s=6006258
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=173337 instructions/s=5769108
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=152967 instructions/s=6537357
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=200132 instructions/s=4996702

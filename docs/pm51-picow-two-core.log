@@ -1,0 +1,17 @@
+Pico W (COM7), LAFVIN ST7796 panel, PM51 demo with the two-core panel, 2026-10-25, Bluetooth speaker on (60 s).
+(The silent build's 40 s run the same morning: 249-251 panel frames in every 5 s, core 1 panel us=3.62 s per 5 s, the same state line.)
+PM51 sound: connecting to the speaker
+PM51 sound: BtAudioBegin=0
+PM51 board on the Pico W: running pm51_demo, 21040 bytes
+board frames=249 panel frames in the last 5 s=248 emulation us=2503050 snapshot us=151940 core 1 panel us=4184877 interrupts=248 bt_packets=619 bt_underruns=0 buttons=0
+state at board frame 500: cycles=20000000 interrupts=499 pc=5437 a=0 sp=98 xdata hash=13202556
+board frames=500 panel frames in the last 5 s=251 emulation us=2540740 snapshot us=152964 core 1 panel us=4229197 interrupts=499 bt_packets=1247 bt_underruns=0 buttons=0
+board frames=751 panel frames in the last 5 s=251 emulation us=2536249 snapshot us=153217 core 1 panel us=4227546 interrupts=750 bt_packets=1873 bt_underruns=0 buttons=0
+board frames=1001 panel frames in the last 5 s=250 emulation us=2517810 snapshot us=152533 core 1 panel us=4209484 interrupts=1000 bt_packets=2498 bt_underruns=0 buttons=0
+board frames=1251 panel frames in the last 5 s=250 emulation us=2520019 snapshot us=152422 core 1 panel us=4213390 interrupts=1250 bt_packets=3123 bt_underruns=0 buttons=0
+board frames=1501 panel frames in the last 5 s=250 emulation us=2524059 snapshot us=152416 core 1 panel us=4210301 interrupts=1500 bt_packets=3748 bt_underruns=0 buttons=0
+board frames=1751 panel frames in the last 5 s=250 emulation us=2518671 snapshot us=152509 core 1 panel us=4212490 interrupts=1750 bt_packets=4373 bt_underruns=0 buttons=0
+board frames=2001 panel frames in the last 5 s=250 emulation us=2521034 snapshot us=152538 core 1 panel us=4211219 interrupts=2000 bt_packets=4998 bt_underruns=0 buttons=0
+board frames=2251 panel frames in the last 5 s=250 emulation us=2523887 snapshot us=152459 core 1 panel us=4210354 interrupts=2250 bt_packets=5623 bt_underruns=0 buttons=0
+board frames=2501 panel frames in the last 5 s=250 emulation us=2519165 snapshot us=152591 core 1 panel us=4211721 interrupts=2500 bt_packets=6248 bt_underruns=0 buttons=0
+board frames=2751 panel frames in the last 5 s=250 emulation us=2518976 snapshot us=152567 core 1 panel us=4210196 interrupts=2750 bt_packets=6873 bt_underruns=0 buttons=0

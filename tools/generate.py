@@ -11,6 +11,8 @@ expression below with mixed operators is therefore fully parenthesised.
 """
 from pathlib import Path
 
+import thumb2_handlers
+
 ROOT = Path(__file__).resolve().parents[1]
 
 # --------------------------------------------------------------------------
@@ -83,6 +85,39 @@ TARGETS = {
             '  uxth r4, r4',
             '  lsls r2, r2, #2',
             '  ldr r1, [r6, r2]',
+            '  bx r1',
+            'EndASM',
+        ],
+        budget_asm=lambda c: [
+            'ASM Uses M51Left',
+            f'  subs.w r11, r11, #{c}',
+            '  ble __ul_m51slice_done',
+            'EndASM',
+        ],
+    ),
+    # RP2350 with the full Thumb-2 inline assembler (compiler 9777f6cd6): the
+    # code base lives in r10, so the opcode fetch needs no literal load, and
+    # the scaled LDR replaces LSLS + LDR. Five instructions from fetch to the
+    # next handler (seven before). M51Res is an ordinary Global here: the
+    # ST7796 library cannot compile with both r5 and r6 reserved, and r12 is
+    # written by the flash-RAM call veneers.
+    'pico2_t2': dict(
+        reserve='ReserveRegister M51PC = r4, M51Table = r6, M51RB = r8, M51A = r9, M51CodeBase = r10, M51Left = r11',
+        table_global='Global M51Table.i, M51CodeBase.i, M51XioPage.i\n',
+        table_init=('  M51Table = @M51Dispatch(0)\n  M51CodeBase = @M51Code(0)\n'
+                    '  CompilerIf #M51_XDATA_HOOK = 2\n    M51XioPage = #M51_XIO_PAGE\n'
+                    '  CompilerElse\n    M51XioPage = -1\n  CompilerEndIf\n'),
+        # The hot opcodes are hand-written Thumb-2 (tools/thumb2_handlers.py).
+        asm_handlers=True,
+        dispatch_asm=[
+            'ASM Uses M51PC, M51CodeBase, M51Table',
+            '  ldrb r2, [r10, r4]',
+            '  adds r4, #1',
+            '  uxth r4, r4',
+            # LDR PC, [r6, r2, LSL #2] would save the BX; the assembler at
+            # 9777f6cd6 refuses PC as its destination here (forum 1413), so
+            # the address goes through r1.
+            '  ldr r1, [r6, r2, lsl #2]',
             '  bx r1',
             'EndASM',
         ],
@@ -1330,20 +1365,36 @@ def build(target):
     out.append('  M51BadOpcode = M51Code(M51PC)')
     out.append('  M51Stopped = 1')
     out.append('  Goto Done')
+    hand = thumb2_handlers.handlers() if t.get('asm_handlers') else {}
     for code in sorted(ops):
         text, cycles, lines = ops[code]
         out.append(f'Op{code:02X}: ; ${code:02X} {text}, {cycles} cycle{"s" if cycles > 1 else ""}')
         tail = next_op(target, cycles)
+        pad = ''
+        if code in hand:
+            # The hand-written Thumb-2 handler; the PureMetal one in the
+            # CompilerElse arm is the reference and the plain-Goto build.
+            asm, slow, cond = hand[code]
+            out.append(f'  CompilerIf {cond}')
+            out += ['    ' + thumb2_handlers.uses(asm)] + ['    ' + l for l in asm] + ['    EndASM']
+            out += ['    ' + l for l in tail]
+            if slow:
+                out.append(f'  Op{code:02X}Slow:')
+                out += ['    ' + l for l in slow] + ['    ' + l for l in tail]
+            out.append('  CompilerElse')
+            pad = '  '
         has_tail = False
         for l in lines:
             if l.strip() == TAIL:
-                pad = l[:len(l) - len(l.lstrip())]
-                out += ['  ' + pad + t for t in tail]
+                lp = l[:len(l) - len(l.lstrip())]
+                out += ['  ' + pad + lp + t for t in tail]
                 has_tail = True
             else:
-                out.append('  ' + l)
+                out.append('  ' + pad + l)
         if not has_tail:
-            out += ['  ' + l for l in tail]
+            out += ['  ' + pad + l for l in tail]
+        if code in hand:
+            out.append('  CompilerEndIf')
     out.append('Done:')
     out.append('  M51Res = M51Budget - M51Stolen - M51Left')
     out.append('  M51Cycles = M51Cycles + M51Res')
@@ -1362,10 +1413,12 @@ def cycle_table():
 
 
 if __name__ == '__main__':
-    # py -3 tools/generate.py [RP2040 variant]: 'pico_low' (default) or 'pico'.
+    # py -3 tools/generate.py [RP2040 variant] [RP2350 variant]:
+    # 'pico_low' (default) or 'pico'; 'pico2_t2' (default) or 'pico2'.
     import sys
     rp2040 = sys.argv[1] if len(sys.argv) > 1 else 'pico_low'
-    for target, ext in [(rp2040, 'pico'), ('pico2', 'pico2')]:
+    rp2350 = sys.argv[2] if len(sys.argv) > 2 else 'pico2_t2'
+    for target, ext in [(rp2040, 'pico'), (rp2350, 'pico2')]:
         text = build(target)
         path = ROOT / 'src' / f'mcs51.{ext}'
         path.write_text(text, newline='\n')

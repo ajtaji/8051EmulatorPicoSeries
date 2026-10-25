@@ -1,6 +1,7 @@
 ; The PM51 board's sound on a Bluetooth speaker (A2DP), the NES's way: core 0
 ; runs the board and mixes each frame's 960 samples (48 kHz) into a ring; core
-; 1 drives the radio and the library reads the ring itself (BtAudioSource).
+; 1 draws the panel and drives the radio between lines, and the library reads
+; the ring itself (BtAudioSource).
 ;
 ; Silent unless a PRIVATE wrapper (my-*.picow, never in git) names the speaker
 ; before Main(), exactly as the NES does it:
@@ -45,27 +46,32 @@ Procedure.i PM51SaveKey()
   ProcedureReturn FlashRangeProgram(#PM51_KEY_SECTOR, @PM51KeyPage(0), 256)
 EndProcedure
 
-; Core 1: the radio, the encoder and the sender, as often as it can, from SRAM
-; as the NES's core 1 runs. When an upload's reboot is pending (the 1200-baud
-; touch, seen through USB serial's flag), BtAudioPoll() disconnects the speaker;
-; core 1 then PARKS in this SRAM loop - no radio, no flash - so core 0 takes the
-; reboot with nothing else running. (2026-10-24: without the park, a Pico W
-; left USB entirely at the reboot after a speaker test and needed a replug.)
-Global PM51Core1Parked.i
-ProcedureRAM Core1Main()
-  Repeat
+; Core 1 draws the panel (Core1Main, pm51_picow_body) and calls this between
+; lines and between frames: the radio, the encoder and the sender.
+Procedure PM51AudioPoll()
+  If PM51AudioOn
     BtAudioPoll()
-    ; The flags themselves, not the getters: on the RP2040 the getters run
-    ; from flash, and a parked core 1 must not touch flash.
-    If (usbser_bootpend Or usbser_resetpend) And btaud_ending <> 0
-      PM51Core1Parked = 1
-      Repeat
-      ForEver
-    EndIf
-  ForEver
+  EndIf
 EndProcedure
 
-; Connects (up to 45 s), then hands the radio to core 1. Silent and harmless
+; 1 when core 1 may park for an upload's reboot: no speaker, or BtAudioPoll()
+; has disconnected it, which it does once the reboot is pending. (2026-10-24:
+; a Pico W whose core 1 kept the radio going through the reboot left USB
+; entirely and needed a replug.)
+Procedure.i PM51AudioQuiet()
+  If PM51AudioOn = 0 Or btaud_ending <> 0
+    ProcedureReturn 1
+  EndIf
+  ProcedureReturn 0
+EndProcedure
+
+; The RP2040's half of the panel code: DMA's TREQ field and core 1's start.
+#PM51_TREQ_SHIFT = 15
+Procedure.i PM51StartCore1()
+  ProcedureReturn multicore_launch()
+EndProcedure
+
+; Connects (up to 45 s); core 1 then drives the radio (PM51AudioPoll). Silent and harmless
 ; without a speaker.
 Procedure PM51AudioBegin()
   Protected k.i
@@ -95,7 +101,6 @@ Procedure PM51AudioBegin()
   BtAudioLead(60000)
   BtAudioPumps(0)
   PM51AudioOn = 1
-  multicore_launch()
 EndProcedure
 
 ; After each board frame: its 960 samples into the ring, then the count.

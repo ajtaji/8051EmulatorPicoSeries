@@ -1,0 +1,14 @@
+Feather RP2350 (COM20), PM51 demo, two-core panel (no panel attached; its floating pins read as buttons=6). Old core first, then the Thumb-2 core.
+board frames=250 panel frames in the last 5 s=249 emulation us=1718878 snapshot us=159445 core 1 panel us=4813605 interrupts=249 buttons=6
+state at board frame 500: cycles=20000000 interrupts=499 pc=5486 a=0 sp=98 xdata hash=7097359
+board frames=500 panel frames in the last 5 s=250 emulation us=1730021 snapshot us=160705 core 1 panel us=4815018 interrupts=499 buttons=6
+board frames=750 panel frames in the last 5 s=250 emulation us=1716732 snapshot us=160068 core 1 panel us=4814888 interrupts=749 buttons=6
+board frames=1000 panel frames in the last 5 s=250 emulation us=1717715 snapshot us=160061 core 1 panel us=4815032 interrupts=999 buttons=6
+board frames=1250 panel frames in the last 5 s=250 emulation us=1717394 snapshot us=160067 core 1 panel us=4814934 interrupts=1249 buttons=6
+
+board frames=249 panel frames in the last 5 s=249 emulation us=1369391 snapshot us=159369 core 1 panel us=4813026 interrupts=248 buttons=6
+state at board frame 500: cycles=20000000 interrupts=499 pc=5486 a=0 sp=98 xdata hash=7097359
+board frames=500 panel frames in the last 5 s=251 emulation us=1388450 snapshot us=159990 core 1 panel us=4834684 interrupts=499 buttons=6
+board frames=750 panel frames in the last 5 s=250 emulation us=1370946 snapshot us=159341 core 1 panel us=4815295 interrupts=749 buttons=6
+board frames=1000 panel frames in the last 5 s=250 emulation us=1371439 snapshot us=159344 core 1 panel us=4815548 interrupts=999 buttons=6
+board frames=1250 panel frames in the last 5 s=250 emulation us=1371595 snapshot us=159353 core 1 panel us=4815383 interrupts=1249 buttons=6
