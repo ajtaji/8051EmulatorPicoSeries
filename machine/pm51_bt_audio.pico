@@ -1,5 +1,5 @@
 ; The PM51 board's sound on a Bluetooth speaker (A2DP), the NES's way: core 0
-; runs the board and mixes each frame's 960 samples (48 kHz) into a ring; core
+; runs the board and mixes each frame's 800 samples (48 kHz, 60 frames a second) into a ring; core
 ; 1 draws the panel and drives the radio between lines, and the library reads
 ; the ring itself (BtAudioSource).
 ;
@@ -67,6 +67,7 @@ EndProcedure
 
 ; The RP2040's half of the panel code: DMA's TREQ field and core 1's start.
 #PM51_TREQ_SHIFT = 15
+#PM51_PANEL_BITS = 16               ; 100 MHz SPI sends 16-bit pixels at 60 frames a second
 Procedure.i PM51StartCore1()
   ProcedureReturn multicore_launch()
 EndProcedure
@@ -103,7 +104,7 @@ Procedure PM51AudioBegin()
   PM51AudioOn = 1
 EndProcedure
 
-; After each board frame: its 960 samples into the ring, then the count.
+; After each board frame: its #PM51_SAMPLES_48K (800) samples into the ring, then the count.
 Procedure PM51AudioFrame()
   Protected pos.i, n1.i
   If PM51AudioOn = 0
@@ -111,12 +112,12 @@ Procedure PM51AudioFrame()
   EndIf
   pos = PM51PcmCount & (#PM51_RING - 1)
   n1 = #PM51_RING - pos
-  If n1 > 960
-    n1 = 960
+  If n1 > #PM51_SAMPLES_48K
+    n1 = #PM51_SAMPLES_48K
   EndIf
   PM51Mix(@PM51Pcm(pos), n1, 48000)
-  If n1 < 960
-    PM51Mix(@PM51Pcm(0), 960 - n1, 48000)
+  If n1 < #PM51_SAMPLES_48K
+    PM51Mix(@PM51Pcm(0), #PM51_SAMPLES_48K - n1, 48000)
   EndIf
-  PM51PcmCount = PM51PcmCount + 960
+  PM51PcmCount = PM51PcmCount + #PM51_SAMPLES_48K
 EndProcedure

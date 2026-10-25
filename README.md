@@ -73,9 +73,15 @@ from 1.72 s), and its state at board frame 500 is the same with both cores.
 
 What it is: the dispatch tail keeps the code base in r10, so fetching the next
 opcode is `ldrb r2, [r10, r4]` (no literal load), and the scaled
-`ldr r1, [r6, r2, lsl #2]` replaces LSLS + LDR - five instructions from fetch
-to the next handler, seven before. (`ldr pc, [r6, r2, lsl #2]` would save the
-BX; the assembler at `9777f6cd6` refuses it, forum 1413.) The tail alone was
+table load replaces LSLS + LDR. Since compiler `883c4ae12` (forum 1416) the
+load goes straight into PC, `ldr pc, [r6, r2, lsl #2]`: four instructions
+from fetch to the next handler, seven at first. Measured on the Pico 2 W
+(COM6) against `ldr r1, [r6, r2, lsl #2]` + `bx r1`
+(`docs/pico2w-ldrpc-benchmark.log`): DJNZ 6.53 M both, arithmetic 6.25 ->
+6.34 M, internal memory 6.90 -> 7.17 M, MOVX 5.19 -> 5.39 M instructions/s,
+so it stays. On the Pico 2 W the timed programs run at 12.0 (fibcrc), 10.6
+(primes) and 10.5 (sort) M machine cycles/s, all suites passing
+(`docs/pico2w-verification-*.log`). The tail alone was
 SLOWER: with two more registers reserved the compiler spilled to the stack
 inside the PureMetal handlers. So the 138 hottest opcodes are written in
 Thumb-2 by hand (`tools/thumb2_handlers.py`): every MOV/INC/DEC/DJNZ/CJNE/ALU
@@ -167,9 +173,11 @@ addresses; it has no interrupt handlers (the compiler's 8051 target refuses
 them), so everything can be polled. Assembly programs may also take INT0.
 
 **CPU**: an 8052 at 24 MHz, 12 clocks a machine cycle: 2,000,000 machine
-cycles a second, 40,000 per frame. Code: 64 KB at $0000.
+cycles a second, 33,333 1/3 per frame (33,333, 33,333, 33,334 in turn). Code:
+64 KB at $0000.
 
-**Frames**: 50 a second. At the start of each frame the board latches the
+**Frames**: 60 a second (since 2026-10-25: the board is ours, so a US machine;
+it was 50 before). At the start of each frame the board latches the
 picture as it is in memory, increments FRAME, sets STATUS bit 0 and pulls INT0
 low for one cycle (a falling edge: IE0 when IT0 = 1).
 
@@ -214,27 +222,45 @@ Pico 2 W) the picture is drawn on the LAFVIN ST7796 panel at twice the size
 up/down/left/right, BTN1 (GP15) is A, BTN2 (GP14) is B, both together are
 start.
 
-**Both cores.** Core 0 runs the board, 50 frames a second by the wall clock,
+**Both cores.** Core 0 runs the board, 60 frames a second by the wall clock,
 and after each frame, whenever core 1 is free, copies the picture's memory
 (XDATA $8000-$DC7F and the I/O registers, 0.6 ms) into a snapshot, so the
 panel always shows one whole emulated frame. Core 1 draws every snapshot
 whole: one 320x256 panel window, filled by DMA from two line buffers in turn
 while it composes the next line (a whole-frame RGB565 buffer would be 160 KB,
-more than the Pico W has free). Measured on the Pico W, 2026-10-25: **250
-panel frames in 5 s - all 50 a second, every emulated frame** - at 14.5 ms of
-core 1 per frame against the 13 ms the 100 MHz SPI wire needs for the 160 KB;
-it was 52 in 5 s (~10 a second, 71 ms a redraw) when core 0 drew between
-frames. The machine's state at board frame 500 (cycles, interrupts, PC, A, SP
-and a hash of all 64 KB of XDATA, printed once) is the same in both builds.
+more than the Pico W has free).
+
+Measured 2026-10-25 at 60 Hz (`docs/pm51-60hz.log`; busy = the share of
+every 5 s a core spends working):
+
+| Board | Panel | Machine frames / panel frames in 5 s | Core 0 busy | Core 1 busy |
+|---|---|---:|---:|---:|
+| Pico W (COM7), 200 MHz, SPI 100 MHz | 16 bits a pixel, 160 KB a frame | 300 / 300 | 33% | 87% |
+| Pico 2 W (COM6), 150 MHz, SPI 75 MHz | 12 bits a pixel, 120 KB a frame | 300 / 300 | 30% | 88% |
+| Pico 2 W, 16 bits a pixel | | 300 / 250 | 29% | 96% |
+
+Every emulated frame reaches the panel on both boards. The RP2350 stops at
+150 MHz, so its SPI stops at 75 MHz, and 160 KB a frame takes 17.5 ms - more
+than a 60 Hz frame. So on the RP2350 the panel runs at 12 bits a pixel
+(COLMOD $03, `#PM51_PANEL_BITS = 12`): RGB444 holds every RGB332 colour
+exactly, two pixels go in three bytes, and the border is filled in 16-bit mode
+between them. **The 12-bit picture has not yet been checked by eye**; the
+board's own counters are all that is proven. Before the two cores (core 0
+drawing between frames) the Pico W showed 52 panel frames in 5 s at 50 Hz, 71
+ms a redraw. The machine's state at board frame 500 (cycles, interrupts, PC,
+A, SP and a hash of all 64 KB of XDATA, printed once) is the same on every
+build and both boards: `cycles=16666667 interrupts=499 pc=5477 ... xdata
+hash=13339477` at 60 Hz.
 
 Sound goes to a Bluetooth speaker (A2DP), the NES's way: core 0 mixes
-each frame's 960 samples (48 kHz) into a ring that the radio code reads, and
+each frame's 800 samples (48 kHz) into a ring that the radio code reads, and
 core 1 drives the radio between panel lines (`machine/pm51_bt_audio.pico`).
 The published firmware names no speaker and is
 silent; a private, git-ignored `machine/my-*.picow` wrapper names it
 (`PM51SetSpeaker(?MySpeaker)` before `Main()`), and the link key is the shared
 "BTK1" record at flash $1FF000. Measured on the Pico W with the speaker,
-2026-10-25 (60 s): 250 panel frames in every 5 s, about 125 packets a second
+2026-10-25 (60 s, still at 50 Hz; the 60 Hz board, 800 samples a frame, has
+not been run with the speaker yet): 250 panel frames in every 5 s, about 125 packets a second
 and **no underruns at all**, the same state at board frame 500; with the old
 single-core panel it had been ~7 panel frames a second and ~40 underruns while
 the stream started. For an upload, core 1 parks in SRAM once the radio is quiet,

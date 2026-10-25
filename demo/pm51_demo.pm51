@@ -202,7 +202,8 @@ Procedure MoveBalls()
   Wend
 EndProcedure
 
-; One step of the tune every 6 frames (125 beats a minute in sixteenths).
+; 125 beats a minute in sixteenths at 60 frames a second: 5 steps every 36
+; frames (7.2 frames a step, as 7, 7, 7, 7, 8).
 Procedure Music()
   If muted
     Voice(0, 0, 0, 0)
@@ -210,9 +211,9 @@ Procedure Music()
     Voice(2, 0, 0, 3)
     ProcedureReturn
   EndIf
-  tick = tick + 1
-  If tick >= 6
-    tick = 0
+  tick = tick + 5
+  If tick >= 36
+    tick = tick - 36
     v = PeekA(#T_LEAD + steps)
     If v = 1
       leadVol = 0

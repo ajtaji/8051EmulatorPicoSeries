@@ -230,11 +230,11 @@ Procedure.i ConsoleMain()
     If LoadProgram(ProgramParameter(2)) = 0
       PrintN("cannot load " + ProgramParameter(2)) : ProcedureReturn 2
     EndIf
-    *pcm = AllocateMemory(n * 882 * 2 + 16)
+    *pcm = AllocateMemory(n * #PM51_AUDIO_FRAME * 2 + 16)
     t = ElapsedMilliseconds()
     For k = 0 To n - 1
       PM51RunFrame()
-      PM51Mix(*pcm + (k * 882 * 2), 882, 44100)
+      PM51Mix(*pcm + (k * #PM51_AUDIO_FRAME * 2), #PM51_AUDIO_FRAME, 44100)
     Next
     t = ElapsedMilliseconds() - t
     PrintN("board frames=" + Str(PM51Frame) + " machine cycles=" + Str(M51Cycles) + " ms=" + Str(t) + " PC=" + H4(M51PC))
@@ -243,10 +243,10 @@ Procedure.i ConsoleMain()
     EndIf
     If wav <> ""
       f = CreateFile(#PB_Any, wav)
-      WriteString(f, "RIFF", #PB_Ascii) : WriteLong(f, 36 + n * 882 * 2) : WriteString(f, "WAVEfmt ", #PB_Ascii)
+      WriteString(f, "RIFF", #PB_Ascii) : WriteLong(f, 36 + n * #PM51_AUDIO_FRAME * 2) : WriteString(f, "WAVEfmt ", #PB_Ascii)
       WriteLong(f, 16) : WriteWord(f, 1) : WriteWord(f, 1) : WriteLong(f, 44100) : WriteLong(f, 88200)
-      WriteWord(f, 2) : WriteWord(f, 16) : WriteString(f, "data", #PB_Ascii) : WriteLong(f, n * 882 * 2)
-      WriteData(f, *pcm, n * 882 * 2)
+      WriteWord(f, 2) : WriteWord(f, 16) : WriteString(f, "data", #PB_Ascii) : WriteLong(f, n * #PM51_AUDIO_FRAME * 2)
+      WriteData(f, *pcm, n * #PM51_AUDIO_FRAME * 2)
       CloseFile(f)
       PrintN("wrote " + wav)
     EndIf
@@ -303,14 +303,14 @@ Procedure StepOne()
   DrainSerial()
 EndProcedure
 
-; One 50 Hz board frame; with a breakpoint set, instruction by instruction.
+; One 60 Hz board frame; with a breakpoint set, instruction by instruction.
 Procedure BoardFrame()
   Protected target.i, ran.i, c0.i = M51Cycles
   If BreakAt >= 0
     M51SetPins(1, (~PM51Buttons) & 255)
     PM51Frame + 1 : PM51Status = 1
     M51SetInt0(0) : M51SetInt0(1)
-    target = #PM51_CYCLES_PER_FRAME - PM51Carry
+    target = PM51FrameCycles() - PM51Carry
     While ran < target
       ran + M51Run(1)
       If M51PC = BreakAt
@@ -329,19 +329,19 @@ Procedure BoardFrame()
   RateWindowCycles + (M51Cycles - c0)
 EndProcedure
 
-; Runs the board in real time (50 frames a second by the wall clock), or as
+; Runs the board in real time (60 frames a second by the wall clock), or as
 ; fast as it goes for about budgetMs with Turbo; stops at the breakpoint, at the
 ; program's final jump-to-self, on $A5 or in power-down.
 Procedure RunFor(budgetMs.i)
   Protected t0.q = ElapsedMilliseconds(), due.i, n.i
-  If BoardClock = 0 : BoardClock = t0 - (BoardFrames * 20) : EndIf
+  If BoardClock = 0 : BoardClock = t0 - ((BoardFrames * 1000) / #PM51_FRAME_HZ) : EndIf
   While Running
     If Turbo
       If ElapsedMilliseconds() - t0 >= budgetMs : Break : EndIf
     Else
-      due = (ElapsedMilliseconds() - BoardClock) / 20
+      due = ((ElapsedMilliseconds() - BoardClock) * #PM51_FRAME_HZ) / 1000
       If due - BoardFrames > 10        ; far behind (a breakpoint, a stall): carry on from now
-        BoardClock = ElapsedMilliseconds() - (BoardFrames * 20)
+        BoardClock = ElapsedMilliseconds() - ((BoardFrames * 1000) / #PM51_FRAME_HZ)
         due = BoardFrames + 1
       EndIf
       If BoardFrames >= due Or n >= 6 : Break : EndIf

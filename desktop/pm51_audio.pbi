@@ -1,10 +1,10 @@
 ; The PM51 board's sound on Windows: 44,100 Hz, 16-bit mono through waveOut,
-; one buffer per 50 Hz frame (882 samples), eight buffers in a ring. A frame's
+; one buffer per 60 Hz frame (735 samples), eight buffers in a ring. A frame's
 ; samples are mixed by PM51Mix() when the frame has run; a buffer the device
 ; has not finished with is skipped (the frame is dropped) rather than waited for.
 
 #PM51_AUDIO_RATE = 44100
-#PM51_AUDIO_FRAME = 882
+#PM51_AUDIO_FRAME = 735
 #PM51_AUDIO_BUFFERS = 8
 
 Global PM51AudioDev.i, PM51AudioNext.i, PM51AudioDropped.i, PM51AudioOn.i

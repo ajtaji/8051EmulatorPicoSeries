@@ -1,0 +1,14 @@
+PM51 at 60 Hz, two-core panel, compiler 883c4ae12, 2026-10-25.
+
+Pico W (COM7), 16-bit panel:
+board frames=299 panel frames in the last 5 s=298 emulation us=1475526 snapshot us=182044 core 1 panel us=4327000 core 0 busy=33% core 1 busy=86% interrupts=298 buttons=0
+state at board frame 500: cycles=16666667 interrupts=499 pc=5477 a=0 sp=98 xdata hash=13339477
+board frames=600 panel frames in the last 5 s=301 emulation us=1483479 snapshot us=183239 core 1 panel us=4357398 core 0 busy=33% core 1 busy=87% interrupts=599 buttons=0
+board frames=900 panel frames in the last 5 s=300 emulation us=1467505 snapshot us=182638 core 1 panel us=4342958 core 0 busy=33% core 1 busy=86% interrupts=899 buttons=0
+
+Pico 2 W (COM6), 12-bit panel (11:01 run; the 10:18 run had the state line):
+board frames=299 panel frames in the last 5 s=299 emulation us=1329615 snapshot us=193313 core 1 panel us=4403700 core 0 busy=30% core 1 busy=88% interrupts=298 buttons=0
+board frames=600 panel frames in the last 5 s=301 emulation us=1345106 snapshot us=193914 core 1 panel us=4423854 core 0 busy=30% core 1 busy=88% interrupts=599 buttons=0
+state at board frame 500: cycles=16666667 interrupts=499 pc=5477 a=0 sp=98 xdata hash=13339477 (10:18 run, 12-bit, same firmware)
+
+Pico 2 W (COM6), 16-bit panel (10:00 run): 248-250 panel frames per 5 s, core 1 busy=95-96% - the 75 MHz SPI is the limit

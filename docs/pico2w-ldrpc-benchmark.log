@@ -1,0 +1,14 @@
+Pico 2 W (COM6), 150 MHz, compiler 883c4ae12, 2026-10-25, untimed asm-tail, 1,000,000 instructions each.
+
+ldr r1, [r6, r2, lsl #2] ; bx r1:
+register/branch DJNZ instructions=1000000 us=153133 instructions/s=6530271
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=160004 instructions/s=6249843
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=144901 instructions/s=6901263
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=192595 instructions/s=5192242
+
+ldr pc, [r6, r2, lsl #2] (kept):
+8051 PureMetal clk_sys kHz=150001 untimed asm-tail
+register/branch DJNZ instructions=1000000 us=153108 instructions/s=6531337
+arithmetic ADD/ADDC/XRL/RLC/SUBB instructions=1000000 us=157782 instructions/s=6337858
+internal-memory MOV/@R0/dir,dir/CJNE instructions=1000000 us=139510 instructions/s=7167944
+external-memory MOVX/INC DPTR/CJNE instructions=1000000 us=185549 instructions/s=5389411

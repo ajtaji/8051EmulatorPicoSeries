@@ -8,12 +8,14 @@
 ;   #M51_TIMING = 1, #M51_XDATA_HOOK = 2, #M51_XIO_PAGE = $F000.
 ; and after pm51_font (the label PM51Font).
 
-#PM51_CYCLES_PER_FRAME = 40000      ; 24 MHz / 12 = 2,000,000 machine cycles a second, 50 frames
+#PM51_FRAME_HZ = 60                 ; ours, so a US machine: 60 frames a second (2026-10-25)
+#PM51_CYCLES_PER_3_FRAMES = 100000  ; 24 MHz / 12 = 2,000,000 machine cycles a second: 33,333 1/3 a frame
+#PM51_SAMPLES_48K = 800             ; 48,000 Hz / 60: one frame's sound
 #PM51_W = 160
 #PM51_H = 128
 
 Global PM51Enabled.i = 1            ; 0: the I/O page is plain memory (the test suites)
-Global PM51Frame.i, PM51Status.i, PM51Buttons.i, PM51Carry.i, PM51Noise.i = $ACE1
+Global PM51Frame.i, PM51Status.i, PM51Buttons.i, PM51Carry.i, PM51Noise.i = $ACE1, PM51Third.i
 Global Dim PM51Line.a(160)          ; the composed line, RGB332
 Global Dim PM51Phase.i(3)
 Global Dim PM51Inc.i(3)
@@ -82,22 +84,36 @@ Procedure PM51Reset()
   Next
   M51XData($F005) = 7
   M51XData($F01C) = 12
-  PM51Frame = 0 : PM51Status = 0 : PM51Carry = 0
+  PM51Frame = 0 : PM51Status = 0 : PM51Carry = 0 : PM51Third = 0
   For i = 0 To 2
     PM51Phase(i) = 0
   Next
   M51Reset()
 EndProcedure
 
-; One 50 Hz frame: the frame begins (FRAME, STATUS, a falling edge on INT0),
-; then 40,000 machine cycles run. Overshoot past the frame is taken off the next.
+; This frame's machine cycles: 33,333, 33,333, 33,334 in turn, so three
+; frames are exactly 100,000 (60 frames, 2,000,000 cycles a second).
+Procedure.i PM51FrameCycles()
+  Protected n.i
+  n = #PM51_CYCLES_PER_3_FRAMES / 3
+  If PM51Third = 2
+    n = #PM51_CYCLES_PER_3_FRAMES - (2 * n)
+  EndIf
+  PM51Third = (PM51Third + 1) % 3
+  ProcedureReturn n
+EndProcedure
+
+; One 60 Hz frame: the frame begins (FRAME, STATUS, a falling edge on INT0),
+; then its machine cycles run. Overshoot past the frame is taken off the next.
 Procedure PM51RunFrame()
+  Protected n.i
   M51SetPins(1, (~PM51Buttons) & 255)
   PM51Frame = PM51Frame + 1
   PM51Status = 1
   M51SetInt0(0)
   M51SetInt0(1)
-  PM51Carry = M51Run(#PM51_CYCLES_PER_FRAME - PM51Carry) - (#PM51_CYCLES_PER_FRAME - PM51Carry)
+  n = PM51FrameCycles() - PM51Carry
+  PM51Carry = M51Run(n) - n
   If PM51Carry < 0
     PM51Carry = 0
   EndIf

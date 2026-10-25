@@ -2,7 +2,7 @@
 ; at twice the size (320x256, centred on the 480x320 panel), the LAFVIN
 ; buttons and stick as the board's buttons, SBUF on the USB serial port.
 ;
-; TWO CORES. Core 0 runs the board: emulated time follows the wall clock at 50
+; TWO CORES. Core 0 runs the board: emulated time follows the wall clock at 60
 ; frames a second, and after a frame, whenever core 1 is free, it copies the
 ; picture's memory (XDATA $8000-$DC7F and the I/O registers) into a snapshot,
 ; so a frame on the panel is always one whole emulated frame, never half of
@@ -23,12 +23,16 @@ Global Dim PM51Snap.a(#PM51_SNAP)   ; core 0 -> core 1: the picture's memory at 
 Global Dim PM51SnapReg.a(16)        ; and XDATA $F000-$F00F
 Global Dim PM51CLine.a(160)         ; core 1: the line being composed (RGB332)
 Global Dim PM51Strips.l(640)        ; core 1: two lines of the panel picture (two rows each), sent by DMA in turn
+Global Dim PM51Pal3.l(256)          ; RGB444 twice (two panel pixels): the panel's three bytes, high first
+CompilerIf #PM51_PANEL_BITS = 12
+  Global Dim PM51Strips12.w(960)    ; the same two lines at 12 bits a pixel: 480 halfwords each
+CompilerEndIf
 Global PM51SnapReady.i              ; 1: a snapshot waits for core 1 (core 0 sets it, core 1 clears it)
 Global PM51SnapFrame.i = -1         ; core 0: the board frame in the last snapshot
 Global PM51Presented.i, PM51PresentUs.i, PM51DmaTimeouts.i, PM51Core1Parked.i, PM51Border.i = -1  ; core 1's
 Global PM51PresentedLast.i, PM51PresentUsLast.i, PM51SnapUs.i                                   ; core 0's
 Global PM51Start.i, PM51Done.i, PM51Second.i
-Global PM51StickX.i = 2048, PM51StickY.i = 2048, PM51Now.i, PM51Due.i, PM51Burst.i, PM51Tx.i
+Global PM51StickX.i = 2048, PM51StickY.i = 2048, PM51Now.i, PM51Since.i, PM51Due.i, PM51Burst.i, PM51Tx.i
 Global PM51EmuUs.i, PM51T.i
 Global PM51Hash.i, PM51HashAt.i = 500
 
@@ -40,14 +44,24 @@ Procedure PM51PanelBegin()
   Tft796Rotate(1)
   Tft796Fill(0)
   SpiDmaInit()
-  ; RGB332 -> RGB565, each channel scaled to full range.
+  ; RGB332 -> RGB565, each channel scaled to full range; and -> RGB444, which
+  ; holds every RGB332 colour exactly (3, 3 and 2 bits into 4, 4 and 4).
   For v = 0 To 255
     r = ((v >> 5) * 31) / 7
     g = (((v >> 2) & 7) * 63) / 7
     b = ((v & 3) * 31) / 3
     PM51Pal(v) = (r << 11) | (g << 5) | b
     PM51Pal2(v) = PM51Pal(v) | (PM51Pal(v) << 16)
+    r = ((v >> 5) * 15) / 7
+    g = (((v >> 2) & 7) * 15) / 7
+    b = (v & 3) * 5
+    PM51Pal3(v) = (((r << 8) | (g << 4) | b) << 12) | ((r << 8) | (g << 4) | b)
   Next
+  CompilerIf #PM51_PANEL_BITS = 12
+    ; 12 bits a pixel from here on (COLMOD $03): two pixels in three bytes.
+    Tft796Cmd(#TFT796_COLMOD)
+    Tft796Data($03)
+  CompilerEndIf
 EndProcedure
 
 Procedure PM51InputBegin()
@@ -239,6 +253,33 @@ Procedure PM51Expand(half.i)
   Next
 EndProcedure
 
+CompilerIf #PM51_PANEL_BITS = 12
+  ; The composed line at 12 bits a pixel into buffer `half`: each RGB332 pixel
+  ; is two panel pixels, three bytes; the SPI sends a halfword high byte first,
+  ; so two source pixels (six bytes) are three halfwords. Both rows the same.
+  Procedure PM51Expand12(half.i)
+    Protected x.i, k.i, d.i, p.i, q.i, h0.i, h1.i, h2.i
+    d = half * 480
+    k = 0
+    x = 0
+    While x < 160
+      p = PM51Pal3(PM51CLine(x))
+      q = PM51Pal3(PM51CLine(x + 1))
+      h0 = p >> 8
+      h1 = ((p & 255) << 8) | (q >> 16)
+      h2 = q & $FFFF
+      PM51Strips12(d + k) = h0
+      PM51Strips12(d + k + 1) = h1
+      PM51Strips12(d + k + 2) = h2
+      PM51Strips12(d + 240 + k) = h0
+      PM51Strips12(d + 241 + k) = h1
+      PM51Strips12(d + 242 + k) = h2
+      k = k + 3
+      x = x + 2
+    Wend
+  EndProcedure
+CompilerEndIf
+
 ; Waits for the DMA channel to take its last halfword. Bounded: a stall is
 ; counted, the transfer torn down, and the frame goes on.
 Procedure PM51DmaIdle()
@@ -263,17 +304,28 @@ Procedure PM51DmaStart(*buf, n.i)
 EndProcedure
 
 ; One whole frame: the border when it changes, then the picture as one window
-; of 320x256 pixels, 128 DMA transfers of two rows each, back to back.
+; of 320x256 pixels, 128 DMA transfers of two rows each, back to back. At 16
+; bits a pixel (RP2040) that is 160 KB, at 12 (RP2350, whose SPI stops at
+; 75 MHz) 120 KB.
 Procedure PM51Present()
   Protected y.i, half.i, c.i, t.i, spi.i
   t = Micros()
   If PM51SnapReg(4) <> PM51Border
     PM51Border = PM51SnapReg(4)
     c = PM51Pal(PM51Border)
+    CompilerIf #PM51_PANEL_BITS = 12
+      ; The driver's fills are 16-bit: the border is drawn in that mode.
+      Tft796Cmd(#TFT796_COLMOD)
+      Tft796Data($55)
+    CompilerEndIf
     Tft796Rect(0, 0, 480, 32, c)
     Tft796Rect(0, 288, 480, 32, c)
     Tft796Rect(0, 32, 80, 256, c)
     Tft796Rect(400, 32, 80, 256, c)
+    CompilerIf #PM51_PANEL_BITS = 12
+      Tft796Cmd(#TFT796_COLMOD)
+      Tft796Data($03)
+    CompilerEndIf
   EndIf
   Tft796Window(80, 32, 399, 287)
   Tft796PinSet(tft796_dc, 1)
@@ -284,10 +336,18 @@ Procedure PM51Present()
   half = 0
   For y = 0 To 127
     PM51ComposeSnap(y)
-    PM51Expand(half)
+    CompilerIf #PM51_PANEL_BITS = 12
+      PM51Expand12(half)
+    CompilerElse
+      PM51Expand(half)
+    CompilerEndIf
     ; Only the other buffer's transfer can still be running.
     PM51DmaIdle()
-    PM51DmaStart(@PM51Strips(half * 320), 640)
+    CompilerIf #PM51_PANEL_BITS = 12
+      PM51DmaStart(@PM51Strips12(half * 480), 480)
+    CompilerElse
+      PM51DmaStart(@PM51Strips(half * 320), 640)
+    CompilerEndIf
     half = 1 - half
     PM51AudioPoll()
   Next
@@ -348,10 +408,12 @@ Procedure Main()
   Repeat
     ; Emulated frames due by the wall clock (at most 8 at a time: a stall is
     ; caught up a little, a long one is not).
+    ; A frame is 16,666 2/3 us: three frames are exactly 50,000.
     PM51Now = Micros()
-    PM51Due = (PM51Now - PM51Start) / 20000
+    PM51Since = PM51Now - PM51Start
+    PM51Due = ((PM51Since / 50000) * 3) + (((PM51Since % 50000) * 3) / 50000)
     If PM51Due - PM51Done > 25
-      PM51Start = PM51Now - (PM51Done * 20000)
+      PM51Start = PM51Now - (((PM51Done / 3) * 50000) + (((PM51Done % 3) * 50000) / 3))
       PM51Due = PM51Done + 1
     EndIf
     PM51Burst = 0
@@ -379,6 +441,10 @@ Procedure Main()
       Say(" panel frames in the last 5 s=") : Num(PM51Presented - PM51PresentedLast)
       Say(" emulation us=") : Num(PM51EmuUs) : Say(" snapshot us=") : Num(PM51SnapUs)
       Say(" core 1 panel us=") : Num(PM51PresentUs - PM51PresentUsLast)
+      ; Busy: the share of the 5 s each core spent working (core 0: the
+      ; board and the snapshot; core 1: the panel). The rest is waiting.
+      Say(" core 0 busy=") : Num((PM51EmuUs + PM51SnapUs) / 50000)
+      Say("% core 1 busy=") : Num((PM51PresentUs - PM51PresentUsLast) / 50000) : Say("%")
       Say(" interrupts=") : Num(M51IntCount)
       If PM51DmaTimeouts
         Say(" dma_timeouts=") : Num(PM51DmaTimeouts)

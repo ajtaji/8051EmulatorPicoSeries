@@ -25,6 +25,7 @@ Procedure.i BtAudioUnderruns()
 EndProcedure
 
 #PM51_TREQ_SHIFT = #SPI_DMA_TREQ_SHIFT
+#PM51_PANEL_BITS = 12               ; 75 MHz SPI (150 MHz clk_peri) is too slow for 16-bit pixels at 60 frames a second
 Procedure.i PM51StartCore1()
   McCore1ReleaseHold()
   If McLaunchCore1() = 6

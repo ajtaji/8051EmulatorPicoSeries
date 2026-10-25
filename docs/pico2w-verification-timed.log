@@ -1,12 +1,13 @@
 8051 verification timed asm-tail vectors=7680
 API checks failures=0 PASS
-single-instruction vectors passed=7680 failed=0 us=1242967 PASS
-program fibcrc instructions=881562+1/881563 cycles=1570211+2/1570213 results=3 window-run us=172809 machine-cycles/s=9143430 PASS
-program i8051_array instructions=3481+1/3482 cycles=5934+2/5936 results=9 window-run us=1058 machine-cycles/s=9451795 PASS
-program i8051_basic instructions=596+1/597 cycles=1094+2/1096 results=12 window-run us=864 machine-cycles/s=11574074 PASS
-program i8051_flow instructions=1216+1/1217 cycles=2170+2/2172 results=3 window-run us=934 machine-cycles/s=10706638 PASS
-program primes instructions=933050+1/933051 cycles=1616181+2/1616183 results=3 window-run us=197813 machine-cycles/s=8189921 PASS
-program sort instructions=527400+1/527401 cycles=901283+2/901285 results=4 window-run us=112481 machine-cycles/s=8090584 PASS
+single-instruction vectors passed=7680 failed=0 us=1242470 PASS
+program fibcrc instructions=881562+1/881563 cycles=1570211+2/1570213 results=3 window-run us=131566 machine-cycles/s=12009690 PASS
+program i8051_array instructions=3481+1/3482 cycles=5934+2/5936 results=9 window-run us=839 machine-cycles/s=11918951 PASS
+program i8051_basic instructions=596+1/597 cycles=1094+2/1096 results=12 window-run us=715 machine-cycles/s=13986013 PASS
+program i8051_flow instructions=1216+1/1217 cycles=2170+2/2172 results=3 window-run us=739 machine-cycles/s=13531799 PASS
+program primes instructions=933050+1/933051 cycles=1616181+2/1616183 results=3 window-run us=152314 machine-cycles/s=10636402 PASS
+program sort instructions=527400+1/527401 cycles=901283+2/901285 results=4 window-run us=86991 machine-cycles/s=10461277 PASS
+program ucmp1393 instructions=127296+1/127297 cycles=225477+2/225479 results=29 window-run us=19446 machine-cycles/s=11828088 PASS
 compiled 8051 programs failed=0 PASS
 asm irq_order instructions=71+1/72 cycles=106+2/108 interrupts=6/6 serial-bytes=0 PASS
 asm irq_nest instructions=40+1/41 cycles=57+2/59 interrupts=3/3 serial-bytes=0 PASS
@@ -14,3 +15,4 @@ asm timers instructions=14409+1/14566 cycles=21970+2/22088 interrupts=118/0 seri
 asm serial instructions=161+1/11082 cycles=254+2/16636 interrupts=0/0 serial-bytes=17 PASS
 interrupt/timer/serial programs failed=0 PASS
 verification complete
+
