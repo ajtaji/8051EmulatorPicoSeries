@@ -245,12 +245,24 @@ Window options: `--show-tests` (run the suites when the window opens),
 
 **Keyboard**: arrows = the stick, Z = A, X = B, Enter = Start, Space = Select.
 
-**Build**: PureBasic 6.x (x64, C back end) and a checkout of the Neon Arcade
-Display Engine beside this repository (or `NEON_ENGINE_DIR` set to it):
+### Building the desktop version
+
+You need **PureBasic 6.41, x64, C back end** (`pbcompilerc.exe`) and the
+**Neon Arcade Display Engine**, https://github.com/ajtaji/Neon-Arcade-Dispay-Engine,
+cloned beside this repository:
 
 ```powershell
-desktop\build.ps1          # mcs51_desktop.exe and mcs51_console.exe
+git clone https://github.com/ajtaji/8051EmulatorPicoSeries.git
+git clone https://github.com/ajtaji/Neon-Arcade-Dispay-Engine.git
+"C:\Program Files\PureBasic\Compilers\pbcompilerc.exe" 8051EmulatorPicoSeries\desktop\mcs51_desktop.pb /EXE 8051EmulatorPicoSeries\desktop\mcs51_desktop.exe /THREAD /DPIAWARE /OPTIMIZER
+8051EmulatorPicoSeries\desktop\mcs51_desktop.exe 8051EmulatorPicoSeries\demo\pm51_demo.hex --run
 ```
+
+Add `/CONSOLE` (and a different `/EXE` name) for the console build that runs
+`--test` and `--bench`; `desktop\build.ps1` builds both. The source finds the
+engine at `../../Neon-Arcade-Dispay-Engine/` relative to `desktop/`; to use an
+engine somewhere else, add `/CONSTANT GL_ENGINE_DIR$=<path>/` (with the
+trailing slash) or, for `build.ps1`, set `NEON_ENGINE_DIR`.
 
 ## Building from source
 
@@ -406,7 +418,8 @@ MIT - see [LICENSE](LICENSE). Copyright (c) 2026 ajtaji.
   `licenses/font8x8.txt`.
 - **uCsim** and **SDCC** (GPL) were used as tools to produce the test vectors
   and to assemble the test programs; no part of them is included.
-- The desktop front end uses the **Neon Arcade Display Engine** (a separate
+- The desktop front end uses the **Neon Arcade Display Engine**
+  (https://github.com/ajtaji/Neon-Arcade-Dispay-Engine, a separate
   project, not included). The Pico firmware uses PureMetal Forge's libraries,
   compiled in.
 - Intel, MCS-51 and 8051 are trademarks of Intel Corporation; this is an
