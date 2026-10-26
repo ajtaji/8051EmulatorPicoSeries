@@ -10,8 +10,12 @@
 ;   --run              start the loaded program running
 ;   --screenshot <png> save the window's own picture after two seconds and close
 ;   --shot-after <n>   ... after n window frames instead of 120
+;   --log-tab <n>      open the Output panel on tab n (0 tests, 1 serial, 2 controls)
 ;   --mouse-log <txt>  write the pointer as read and as the widgets see it, a
 ;                      line whenever it moves (checks pointer/scale alignment)
+;   --fullscreen-test <txt> [--fullscreen-shot <png>]  F11 and Esc posted to the
+;                      window itself: checks full screen, then closes
+; Keys: the PM51 buttons and the window's shortcuts are one table, controls.pbi.
 ;
 ; Build with desktop/build.ps1 (x64, C back end, /DPIAWARE, /OPTIMIZER).
 
@@ -44,6 +48,7 @@ XIncludeFile "mcs51_core.pbi"
 XIncludeFile "../machine/pm51_font.pico"
 XIncludeFile "../machine/pm51_board.pico"
 XIncludeFile "pm51_audio.pbi"
+XIncludeFile "controls.pbi"
 XIncludeFile "mcs51_distable.pbi"
 XIncludeFile "mcs51_tests.pbi"
 
@@ -400,20 +405,11 @@ EndProcedure
 
 ; Keyboard -> the board's buttons (P1, read active low by the program).
 Procedure ReadButtons()
-  Protected b.i
   If GetForegroundWindow_() <> WindowID(Win) Or Neon_FocusID <> 0
     PM51Buttons = 0
     ProcedureReturn
   EndIf
-  If GetAsyncKeyState_(#VK_UP) & $8000 : b | 1 : EndIf
-  If GetAsyncKeyState_(#VK_DOWN) & $8000 : b | 2 : EndIf
-  If GetAsyncKeyState_(#VK_LEFT) & $8000 : b | 4 : EndIf
-  If GetAsyncKeyState_(#VK_RIGHT) & $8000 : b | 8 : EndIf
-  If GetAsyncKeyState_('Z') & $8000 : b | 16 : EndIf
-  If GetAsyncKeyState_('X') & $8000 : b | 32 : EndIf
-  If GetAsyncKeyState_(#VK_RETURN) & $8000 : b | 64 : EndIf
-  If GetAsyncKeyState_(#VK_SPACE) & $8000 : b | 128 : EndIf
-  PM51Buttons = b
+  PM51Buttons = CtlButtonsHeld()
 EndProcedure
 
 Procedure.s FlagString(p.i)
@@ -514,7 +510,7 @@ Procedure DrawMemory(x.f, y.f, w.f, h.f)
     bv = M51XData($F004)
     Neon_Box(bx - Neon_S(12), by - Neon_S(12), bw + Neon_S(24), bh + Neon_S(24), ColourOf332(bv, 0) / 255.0, ColourOf332(bv, 1) / 255.0, ColourOf332(bv, 2) / 255.0)
     DrawGLSprite(@ScreenSpr, bx, by, 0, sc, 1, 1, 1, 1, #True, -1, -1, -1, -1, #True)
-    DrawLine(x + Neon_S(12), by + bh + Neon_S(22), "frame " + Str(PM51Frame) + "   buttons " + RSet(Bin(PM51Buttons), 8, "0") + "   keys: arrows, Z = A, X = B, Enter = start, Space = select", Neon_C_DimR, Neon_C_DimG, Neon_C_DimB)
+    DrawLine(x + Neon_S(12), by + bh + Neon_S(22), "frame " + Str(PM51Frame) + "   buttons " + RSet(Bin(PM51Buttons), 8, "0") + "   keys: " + CtlSummary(), Neon_C_DimR, Neon_C_DimG, Neon_C_DimB)
     ProcedureReturn
   EndIf
   rows = Int((h - Neon_S(70)) / lh)
@@ -547,10 +543,34 @@ Procedure DrawMemory(x.f, y.f, w.f, h.f)
   Next
 EndProcedure
 
+; The Controls tab: every key the window answers to, read from controls.pbi.
+Procedure DrawControls(x.f, y.f, w.f)
+  Protected lh.f = Neon_S(19), yy.f = y, b.i, c1.f = x + Neon_S(10), c2.f = x + Neon_S(200)
+  Neon_Text(*Neon_FontBold, c1, yy, "PM51 board button", Neon_C_AmbR, Neon_C_AmbG, Neon_C_AmbB)
+  Neon_Text(*Neon_FontBold, c2, yy, "Key", Neon_C_AmbR, Neon_C_AmbG, Neon_C_AmbB)
+  yy + lh
+  For b = 0 To 7
+    DrawLine(c1, yy, CtlButtonName$(b) + "  (P1." + Str(b) + ")")
+    DrawLine(c2, yy, CtlKeyNames(1 << b))
+    yy + lh
+  Next
+  ; the window's own keys, in a second column
+  c1 = x + Neon_S(440) : c2 = x + Neon_S(640) : yy = y
+  Neon_Text(*Neon_FontBold, c1, yy, "Window", Neon_C_AmbR, Neon_C_AmbG, Neon_C_AmbB)
+  Neon_Text(*Neon_FontBold, c2, yy, "Key", Neon_C_AmbR, Neon_C_AmbG, Neon_C_AmbB)
+  yy + lh
+  DrawLine(c1, yy, "full screen on / off") : DrawLine(c2, yy, CtlKeyNames(0, #CTL_FULLSCREEN) + "  (or the Full screen button)") : yy + lh
+  DrawLine(c1, yy, "leave full screen") : DrawLine(c2, yy, CtlKeyNames(0, #CTL_LEAVEFULL) + "  (the PM51 has no Esc key of its own)") : yy + lh
+EndProcedure
+
 Procedure DrawLog(x.f, y.f, w.f, h.f)
   Protected lh.f = Neon_S(17), rows.i, n.i, i.i, t.s, yy.f, line.s
   Neon_Panel(x, y, w, h, "Output", Neon_C_AmbR, Neon_C_AmbG, Neon_C_AmbB)
-  LogTab = Neon_TabStrip(201, x + Neon_S(2), y + Neon_S(28), w - Neon_S(4), Neon_S(26), "Test results|Serial port output", LogTab)
+  LogTab = Neon_TabStrip(201, x + Neon_S(2), y + Neon_S(28), w - Neon_S(4), Neon_S(26), "Test results|Serial port output|Controls", LogTab)
+  If LogTab = 2
+    DrawControls(x, y + Neon_S(60), w)
+    ProcedureReturn
+  EndIf
   If LogTab = 0 : t = M51TestLog$ : Else : t = SerialLog$ : EndIf
   If t = "" : t = "(nothing yet)" : EndIf
   n = CountString(t, #LF$) + 1
@@ -593,6 +613,61 @@ Procedure RunTestsInWindow()
   Else
     Status$ = Str(TestsFailed) + " test suite(s) FAILED - see Test results."
   EndIf
+EndProcedure
+
+; ---- full screen -------------------------------------------------------------
+; A borderless window over the monitor the window is on (no display-mode
+; change); the windowed placement and style are kept and put back exactly on
+; leaving. F11 or the Full screen button toggles it, Esc leaves it (the PM51
+; has no Esc key, so a program loses nothing). Only the PM51's picture is drawn:
+; square pixels, centred, in the board's BORDER colour - what surrounds the
+; picture on the board itself. The pointer hides after two idle seconds.
+Global FullScreen.i, FsStyle.i, FsCursorHidden.i, FsMouseX.i, FsMouseY.i, FsMouseMs.q
+Global FsGameX.f, FsGameY.f, FsGameW.f, FsGameH.f, FsPlacement.WINDOWPLACEMENT
+
+Procedure FsShowCursor(show.i)
+  If show And FsCursorHidden : ShowCursor_(#True) : FsCursorHidden = 0 : EndIf
+  If show = 0 And FsCursorHidden = 0 : ShowCursor_(#False) : FsCursorHidden = 1 : EndIf
+EndProcedure
+
+Procedure EnterFullScreen()
+  Protected hwnd.i = WindowID(Win), mi.MONITORINFO
+  If FullScreen : ProcedureReturn : EndIf
+  FsPlacement\length = SizeOf(WINDOWPLACEMENT) : GetWindowPlacement_(hwnd, @FsPlacement)
+  FsStyle = GetWindowLongPtr_(hwnd, #GWL_STYLE)
+  mi\cbSize = SizeOf(MONITORINFO) : GetMonitorInfo_(MonitorFromWindow_(hwnd, 2), @mi)   ; 2: the nearest monitor
+  SetWindowLongPtr_(hwnd, #GWL_STYLE, FsStyle & ~(#WS_CAPTION | #WS_THICKFRAME | #WS_MINIMIZEBOX | #WS_MAXIMIZEBOX | #WS_SYSMENU))
+  SetWindowPos_(hwnd, #HWND_TOP, mi\rcMonitor\left, mi\rcMonitor\top, mi\rcMonitor\right - mi\rcMonitor\left,
+                mi\rcMonitor\bottom - mi\rcMonitor\top, #SWP_FRAMECHANGED | #SWP_NOOWNERZORDER | #SWP_SHOWWINDOW)
+  FullScreen = 1 : FsMouseMs = ElapsedMilliseconds()
+EndProcedure
+
+Procedure LeaveFullScreen()
+  Protected hwnd.i = WindowID(Win)
+  If FullScreen = 0 : ProcedureReturn : EndIf
+  SetWindowLongPtr_(hwnd, #GWL_STYLE, FsStyle)
+  SetWindowPlacement_(hwnd, @FsPlacement)
+  SetWindowPos_(hwnd, 0, 0, 0, 0, 0, #SWP_FRAMECHANGED | #SWP_NOMOVE | #SWP_NOSIZE | #SWP_NOZORDER | #SWP_NOOWNERZORDER)
+  FullScreen = 0 : FsShowCursor(1)
+EndProcedure
+
+; The window's actions, from the key table.
+Procedure DoAction(action.i)
+  Select action
+    Case #CTL_FULLSCREEN : If FullScreen : LeaveFullScreen() : Else : EnterFullScreen() : EndIf
+    Case #CTL_LEAVEFULL : LeaveFullScreen()
+  EndSelect
+EndProcedure
+
+; The picture's rectangle on a pw x ph screen: 160x128 square pixels, a whole
+; number of screen pixels per board pixel when that loses less than a tenth of
+; the height, centred.
+Procedure FsLayout(pw.i, ph.i)
+  Protected sc.f, i.i
+  sc = ph / 128.0 : If 160 * sc > pw : sc = pw / 160.0 : EndIf
+  i = Int(sc) : If i >= 1 And i * 128 >= sc * 128 * 0.9 : sc = i : EndIf
+  FsGameW = 160 * sc : FsGameH = 128 * sc
+  FsGameX = (pw - FsGameW) / 2 : FsGameY = (ph - FsGameH) / 2
 EndProcedure
 
 Procedure DrawToolbar(w.f)
@@ -654,6 +729,10 @@ Procedure DrawToolbar(w.f)
   If Neon_Button(x, y, Neon_S(80), bh, "Turbo", Turbo)
     Turbo = Bool(Turbo = 0) : BoardClock = 0
   EndIf
+  x + Neon_S(88)
+  If Neon_Button(x, y, Neon_S(130), bh, "Full screen  " + CtlKeyNames(0, #CTL_FULLSCREEN))
+    EnterFullScreen()
+  EndIf
   r = RateShown / 1000000.0
   Neon_TextRight(*Neon_FontUI, w - Neon_S(12), y + Neon_S(6), StrF(r, 1) + " M machine cycles/s  =  " + StrF(r, 0) + "x a 12 MHz 8051",
                  Neon_C_AccR, Neon_C_AccG, Neon_C_AccB)
@@ -677,6 +756,50 @@ Procedure SaveShot(pw.i, ph.i)
   FreeMemory(*px)
   ShotPath$ = ""
   ShotFrames = -1
+EndProcedure
+
+; ---- --fullscreen-test ---------------------------------------------------------
+; Full screen by its own keys, without the real pointer: F11 is posted to the
+; window's GL gadget and Esc to the window (the engine's Esc shortcut). Checked:
+; the window covers its monitor, the picture has square pixels and is centred,
+; Esc leaves, and the windowed rectangle and style come back exactly.
+Global FsTestDone.i, FsTestOn.i, FsTestFile$, FsTestStep.i, FsTestWait.i, FsTestFails.i, FsTestLog$, FsTestShot$
+Global FsTestRect.RECT, FsTestStyle.i
+
+Procedure FsTestCheck(ok.i, what$)
+  If ok = 0 : FsTestFails + 1 : FsTestLog$ + "FAIL " : Else : FsTestLog$ + "ok   " : EndIf
+  FsTestLog$ + what$ + #LF$
+EndProcedure
+
+Procedure FsTestTick(pw.i, ph.i)
+  Protected r.RECT, mi.MONITORINFO, hwnd.i = WindowID(Win), f.i, aspect.f
+  FsTestWait + 1 : If FsTestWait < 30 : ProcedureReturn : EndIf
+  FsTestWait = 0 : FsTestStep + 1
+  Select FsTestStep
+    Case 1
+      GetWindowRect_(hwnd, @FsTestRect) : FsTestStyle = GetWindowLongPtr_(hwnd, #GWL_STYLE)
+      FsTestLog$ + "windowed: " + Str(FsTestRect\left) + "," + Str(FsTestRect\top) + " " + Str(FsTestRect\right - FsTestRect\left) + "x" + Str(FsTestRect\bottom - FsTestRect\top) + ", scale " + StrF(Neon_UIScale, 2) + #LF$
+      PostMessage_(GadgetID(Gl), #WM_KEYDOWN, #VK_F11, 0) : PostMessage_(GadgetID(Gl), #WM_KEYUP, #VK_F11, 0)
+    Case 2
+      GetWindowRect_(hwnd, @r) : mi\cbSize = SizeOf(MONITORINFO) : GetMonitorInfo_(MonitorFromWindow_(hwnd, 2), @mi)
+      FsTestCheck(FullScreen, "F11 entered full screen")
+      FsTestCheck(Bool(r\left = mi\rcMonitor\left And r\top = mi\rcMonitor\top And r\right = mi\rcMonitor\right And r\bottom = mi\rcMonitor\bottom), "the window covers its monitor " + Str(mi\rcMonitor\right - mi\rcMonitor\left) + "x" + Str(mi\rcMonitor\bottom - mi\rcMonitor\top))
+      FsTestCheck(Bool(pw = mi\rcMonitor\right - mi\rcMonitor\left And ph = mi\rcMonitor\bottom - mi\rcMonitor\top), "the canvas is the whole monitor (" + Str(pw) + "x" + Str(ph) + ")")
+      aspect = FsGameW / FsGameH
+      FsTestCheck(Bool(Abs(aspect - 1.25) < 0.002), "the picture " + StrF(FsGameW, 1) + "x" + StrF(FsGameH, 1) + " has the PM51's 160:128 aspect (" + StrF(aspect, 4) + ")")
+      FsTestCheck(Bool(Abs(FsGameX * 2 + FsGameW - pw) <= 1 And Abs(FsGameY * 2 + FsGameH - ph) <= 1), "the picture is centred at " + StrF(FsGameX, 1) + "," + StrF(FsGameY, 1))
+      If FsTestShot$ <> "" : ShotPath$ = FsTestShot$ : ShotFrames = ShotAfter - 1 : EndIf
+    Case 3
+      PostMessage_(hwnd, #WM_KEYDOWN, #VK_ESCAPE, 0) : PostMessage_(hwnd, #WM_KEYUP, #VK_ESCAPE, 0)
+    Case 4
+      GetWindowRect_(hwnd, @r)
+      FsTestCheck(Bool(FullScreen = 0), "Esc left full screen")
+      FsTestCheck(Bool(r\left = FsTestRect\left And r\top = FsTestRect\top And r\right = FsTestRect\right And r\bottom = FsTestRect\bottom), "the windowed rectangle came back: " + Str(r\left) + "," + Str(r\top) + " " + Str(r\right - r\left) + "x" + Str(r\bottom - r\top))
+      FsTestCheck(Bool(GetWindowLongPtr_(hwnd, #GWL_STYLE) = FsTestStyle), "the window's frame and style came back")
+      FsTestLog$ + "fullscreen-test: " + Str(FsTestFails) + " failures" + #LF$
+      f = CreateFile(#PB_Any, FsTestFile$) : If f : WriteString(f, FsTestLog$) : CloseFile(f) : EndIf
+      FsTestDone = 1
+  EndSelect
 EndProcedure
 
 Procedure Frame()
@@ -709,6 +832,9 @@ Procedure Frame()
   GL_ViewportX = 0 : GL_ViewportY = 0 : GL_ViewportW = pw : GL_ViewportH = ph
   mx = WindowMouseX(Win) : my = WindowMouseY(Win)
   down = Bool(GetAsyncKeyState_(#VK_LBUTTON) & $8000)
+  now = ElapsedMilliseconds()
+  If mx <> FsMouseX Or my <> FsMouseY : FsMouseX = mx : FsMouseY = my : FsMouseMs = now : FsShowCursor(1) : EndIf
+  If FullScreen And now - FsMouseMs > 2000 : FsShowCursor(0) : EndIf
   Neon_ChromeBeginFrame(mx, my, down, Wheel, KeyCode, KeyChar, 1.0 / 60.0)
   If MouseLog$ <> ""
     Protected ml$ = "window " + Str(mx) + "," + Str(my) + " canvas " + StrF(Neon_MX, 1) + "," + StrF(Neon_MY, 1) +
@@ -730,6 +856,20 @@ Procedure Frame()
   ReadButtons()
   If Running : RunFor(12) : Else : BoardClock = 0 : EndIf
   now = ElapsedMilliseconds()
+  If FullScreen
+    ; only the picture, the board's border colour around it
+    Protected bv.i = M51XData($F004)
+    glClearColor_(ColourOf332(bv, 0) / 255.0, ColourOf332(bv, 1) / 255.0, ColourOf332(bv, 2) / 255.0, 1.0)
+    glClear_(#GL_COLOR_BUFFER_BIT)
+    UpdateScreen()
+    FsLayout(pw, ph)
+    DrawGLSprite(@ScreenSpr, FsGameX, FsGameY, 0, FsGameW / 160.0, 1, 1, 1, 1, #True, -1, -1, -1, -1, #True)
+    Neon_ChromeEndFrame()
+    If FsTestOn : FsTestTick(pw, ph) : EndIf
+    If ShotPath$ <> "" : ShotFrames + 1 : If ShotFrames = ShotAfter : SaveShot(pw, ph) : EndIf : EndIf
+    SetGadgetAttribute(Gl, #PB_OpenGL_FlipBuffers, #True)
+    ProcedureReturn
+  EndIf
   If now - RateWindowStart >= 500
     RateShown = RateWindowCycles * 1000.0 / (now - RateWindowStart)
     RateWindowCycles = 0 : RateWindowStart = now
@@ -747,6 +887,7 @@ Procedure Frame()
   Neon_Box(0, h - Neon_S(26), w, Neon_S(26), Neon_C_HeadR, Neon_C_HeadG, Neon_C_HeadB)
   Neon_Text(*Neon_FontSmall, Neon_S(10), h - Neon_S(21), "Program: " + LoadedName$ + "     " + Status$, Neon_C_DimR, Neon_C_DimG, Neon_C_DimB)
   Neon_ChromeEndFrame()
+  If FsTestOn : FsTestTick(pw, ph) : EndIf
   If ShotPath$ <> ""
     ShotFrames + 1
     If ShotFrames = ShotAfter
@@ -826,6 +967,8 @@ Procedure WindowMain()
     Repeat
       ev = WindowEvent()
       If ev = #PB_Event_CloseWindow : quit = 1 : EndIf
+      ; The engine maps Esc to menu event 1001 on the window: Esc leaves full screen.
+      If ev = #PB_Event_Menu And EventMenu() = 1001 : DoAction(CtlAction(#VK_ESCAPE)) : EndIf
       If ev = #PB_Event_MoveWindow Or ev = #PB_Event_SizeWindow
         ; Moved onto a monitor at another scale: rebuild the chrome for it.
         s = DisplayScale()
@@ -840,26 +983,30 @@ Procedure WindowMain()
           Wheel + GetGadgetAttribute(Gl, #PB_OpenGL_WheelDelta)
         ElseIf et = #PB_EventType_KeyDown
           KeyCode = GetGadgetAttribute(Gl, #PB_OpenGL_Key)
+          If CtlAction(KeyCode) : DoAction(CtlAction(KeyCode)) : EndIf
         ElseIf et = #PB_EventType_Input
           KeyChar = GetGadgetAttribute(Gl, #PB_OpenGL_Input)
         EndIf
       EndIf
     Until ev = 0
     Frame()
-    If ShotFrames < 0 : quit = 1 : EndIf
+    If ShotFrames < 0 And FsTestOn = 0 : quit = 1 : EndIf
+    If FsTestDone : quit = 1 : EndIf
     If Running = 0 : Delay(10) : EndIf
   Until quit
   PM51AudioClose()
+  FsShowCursor(1)
 EndProcedure
 
 UsePNGImageEncoder()
+CtlInit()
 M51DisInit()
 PM51Reset()
 Define rc.i = ConsoleMain()
 If rc >= 0
   End rc
 EndIf
-Define argi.i, arg$, showTests.i, startRun.i
+Define argi.i, arg$, showTests.i, startRun.i, logTabAsked.i
 For argi = 0 To CountProgramParameters() - 1
   arg$ = ProgramParameter(argi)
   If LCase(arg$) = "--show-tests"
@@ -872,6 +1019,15 @@ For argi = 0 To CountProgramParameters() - 1
   ElseIf LCase(arg$) = "--shot-after"
     argi + 1
     ShotAfter = Val(ProgramParameter(argi))
+  ElseIf LCase(arg$) = "--log-tab"
+    argi + 1
+    LogTab = Val(ProgramParameter(argi)) : logTabAsked = 1
+  ElseIf LCase(arg$) = "--fullscreen-test"
+    argi + 1
+    FsTestOn = 1 : FsTestFile$ = ProgramParameter(argi)
+  ElseIf LCase(arg$) = "--fullscreen-shot"
+    argi + 1
+    FsTestShot$ = ProgramParameter(argi)
   ElseIf LCase(arg$) = "--mouse-log"
     argi + 1
     MouseLog$ = ProgramParameter(argi)
@@ -882,6 +1038,6 @@ Next
 If showTests : RunTestsInWindow() : EndIf
 If startRun
   Running = 1
-  If showTests = 0 : LogTab = 1 : EndIf
+  If showTests = 0 And logTabAsked = 0 : LogTab = 1 : EndIf
 EndIf
 WindowMain()

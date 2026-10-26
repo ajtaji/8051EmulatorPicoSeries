@@ -240,10 +240,45 @@ desktop\mcs51_console.exe --bench                       # machine cycles per sec
 desktop\mcs51_console.exe --frames 600 demo\pm51_demo.hex --wav out.wav   # 600 frames headless, sound to a WAV
 ```
 
-Window options: `--show-tests` (run the suites when the window opens), `--mouse-log <file>` (writes the pointer as read and as the controls see it, to check alignment),
-`--run`, `--screenshot <file.png>` and `--shot-after <n>`.
+Window options: `--run`, `--show-tests` (run the suites when the window
+opens), `--log-tab <n>` (open the Output panel on tab n: 0 tests, 1 serial,
+2 controls), `--screenshot <file.png>` and `--shot-after <n>`, and two
+checks: `--mouse-log <file>` (the pointer as read and as the controls see it)
+and `--fullscreen-test <file> [--fullscreen-shot <file.png>]` (enters and
+leaves full screen by its own keys and reports).
 
-**Keyboard**: arrows = the stick, Z = A, X = B, Enter = Start, Space = Select.
+### Controls
+
+The window answers to one key table (`desktop/controls.pbi`); the
+**Controls** tab of the Output panel is drawn from the same table.
+
+| PM51 board button | Key |
+|---|---|
+| up (P1.0) | Up arrow |
+| down (P1.1) | Down arrow |
+| left (P1.2) | Left arrow |
+| right (P1.3) | Right arrow |
+| A (P1.4) | Z |
+| B (P1.5) | X |
+| start (P1.6) | Enter |
+| select (P1.7) | Space |
+
+| Window | Key |
+|---|---|
+| full screen on / off | F11, or the Full screen button |
+| leave full screen | Esc |
+
+The PM51 has no Esc key of its own, so Esc takes nothing from a program.
+
+### Full screen
+
+F11 or the **Full screen** button fills the monitor the window is on with a
+borderless window (the display mode is not changed) and shows only the PM51's
+picture: square pixels, a whole number of screen pixels per board pixel where
+that fits (8 on a 1920x1080 monitor: 1280x1024), centred, with the board's own
+BORDER colour around it. The emulation, its 60 frames a second and the sound
+run on unchanged. The pointer hides after two idle seconds. F11 or Esc returns
+to the window exactly where and as large as it was.
 
 ### Building the desktop version
 
