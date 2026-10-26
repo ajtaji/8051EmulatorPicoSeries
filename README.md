@@ -240,7 +240,7 @@ desktop\mcs51_console.exe --bench                       # machine cycles per sec
 desktop\mcs51_console.exe --frames 600 demo\pm51_demo.hex --wav out.wav   # 600 frames headless, sound to a WAV
 ```
 
-Window options: `--show-tests` (run the suites when the window opens),
+Window options: `--show-tests` (run the suites when the window opens), `--mouse-log <file>` (writes the pointer as read and as the controls see it, to check alignment),
 `--run`, `--screenshot <file.png>` and `--shot-after <n>`.
 
 **Keyboard**: arrows = the stick, Z = A, X = B, Enter = Start, Space = Select.

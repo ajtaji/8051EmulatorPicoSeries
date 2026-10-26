@@ -10,6 +10,8 @@
 ;   --run              start the loaded program running
 ;   --screenshot <png> save the window's own picture after two seconds and close
 ;   --shot-after <n>   ... after n window frames instead of 120
+;   --mouse-log <txt>  write the pointer as read and as the widgets see it, a
+;                      line whenever it moves (checks pointer/scale alignment)
 ;
 ; Build with desktop/build.ps1 (x64, C back end, /DPIAWARE, /OPTIMIZER).
 
@@ -273,6 +275,7 @@ Global RateCycles.d, RateShown.d, RateWindowCycles.i, RateWindowStart.q
 Global DisTop.i, MemTab.i, MemTop.i, LogTab.i, LogTop.i, SerialLog$
 Global Wheel.i, KeyCode.i, KeyChar.i
 Global TestsRun.i, TestsFailed.i, ShotPath$, ShotFrames.i
+Global MouseLog$, MouseLogLast$
 Global ShotAfter.i = 120, Turbo.i, BoardFrames.i, BoardClock.q, ScreenSpr.GLSprite, *ScreenBuf
 
 Procedure DrainSerial()
@@ -679,22 +682,44 @@ EndProcedure
 Procedure Frame()
   Protected r.RECT, pw.i, ph.i, cw.i, ch.i, mx.i, my.i, down.b, w.f, h.f, colW.f, top.f, logH.f, now.q
   SetGadgetAttribute(Gl, #PB_OpenGL_SetContext, #True)
-  cw = GadgetWidth(Gl) : ch = GadgetHeight(Gl)
-  GetClientRect_(WindowID(Win), @r)
+  ; The canvas is exactly the window's client area. A gadget left larger
+  ; (a window Windows had to make smaller than asked, or resized) draws its
+  ; picture off by the difference - GL draws from the gadget's bottom - while
+  ; the pointer is read against the window: the controls and the pointer
+  ; then disagree by that much (measured: 70 px down at 125%).
+  cw = WindowWidth(Win, #PB_Window_InnerCoordinate) : ch = WindowHeight(Win, #PB_Window_InnerCoordinate)
+  If GadgetWidth(Gl) <> cw Or GadgetHeight(Gl) <> ch
+    ResizeGadget(Gl, 0, 0, cw, ch)
+  EndIf
+  ; The drawable in physical pixels is the gadget's own client rectangle.
+  GetClientRect_(GadgetID(Gl), @r)
   pw = r\right - r\left : ph = r\bottom - r\top
   If pw < 1 Or ph < 1 : ProcedureReturn : EndIf
   Util_BaseWidth = pw : Util_BaseHeight = ph
-  ; Util_Win* must be the size that DesktopScaledX/Y() turns back into the
-  ; PHYSICAL drawable (Neon_PhysWinHeight flips scissor rectangles with it).
-  ; GadgetWidth() is not that here: DesktopResolutionX() reports 1.0 under
-  ; per-monitor awareness, so the gadget's logical size came out 1.25x short
-  ; and every tab strip lost its tabs inside an off-screen scissor.
+  ; The canvas and the viewport are PHYSICAL pixels (1:1), and the pointer
+  ; goes in as WindowMouseX/Y return it - physical - with no scaling (the
+  ; engine's hosting notes, 5a). Util_Win* is the size DesktopScaledX/Y()
+  ; turns back into the physical drawable (Neon_PhysWinHeight flips scissor
+  ; rectangles with it): the logical size where DesktopResolutionX() reports
+  ; the scale, the physical one where per-monitor awareness makes it 1.0 -
+  ; GadgetWidth() there came out 1.25x short and every tab strip lost its
+  ; tabs inside an off-screen scissor.
   Util_WinWidth = Round(pw / DesktopResolutionX(), #PB_Round_Nearest)
   Util_WinHeight = Round(ph / DesktopResolutionY(), #PB_Round_Nearest)
   GL_ViewportX = 0 : GL_ViewportY = 0 : GL_ViewportW = pw : GL_ViewportH = ph
   mx = WindowMouseX(Win) : my = WindowMouseY(Win)
   down = Bool(GetAsyncKeyState_(#VK_LBUTTON) & $8000)
   Neon_ChromeBeginFrame(mx, my, down, Wheel, KeyCode, KeyChar, 1.0 / 60.0)
+  If MouseLog$ <> ""
+    Protected ml$ = "window " + Str(mx) + "," + Str(my) + " canvas " + StrF(Neon_MX, 1) + "," + StrF(Neon_MY, 1) +
+                    " drawable " + Str(pw) + "x" + Str(ph) + " gadget " + Str(cw) + "x" + Str(ch)
+    If ml$ <> MouseLogLast$
+      ; Opened and closed per line, so another program can read it meanwhile.
+      Protected mf.i = OpenFile(#PB_Any, MouseLog$, #PB_File_Append)
+      If mf : WriteStringN(mf, ml$) : CloseFile(mf) : EndIf
+      MouseLogLast$ = ml$
+    EndIf
+  EndIf
   Wheel = 0 : KeyCode = 0 : KeyChar = 0
   glBindFramebuffer(#GL_FRAMEBUFFER, 0)
   glDisable_(#GL_SCISSOR_TEST)
@@ -731,33 +756,30 @@ Procedure Frame()
   SetGadgetAttribute(Gl, #PB_OpenGL_FlipBuffers, #True)
 EndProcedure
 
+Global GetDpiForWindowFn.i, ScaleLib.i
+
+; The window's display scale (its monitor's DPI / 96): asked per window, so a
+; second monitor at another scale gets its own answer.
 Procedure.f DisplayScale()
-  Protected lib.i, fn.i, dpi.i
-  lib = OpenLibrary(#PB_Any, "user32.dll")
-  If lib
-    fn = GetFunction(lib, "GetDpiForWindow")
-    If fn And Win : dpi = CallFunctionFast(fn, WindowID(Win)) : EndIf
-    CloseLibrary(lib)
+  Protected dpi.i
+  If ScaleLib = 0
+    ScaleLib = OpenLibrary(#PB_Any, "user32.dll")
+    If ScaleLib : GetDpiForWindowFn = GetFunction(ScaleLib, "GetDpiForWindow") : EndIf
   EndIf
+  If GetDpiForWindowFn And Win : dpi = CallFunctionFast(GetDpiForWindowFn, WindowID(Win)) : EndIf
   If dpi <= 0 : ProcedureReturn 1.0 : EndIf
   ProcedureReturn dpi / 96.0
 EndProcedure
 
-Procedure WindowMain()
-  Protected lib.i, fn.i, ev.i, s.f, w.i = 1440, h.i = 900, quit.i, et.i
-  lib = OpenLibrary(#PB_Any, "user32.dll")
-  If lib
-    fn = GetFunction(lib, "SetProcessDpiAwarenessContext")
-    If fn : CallFunctionFast(fn, -4) : EndIf
-    CloseLibrary(lib)
-  EndIf
-  ExamineDesktops()
-  If w > DesktopWidth(0) - 40 : w = DesktopWidth(0) - 40 : EndIf
-  If h > DesktopHeight(0) - 80 : h = DesktopHeight(0) - 80 : EndIf
-  Gl = OpenGLWindow("8051 emulator - PureBasic, Neon Arcade", w, h,
-                    #PB_Window_SystemMenu | #PB_Window_ScreenCentered | #PB_Window_SizeGadget | #PB_Window_MinimizeGadget | #PB_Window_MaximizeGadget)
-  Win = Util_MainWindowID
-  s = DisplayScale()
+; The chrome at scale s: Neon_UIScale (every Neon_S size and the engine's own
+; widget metrics) and the four fonts at their logical sizes times s, snapped
+; to the pixel grid. Called at start-up and again whenever the window lands on
+; a monitor with a different scale, so text, controls and the pointer agree.
+Procedure ApplyScale(s.f)
+  If *Neon_FontUI : FreeGLFont(*Neon_FontUI) : EndIf
+  If *Neon_FontSmall : FreeGLFont(*Neon_FontSmall) : EndIf
+  If *Neon_FontBold : FreeGLFont(*Neon_FontBold) : EndIf
+  If *Neon_FontMono : FreeGLFont(*Neon_FontMono) : EndIf
   Neon_UIScale = s
   *Neon_FontUI = Neon_CreateFontPx("Segoe UI", Round(14 * s, #PB_Round_Nearest))
   *Neon_FontSmall = Neon_CreateFontPx("Segoe UI", Round(12 * s, #PB_Round_Nearest))
@@ -767,12 +789,51 @@ Procedure WindowMain()
   GLFontSetSnapToPixel(*Neon_FontSmall, #True)
   GLFontSetSnapToPixel(*Neon_FontBold, #True)
   GLFontSetSnapToPixel(*Neon_FontMono, #True)
+EndProcedure
+
+Procedure WindowMain()
+  Protected lib.i, fn.i, ev.i, s.f, w.i = 1440, h.i = 900, quit.i, et.i, work.RECT
+  lib = OpenLibrary(#PB_Any, "user32.dll")
+  If lib
+    fn = GetFunction(lib, "SetProcessDpiAwarenessContext")
+    If fn : CallFunctionFast(fn, -4) : EndIf
+    CloseLibrary(lib)
+  EndIf
+  ; Never larger than the work area: it is PHYSICAL pixels, OpenWindow takes
+  ; LOGICAL ones (the system scale, before the window exists), and the size
+  ; is the client area, so the frame and title bar are left room for too.
+  lib = OpenLibrary(#PB_Any, "user32.dll")
+  If lib
+    fn = GetFunction(lib, "GetDpiForSystem")
+    If fn : s = CallFunctionFast(fn) / 96.0 : EndIf
+    CloseLibrary(lib)
+  EndIf
+  If s <= 0 : s = 1.0 : EndIf
+  SystemParametersInfo_(#SPI_GETWORKAREA, 0, @work, 0)
+  If w > (work\right - work\left) / s - 24 : w = (work\right - work\left) / s - 24 : EndIf
+  If h > (work\bottom - work\top) / s - 72 : h = (work\bottom - work\top) / s - 72 : EndIf
+  Gl = OpenGLWindow("8051 emulator - PureBasic, Neon Arcade", w, h,
+                    #PB_Window_SystemMenu | #PB_Window_ScreenCentered | #PB_Window_SizeGadget | #PB_Window_MinimizeGadget | #PB_Window_MaximizeGadget)
+  Win = Util_MainWindowID
+  ; The frame is drawn flat, not through the CRT pass: without this the engine
+  ; bends every pointer position by the CRT barrel curve, right in the middle
+  ; and up to ~20 px off towards the edges (measured at 125%).
+  UI_UseCRT = #False
+  ApplyScale(DisplayScale())
   RateWindowStart = ElapsedMilliseconds()
   PM51AudioOpen()
   Repeat
     Repeat
       ev = WindowEvent()
       If ev = #PB_Event_CloseWindow : quit = 1 : EndIf
+      If ev = #PB_Event_MoveWindow Or ev = #PB_Event_SizeWindow
+        ; Moved onto a monitor at another scale: rebuild the chrome for it.
+        s = DisplayScale()
+        If Abs(s - Neon_UIScale) > 0.01
+          SetGadgetAttribute(Gl, #PB_OpenGL_SetContext, #True)
+          ApplyScale(s)
+        EndIf
+      EndIf
       If ev = #PB_Event_Gadget And EventGadget() = Gl
         et = EventType()
         If et = #PB_EventType_MouseWheel
@@ -811,6 +872,9 @@ For argi = 0 To CountProgramParameters() - 1
   ElseIf LCase(arg$) = "--shot-after"
     argi + 1
     ShotAfter = Val(ProgramParameter(argi))
+  ElseIf LCase(arg$) = "--mouse-log"
+    argi + 1
+    MouseLog$ = ProgramParameter(argi)
   ElseIf LoadProgram(arg$)
     Status$ = "Loaded " + LoadedName$ + " (" + Str(LoadedTop) + " bytes)."
   EndIf
