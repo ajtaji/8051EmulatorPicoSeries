@@ -6,7 +6,7 @@ PureMetal Forge. It
 comes with **the PM51 display board** - a small 8051 computer with a 160x128
 picture, text, sprites, three-voice sound and buttons - shown at 60 frames a
 second on a 480x320 ST7796 panel, with both Pico cores at work, and a
-**Windows desktop version** with a debugger. Everything here was measured on
+**desktop version for Windows and Linux** with a debugger. Everything here was measured on
 real boards.
 
 ![The desktop version running the PM51 demo](docs/desktop-demo.png)
@@ -110,6 +110,19 @@ On a desktop PC the same core, generated as PureBasic with a labels-as-values
 dispatch, runs 298-495 M instructions a second (untimed) and 536-730 M machine
 cycles a second (timed) - several hundred times an original 8051.
 
+Build it on Windows:
+
+```
+powershell -File desktop\build.ps1 -Compiler "<PureBasic>\Compilers\pbcompilerc.exe"
+```
+
+or on Linux:
+
+```
+export PUREBASIC_HOME=~/purebasic          # the PureBasic for Linux install
+sh desktop/build.sh
+```
+
 ## Quick start: put it on a Pico
 
 1. Hold **BOOTSEL** while plugging the Pico in; it appears as a USB drive.
@@ -185,7 +198,8 @@ program writes to SBUF appears on the Pico's USB serial port and in the
 desktop's serial pane.
 
 On the Pico the picture is drawn twice the size (320x256), centred on the
-panel. Sound: on the desktop it plays through Windows; on the Pico W it goes to
+panel. Sound: on the desktop the Neon Arcade Display Engine plays it (waveOut on
+Windows, ALSA on Linux); on the Pico W it goes to
 a Bluetooth (A2DP) speaker, with the 8051's three voices mixed at 48 kHz on
 core 0 and the radio driven by core 1. The published firmware names no
 speaker and is silent. To give it sound, make a wrapper beside
