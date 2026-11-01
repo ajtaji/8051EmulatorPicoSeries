@@ -394,10 +394,11 @@ Procedure UpdateScreen()
     glTexParameteri_(#GL_TEXTURE_2D, #GL_TEXTURE_WRAP_T, #GL_CLAMP_TO_EDGE)
     glTexImage2D_(#GL_TEXTURE_2D, 0, #GL_RGBA, 160, 128, 0, #GL_BGRA_EXT, #GL_UNSIGNED_BYTE, *ScreenBuf)
   EndIf
-  ; DrawGLSprite takes rows bottom-up (as from a DIB): line y goes to row 127 - y.
+  ; The row order DrawGLSprite draws a texture from memory in is the engine's
+  ; #GL_SpriteRowsBottomUp (bottom-up on Windows, as from a DIB; top-down on Linux).
   For y = 0 To 127
     PM51ComposeLine(y)
-    *p = *ScreenBuf + ((127 - y) * 640)
+    If #GL_SpriteRowsBottomUp : *p = *ScreenBuf + ((127 - y) * 640) : Else : *p = *ScreenBuf + (y * 640) : EndIf
     For x = 0 To 159
       v = PM51Line(x)
       PokeL(*p, $FF000000 | (ColourOf332(v, 0) << 16) | (ColourOf332(v, 1) << 8) | ColourOf332(v, 2))
@@ -967,7 +968,7 @@ Procedure WindowMain()
         ElseIf et = #PB_EventType_LeftButtonUp
           MouseDown = #False
         ElseIf et = #PB_EventType_KeyDown
-          KeyCode = GetGadgetAttribute(Gl, #PB_OpenGL_Key)
+          KeyCode = GL_KeyEventCode(GetGadgetAttribute(Gl, #PB_OpenGL_Key))   ; (the same code on both OSes)
           KeyPressed(KeyCode)
         ElseIf et = #PB_EventType_Input
           KeyChar = GetGadgetAttribute(Gl, #PB_OpenGL_Input)
