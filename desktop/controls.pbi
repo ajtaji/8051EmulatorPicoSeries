@@ -10,7 +10,7 @@
 Structure CtlBinding
   bit.i         ; the PM51 button's bit in BUTTONS / P1 (1 up ... 128 select), 0 for a shortcut
   action.i      ; for a shortcut: #CTL_*
-  key.i         ; the Windows virtual-key code (also PureBasic's #PB_Shortcut_* value)
+  key.i         ; a #PB_Shortcut_* code (the engine's GL_KeyHeld reads it on Windows and Linux)
   name$         ; the key as the window shows it
 EndStructure
 Global NewList CtlKeys.CtlBinding()
@@ -33,7 +33,7 @@ EndProcedure
 Procedure.i CtlButtonsHeld()
   Protected m.i
   ForEach CtlKeys()
-    If CtlKeys()\bit And (GetAsyncKeyState_(CtlKeys()\key) & $8000)
+    If CtlKeys()\bit And GL_KeyHeld(CtlKeys()\key)
       m | CtlKeys()\bit
     EndIf
   Next
@@ -79,15 +79,15 @@ DataSection
   Data.s "up", "down", "left", "right", "A", "B", "start", "select"
   ; bit, action, key, name - the PM51 buttons, then the window's shortcuts
   CtlKeyTable:
-  Data.i 1, 0, #VK_UP : Data.s "Up arrow"
-  Data.i 2, 0, #VK_DOWN : Data.s "Down arrow"
-  Data.i 4, 0, #VK_LEFT : Data.s "Left arrow"
-  Data.i 8, 0, #VK_RIGHT : Data.s "Right arrow"
-  Data.i 16, 0, 'Z' : Data.s "Z"
-  Data.i 32, 0, 'X' : Data.s "X"
-  Data.i 64, 0, #VK_RETURN : Data.s "Enter"
-  Data.i 128, 0, #VK_SPACE : Data.s "Space"
-  Data.i 0, #CTL_FULLSCREEN, #VK_F11 : Data.s "F11"
-  Data.i 0, #CTL_LEAVEFULL, #VK_ESCAPE : Data.s "Esc"
+  Data.i 1, 0, #PB_Shortcut_Up : Data.s "Up arrow"
+  Data.i 2, 0, #PB_Shortcut_Down : Data.s "Down arrow"
+  Data.i 4, 0, #PB_Shortcut_Left : Data.s "Left arrow"
+  Data.i 8, 0, #PB_Shortcut_Right : Data.s "Right arrow"
+  Data.i 16, 0, #PB_Shortcut_Z : Data.s "Z"
+  Data.i 32, 0, #PB_Shortcut_X : Data.s "X"
+  Data.i 64, 0, #PB_Shortcut_Return : Data.s "Enter"
+  Data.i 128, 0, #PB_Shortcut_Space : Data.s "Space"
+  Data.i 0, #CTL_FULLSCREEN, #PB_Shortcut_F11 : Data.s "F11"
+  Data.i 0, #CTL_LEAVEFULL, #PB_Shortcut_Escape : Data.s "Esc"
   Data.i -1
 EndDataSection

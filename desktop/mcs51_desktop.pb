@@ -13,11 +13,16 @@
 ;   --log-tab <n>      open the Output panel on tab n (0 tests, 1 serial, 2 controls)
 ;   --mouse-log <txt>  write the pointer as read and as the widgets see it, a
 ;                      line whenever it moves (checks pointer/scale alignment)
-;   --fullscreen-test <txt> [--fullscreen-shot <png>]  F11 and Esc posted to the
-;                      window itself: checks full screen, then closes
+;   --fullscreen-test <txt> [--fullscreen-shot <png>]  F11 and Esc pressed into
+;                      the window's key handler: checks full screen, then closes
 ; Keys: the PM51 buttons and the window's shortcuts are one table, controls.pbi.
 ;
-; Build with desktop/build.ps1 (x64, C back end, /DPIAWARE, /OPTIMIZER).
+; Everything the OS gives - the window, drawing, keys held, the sound card, full
+; screen, the pointer, the clock, the work area - comes from the Neon Arcade
+; Display Engine (its HOST SERVICES in GlUtilities.pbi); this program calls no
+; OS function, so the same source builds for Windows and Linux.
+; Build with desktop/build.ps1 on Windows (x64, C back end, /DPIAWARE,
+; /OPTIMIZER) or desktop/build.sh on Linux.
 
 #M51_DISPATCH = 1           ; labels-as-values (measured faster than a procedure table)
 #M51_TIMING = 1             ; machine cycles, as the timers need
@@ -278,7 +283,7 @@ Global Running.i, BreakAt.i = -1, BreakText.String, BreakCaret.i
 Global Status$ = "Load a program, or press Run tests."
 Global RateCycles.d, RateShown.d, RateWindowCycles.i, RateWindowStart.q
 Global DisTop.i, MemTab.i, MemTop.i, LogTab.i, LogTop.i, SerialLog$
-Global Wheel.i, KeyCode.i, KeyChar.i
+Global Wheel.i, KeyCode.i, KeyChar.i, MouseDown.b
 Global TestsRun.i, TestsFailed.i, ShotPath$, ShotFrames.i
 Global MouseLog$, MouseLogLast$
 Global ShotAfter.i = 120, Turbo.i, BoardFrames.i, BoardClock.q, ScreenSpr.GLSprite, *ScreenBuf
@@ -405,7 +410,7 @@ EndProcedure
 
 ; Keyboard -> the board's buttons (P1, read active low by the program).
 Procedure ReadButtons()
-  If GetForegroundWindow_() <> WindowID(Win) Or Neon_FocusID <> 0
+  If GetActiveWindow() <> Win Or Neon_FocusID <> 0
     PM51Buttons = 0
     ProcedureReturn
   EndIf
@@ -617,37 +622,28 @@ EndProcedure
 
 ; ---- full screen -------------------------------------------------------------
 ; A borderless window over the monitor the window is on (no display-mode
-; change); the windowed placement and style are kept and put back exactly on
-; leaving. F11 or the Full screen button toggles it, Esc leaves it (the PM51
+; change, the engine's GL_FullscreenEnter); leaving puts the window back where
+; it was. F11 or the Full screen button toggles it, Esc leaves it (the PM51
 ; has no Esc key, so a program loses nothing). Only the PM51's picture is drawn:
 ; square pixels, centred, in the board's BORDER colour - what surrounds the
 ; picture on the board itself. The pointer hides after two idle seconds.
-Global FullScreen.i, FsStyle.i, FsCursorHidden.i, FsMouseX.i, FsMouseY.i, FsMouseMs.q
-Global FsGameX.f, FsGameY.f, FsGameW.f, FsGameH.f, FsPlacement.WINDOWPLACEMENT
+Global FullScreen.i, FsCursorHidden.i, FsMouseX.i, FsMouseY.i, FsMouseMs.q
+Global FsGameX.f, FsGameY.f, FsGameW.f, FsGameH.f
 
 Procedure FsShowCursor(show.i)
-  If show And FsCursorHidden : ShowCursor_(#True) : FsCursorHidden = 0 : EndIf
-  If show = 0 And FsCursorHidden = 0 : ShowCursor_(#False) : FsCursorHidden = 1 : EndIf
+  If show And FsCursorHidden : GL_CursorShow(Win, Gl, #True) : FsCursorHidden = 0 : EndIf
+  If show = 0 And FsCursorHidden = 0 : GL_CursorShow(Win, Gl, #False) : FsCursorHidden = 1 : EndIf
 EndProcedure
 
 Procedure EnterFullScreen()
-  Protected hwnd.i = WindowID(Win), mi.MONITORINFO
   If FullScreen : ProcedureReturn : EndIf
-  FsPlacement\length = SizeOf(WINDOWPLACEMENT) : GetWindowPlacement_(hwnd, @FsPlacement)
-  FsStyle = GetWindowLongPtr_(hwnd, #GWL_STYLE)
-  mi\cbSize = SizeOf(MONITORINFO) : GetMonitorInfo_(MonitorFromWindow_(hwnd, 2), @mi)   ; 2: the nearest monitor
-  SetWindowLongPtr_(hwnd, #GWL_STYLE, FsStyle & ~(#WS_CAPTION | #WS_THICKFRAME | #WS_MINIMIZEBOX | #WS_MAXIMIZEBOX | #WS_SYSMENU))
-  SetWindowPos_(hwnd, #HWND_TOP, mi\rcMonitor\left, mi\rcMonitor\top, mi\rcMonitor\right - mi\rcMonitor\left,
-                mi\rcMonitor\bottom - mi\rcMonitor\top, #SWP_FRAMECHANGED | #SWP_NOOWNERZORDER | #SWP_SHOWWINDOW)
+  GL_FullscreenEnter(Win)
   FullScreen = 1 : FsMouseMs = ElapsedMilliseconds()
 EndProcedure
 
 Procedure LeaveFullScreen()
-  Protected hwnd.i = WindowID(Win)
   If FullScreen = 0 : ProcedureReturn : EndIf
-  SetWindowLongPtr_(hwnd, #GWL_STYLE, FsStyle)
-  SetWindowPlacement_(hwnd, @FsPlacement)
-  SetWindowPos_(hwnd, 0, 0, 0, 0, 0, #SWP_FRAMECHANGED | #SWP_NOMOVE | #SWP_NOSIZE | #SWP_NOZORDER | #SWP_NOOWNERZORDER)
+  GL_FullscreenLeave(Win)
   FullScreen = 0 : FsShowCursor(1)
 EndProcedure
 
@@ -657,6 +653,11 @@ Procedure DoAction(action.i)
     Case #CTL_FULLSCREEN : If FullScreen : LeaveFullScreen() : Else : EnterFullScreen() : EndIf
     Case #CTL_LEAVEFULL : LeaveFullScreen()
   EndSelect
+EndProcedure
+
+; A key pressed in the window (a #PB_Shortcut_ code): its action, if it has one.
+Procedure KeyPressed(code.i)
+  If CtlAction(code) : DoAction(CtlAction(code)) : EndIf
 EndProcedure
 
 ; The picture's rectangle on a pw x ph screen: 160x128 square pixels, a whole
@@ -759,12 +760,12 @@ Procedure SaveShot(pw.i, ph.i)
 EndProcedure
 
 ; ---- --fullscreen-test ---------------------------------------------------------
-; Full screen by its own keys, without the real pointer: F11 is posted to the
-; window's GL gadget and Esc to the window (the engine's Esc shortcut). Checked:
-; the window covers its monitor, the picture has square pixels and is centred,
-; Esc leaves, and the windowed rectangle and style come back exactly.
+; Full screen by its own keys, without the real pointer: F11, then Esc, go into
+; the key handler the keyboard's presses reach (KeyPressed). Checked: the
+; window covers its monitor, the picture has square pixels and is centred, Esc
+; leaves, and the windowed rectangle and client size come back exactly.
 Global FsTestDone.i, FsTestOn.i, FsTestFile$, FsTestStep.i, FsTestWait.i, FsTestFails.i, FsTestLog$, FsTestShot$
-Global FsTestRect.RECT, FsTestStyle.i
+Global FsTestRect.GLHostRect, FsTestClientW.i, FsTestClientH.i
 
 Procedure FsTestCheck(ok.i, what$)
   If ok = 0 : FsTestFails + 1 : FsTestLog$ + "FAIL " : Else : FsTestLog$ + "ok   " : EndIf
@@ -772,38 +773,58 @@ Procedure FsTestCheck(ok.i, what$)
 EndProcedure
 
 Procedure FsTestTick(pw.i, ph.i)
-  Protected r.RECT, mi.MONITORINFO, hwnd.i = WindowID(Win), f.i, aspect.f
+  Protected r.GLHostRect, m.GLHostRect, cw.i, ch.i, f.i, aspect.f
   FsTestWait + 1 : If FsTestWait < 30 : ProcedureReturn : EndIf
   FsTestWait = 0 : FsTestStep + 1
   Select FsTestStep
     Case 1
-      GetWindowRect_(hwnd, @FsTestRect) : FsTestStyle = GetWindowLongPtr_(hwnd, #GWL_STYLE)
-      FsTestLog$ + "windowed: " + Str(FsTestRect\left) + "," + Str(FsTestRect\top) + " " + Str(FsTestRect\right - FsTestRect\left) + "x" + Str(FsTestRect\bottom - FsTestRect\top) + ", scale " + StrF(Neon_UIScale, 2) + #LF$
-      PostMessage_(GadgetID(Gl), #WM_KEYDOWN, #VK_F11, 0) : PostMessage_(GadgetID(Gl), #WM_KEYUP, #VK_F11, 0)
+      GL_WindowRect(Win, @FsTestRect) : GL_ClientPixels(Win, @FsTestClientW, @FsTestClientH)
+      FsTestLog$ + "windowed: " + Str(FsTestRect\X) + "," + Str(FsTestRect\Y) + " " + Str(FsTestRect\W) + "x" + Str(FsTestRect\H) + ", scale " + StrF(Neon_UIScale, 2) + #LF$
+      KeyPressed(#PB_Shortcut_F11)
     Case 2
-      GetWindowRect_(hwnd, @r) : mi\cbSize = SizeOf(MONITORINFO) : GetMonitorInfo_(MonitorFromWindow_(hwnd, 2), @mi)
+      GL_WindowRect(Win, @r) : GL_FullscreenRect(@m)
       FsTestCheck(FullScreen, "F11 entered full screen")
-      FsTestCheck(Bool(r\left = mi\rcMonitor\left And r\top = mi\rcMonitor\top And r\right = mi\rcMonitor\right And r\bottom = mi\rcMonitor\bottom), "the window covers its monitor " + Str(mi\rcMonitor\right - mi\rcMonitor\left) + "x" + Str(mi\rcMonitor\bottom - mi\rcMonitor\top))
-      FsTestCheck(Bool(pw = mi\rcMonitor\right - mi\rcMonitor\left And ph = mi\rcMonitor\bottom - mi\rcMonitor\top), "the canvas is the whole monitor (" + Str(pw) + "x" + Str(ph) + ")")
+      FsTestCheck(Bool(r\X = m\X And r\Y = m\Y And r\W = m\W And r\H = m\H), "the window covers its monitor " + Str(m\W) + "x" + Str(m\H) + " (window " + Str(r\X) + "," + Str(r\Y) + " " + Str(r\W) + "x" + Str(r\H) + ")")
+      FsTestCheck(Bool(pw = m\W And ph = m\H), "the canvas is the whole monitor (" + Str(pw) + "x" + Str(ph) + ")")
       aspect = FsGameW / FsGameH
       FsTestCheck(Bool(Abs(aspect - 1.25) < 0.002), "the picture " + StrF(FsGameW, 1) + "x" + StrF(FsGameH, 1) + " has the PM51's 160:128 aspect (" + StrF(aspect, 4) + ")")
       FsTestCheck(Bool(Abs(FsGameX * 2 + FsGameW - pw) <= 1 And Abs(FsGameY * 2 + FsGameH - ph) <= 1), "the picture is centred at " + StrF(FsGameX, 1) + "," + StrF(FsGameY, 1))
       If FsTestShot$ <> "" : ShotPath$ = FsTestShot$ : ShotFrames = ShotAfter - 1 : EndIf
     Case 3
-      PostMessage_(hwnd, #WM_KEYDOWN, #VK_ESCAPE, 0) : PostMessage_(hwnd, #WM_KEYUP, #VK_ESCAPE, 0)
+      KeyPressed(#PB_Shortcut_Escape)
     Case 4
-      GetWindowRect_(hwnd, @r)
-      FsTestCheck(Bool(FullScreen = 0), "Esc left full screen")
-      FsTestCheck(Bool(r\left = FsTestRect\left And r\top = FsTestRect\top And r\right = FsTestRect\right And r\bottom = FsTestRect\bottom), "the windowed rectangle came back: " + Str(r\left) + "," + Str(r\top) + " " + Str(r\right - r\left) + "x" + Str(r\bottom - r\top))
-      FsTestCheck(Bool(GetWindowLongPtr_(hwnd, #GWL_STYLE) = FsTestStyle), "the window's frame and style came back")
+      GL_WindowRect(Win, @r) : GL_ClientPixels(Win, @cw, @ch)
+      FsTestCheck(Bool(FullScreen = 0 And GL_FullscreenIsOn() = 0), "Esc left full screen")
+      FsTestCheck(Bool(r\X = FsTestRect\X And r\Y = FsTestRect\Y And r\W = FsTestRect\W And r\H = FsTestRect\H), "the windowed rectangle came back: " + Str(r\X) + "," + Str(r\Y) + " " + Str(r\W) + "x" + Str(r\H))
+      FsTestCheck(Bool(cw = FsTestClientW And ch = FsTestClientH), "the window's client size came back: " + Str(cw) + "x" + Str(ch))
       FsTestLog$ + "fullscreen-test: " + Str(FsTestFails) + " failures" + #LF$
       f = CreateFile(#PB_Any, FsTestFile$) : If f : WriteString(f, FsTestLog$) : CloseFile(f) : EndIf
       FsTestDone = 1
   EndSelect
 EndProcedure
 
+; The chrome at scale s: Neon_UIScale (every Neon_S size and the engine's own
+; widget metrics) and the four fonts at their logical sizes times s, snapped
+; to the pixel grid. Called at start-up and again whenever the window lands on
+; a monitor with a different scale, so text, controls and the pointer agree.
+Procedure ApplyScale(s.f)
+  If *Neon_FontUI : FreeGLFont(*Neon_FontUI) : EndIf
+  If *Neon_FontSmall : FreeGLFont(*Neon_FontSmall) : EndIf
+  If *Neon_FontBold : FreeGLFont(*Neon_FontBold) : EndIf
+  If *Neon_FontMono : FreeGLFont(*Neon_FontMono) : EndIf
+  Neon_UIScale = s
+  *Neon_FontUI = Neon_CreateFontPx("Segoe UI", Round(14 * s, #PB_Round_Nearest))
+  *Neon_FontSmall = Neon_CreateFontPx("Segoe UI", Round(12 * s, #PB_Round_Nearest))
+  *Neon_FontBold = Neon_CreateFontPx("Segoe UI", Round(15 * s, #PB_Round_Nearest), #PB_Font_Bold)
+  *Neon_FontMono = Neon_CreateFontPx("Consolas", Round(14 * s, #PB_Round_Nearest))
+  GLFontSetSnapToPixel(*Neon_FontUI, #True)
+  GLFontSetSnapToPixel(*Neon_FontSmall, #True)
+  GLFontSetSnapToPixel(*Neon_FontBold, #True)
+  GLFontSetSnapToPixel(*Neon_FontMono, #True)
+EndProcedure
+
 Procedure Frame()
-  Protected r.RECT, pw.i, ph.i, cw.i, ch.i, mx.i, my.i, down.b, w.f, h.f, colW.f, top.f, logH.f, now.q
+  Protected pw.i, ph.i, cw.i, ch.i, mx.i, my.i, down.b, w.f, h.f, colW.f, top.f, logH.f, now.q, s.f
   SetGadgetAttribute(Gl, #PB_OpenGL_SetContext, #True)
   ; The canvas is exactly the window's client area. A gadget left larger
   ; (a window Windows had to make smaller than asked, or resized) draws its
@@ -814,24 +835,28 @@ Procedure Frame()
   If GadgetWidth(Gl) <> cw Or GadgetHeight(Gl) <> ch
     ResizeGadget(Gl, 0, 0, cw, ch)
   EndIf
-  ; The drawable in physical pixels is the gadget's own client rectangle.
-  GetClientRect_(GadgetID(Gl), @r)
-  pw = r\right - r\left : ph = r\bottom - r\top
-  If pw < 1 Or ph < 1 : ProcedureReturn : EndIf
+  ; The drawable in physical pixels: the window's client area (the gadget
+  ; fills it), from the engine.
+  GL_ClientPixels(Win, @pw, @ph)
+  If pw < 1 Or ph < 1 Or cw < 1 : ProcedureReturn : EndIf
   Util_BaseWidth = pw : Util_BaseHeight = ph
   ; The canvas and the viewport are PHYSICAL pixels (1:1), and the pointer
   ; goes in as WindowMouseX/Y return it - physical - with no scaling (the
-  ; engine's hosting notes, 5a). Util_Win* is the size DesktopScaledX/Y()
-  ; turns back into the physical drawable (Neon_PhysWinHeight flips scissor
-  ; rectangles with it): the logical size where DesktopResolutionX() reports
-  ; the scale, the physical one where per-monitor awareness makes it 1.0 -
-  ; GadgetWidth() there came out 1.25x short and every tab strip lost its
-  ; tabs inside an off-screen scissor.
-  Util_WinWidth = Round(pw / DesktopResolutionX(), #PB_Round_Nearest)
-  Util_WinHeight = Round(ph / DesktopResolutionY(), #PB_Round_Nearest)
+  ; engine's hosting notes, 5a). Util_Win* is the size the engine's own
+  ; Neon_PhysWinWidth/Height() turn back into the physical drawable (it flips
+  ; scissor rectangles with them): set so that they give exactly pw x ph.
+  ; Not the logical inner size as such - under per-monitor awareness Windows'
+  ; DesktopResolutionX() can read 1.0 while that size is 1/s of the drawable,
+  ; and every tab strip then loses its tabs inside an off-screen scissor.
+  Util_WinWidth = 1000 : Util_WinHeight = 1000
+  Util_WinWidth = 1000.0 * pw / Neon_PhysWinWidth() : Util_WinHeight = 1000.0 * ph / Neon_PhysWinHeight()
   GL_ViewportX = 0 : GL_ViewportY = 0 : GL_ViewportW = pw : GL_ViewportH = ph
+  ; The display scale, measured: physical over logical. Another monitor at
+  ; another scale: the chrome is rebuilt for it.
+  s = pw / cw
+  If Abs(s - Neon_UIScale) > 0.01 : ApplyScale(s) : EndIf
   mx = WindowMouseX(Win) : my = WindowMouseY(Win)
-  down = Bool(GetAsyncKeyState_(#VK_LBUTTON) & $8000)
+  down = MouseDown
   now = ElapsedMilliseconds()
   If mx <> FsMouseX Or my <> FsMouseY : FsMouseX = mx : FsMouseY = my : FsMouseMs = now : FsShowCursor(1) : EndIf
   If FullScreen And now - FsMouseMs > 2000 : FsShowCursor(0) : EndIf
@@ -897,70 +922,34 @@ Procedure Frame()
   SetGadgetAttribute(Gl, #PB_OpenGL_FlipBuffers, #True)
 EndProcedure
 
-Global GetDpiForWindowFn.i, ScaleLib.i
-
-; The window's display scale (its monitor's DPI / 96): asked per window, so a
-; second monitor at another scale gets its own answer.
-Procedure.f DisplayScale()
-  Protected dpi.i
-  If ScaleLib = 0
-    ScaleLib = OpenLibrary(#PB_Any, "user32.dll")
-    If ScaleLib : GetDpiForWindowFn = GetFunction(ScaleLib, "GetDpiForWindow") : EndIf
-  EndIf
-  If GetDpiForWindowFn And Win : dpi = CallFunctionFast(GetDpiForWindowFn, WindowID(Win)) : EndIf
-  If dpi <= 0 : ProcedureReturn 1.0 : EndIf
-  ProcedureReturn dpi / 96.0
-EndProcedure
-
-; The chrome at scale s: Neon_UIScale (every Neon_S size and the engine's own
-; widget metrics) and the four fonts at their logical sizes times s, snapped
-; to the pixel grid. Called at start-up and again whenever the window lands on
-; a monitor with a different scale, so text, controls and the pointer agree.
-Procedure ApplyScale(s.f)
-  If *Neon_FontUI : FreeGLFont(*Neon_FontUI) : EndIf
-  If *Neon_FontSmall : FreeGLFont(*Neon_FontSmall) : EndIf
-  If *Neon_FontBold : FreeGLFont(*Neon_FontBold) : EndIf
-  If *Neon_FontMono : FreeGLFont(*Neon_FontMono) : EndIf
-  Neon_UIScale = s
-  *Neon_FontUI = Neon_CreateFontPx("Segoe UI", Round(14 * s, #PB_Round_Nearest))
-  *Neon_FontSmall = Neon_CreateFontPx("Segoe UI", Round(12 * s, #PB_Round_Nearest))
-  *Neon_FontBold = Neon_CreateFontPx("Segoe UI", Round(15 * s, #PB_Round_Nearest), #PB_Font_Bold)
-  *Neon_FontMono = Neon_CreateFontPx("Consolas", Round(14 * s, #PB_Round_Nearest))
-  GLFontSetSnapToPixel(*Neon_FontUI, #True)
-  GLFontSetSnapToPixel(*Neon_FontSmall, #True)
-  GLFontSetSnapToPixel(*Neon_FontBold, #True)
-  GLFontSetSnapToPixel(*Neon_FontMono, #True)
+; The window's display scale, measured: its client area in physical pixels
+; (the engine's GL_ClientPixels) over its inner size in logical units.
+Procedure.f MeasuredScale()
+  Protected pw.i, ph.i, lw.i = WindowWidth(Win, #PB_Window_InnerCoordinate)
+  GL_ClientPixels(Win, @pw, @ph)
+  If lw <= 0 Or pw <= 0 : ProcedureReturn 1.0 : EndIf
+  ProcedureReturn pw / lw
 EndProcedure
 
 Procedure WindowMain()
-  Protected lib.i, fn.i, ev.i, s.f, w.i = 1440, h.i = 900, quit.i, et.i, work.RECT
-  lib = OpenLibrary(#PB_Any, "user32.dll")
-  If lib
-    fn = GetFunction(lib, "SetProcessDpiAwarenessContext")
-    If fn : CallFunctionFast(fn, -4) : EndIf
-    CloseLibrary(lib)
-  EndIf
-  ; Never larger than the work area: it is PHYSICAL pixels, OpenWindow takes
-  ; LOGICAL ones (the system scale, before the window exists), and the size
-  ; is the client area, so the frame and title bar are left room for too.
-  lib = OpenLibrary(#PB_Any, "user32.dll")
-  If lib
-    fn = GetFunction(lib, "GetDpiForSystem")
-    If fn : s = CallFunctionFast(fn) / 96.0 : EndIf
-    CloseLibrary(lib)
-  EndIf
-  If s <= 0 : s = 1.0 : EndIf
-  SystemParametersInfo_(#SPI_GETWORKAREA, 0, @work, 0)
-  If w > (work\right - work\left) / s - 24 : w = (work\right - work\left) / s - 24 : EndIf
-  If h > (work\bottom - work\top) / s - 72 : h = (work\bottom - work\top) / s - 72 : EndIf
+  Protected ev.i, w.i = 1440, h.i = 900, quit.i, et.i, work.GLHostRect
+  ; Never larger than the work area (the engine's, in the LOGICAL units
+  ; OpenWindow takes), and the size is the client area, so the frame and
+  ; title bar are left room for too.
+  GL_WorkArea(@work)
+  If w > work\W - 24 : w = work\W - 24 : EndIf
+  If h > work\H - 72 : h = work\H - 72 : EndIf
   Gl = OpenGLWindow("8051 emulator - PureBasic, Neon Arcade", w, h,
                     #PB_Window_SystemMenu | #PB_Window_ScreenCentered | #PB_Window_SizeGadget | #PB_Window_MinimizeGadget | #PB_Window_MaximizeGadget)
+  If Gl = 0 : MessageRequester("8051 emulator", "Could not open an OpenGL window.") : ProcedureReturn : EndIf
   Win = Util_MainWindowID
+  GL_HostScaleRead(Gl)                        ; (the engine's: Linux_DPIScale on Linux)
   ; The frame is drawn flat, not through the CRT pass: without this the engine
   ; bends every pointer position by the CRT barrel curve, right in the middle
   ; and up to ~20 px off towards the edges (measured at 125%).
   UI_UseCRT = #False
-  ApplyScale(DisplayScale())
+  ApplyScale(MeasuredScale())
+  SetActiveGadget(Gl)
   RateWindowStart = ElapsedMilliseconds()
   PM51AudioOpen()
   Repeat
@@ -968,22 +957,18 @@ Procedure WindowMain()
       ev = WindowEvent()
       If ev = #PB_Event_CloseWindow : quit = 1 : EndIf
       ; The engine maps Esc to menu event 1001 on the window: Esc leaves full screen.
-      If ev = #PB_Event_Menu And EventMenu() = 1001 : DoAction(CtlAction(#VK_ESCAPE)) : EndIf
-      If ev = #PB_Event_MoveWindow Or ev = #PB_Event_SizeWindow
-        ; Moved onto a monitor at another scale: rebuild the chrome for it.
-        s = DisplayScale()
-        If Abs(s - Neon_UIScale) > 0.01
-          SetGadgetAttribute(Gl, #PB_OpenGL_SetContext, #True)
-          ApplyScale(s)
-        EndIf
-      EndIf
+      If ev = #PB_Event_Menu And EventMenu() = 1001 : KeyPressed(#PB_Shortcut_Escape) : EndIf
       If ev = #PB_Event_Gadget And EventGadget() = Gl
         et = EventType()
         If et = #PB_EventType_MouseWheel
           Wheel + GetGadgetAttribute(Gl, #PB_OpenGL_WheelDelta)
+        ElseIf et = #PB_EventType_LeftButtonDown
+          MouseDown = #True
+        ElseIf et = #PB_EventType_LeftButtonUp
+          MouseDown = #False
         ElseIf et = #PB_EventType_KeyDown
           KeyCode = GetGadgetAttribute(Gl, #PB_OpenGL_Key)
-          If CtlAction(KeyCode) : DoAction(CtlAction(KeyCode)) : EndIf
+          KeyPressed(KeyCode)
         ElseIf et = #PB_EventType_Input
           KeyChar = GetGadgetAttribute(Gl, #PB_OpenGL_Input)
         EndIf
@@ -998,6 +983,7 @@ Procedure WindowMain()
   FsShowCursor(1)
 EndProcedure
 
+GL_HostPrepare()                              ; (the engine's: before any window - Linux's X11 set-up)
 UsePNGImageEncoder()
 CtlInit()
 M51DisInit()

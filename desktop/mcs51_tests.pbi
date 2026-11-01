@@ -3,7 +3,7 @@
 ; embedded test data. These are the helpers the board gets from io.pico and
 ; its libraries, written for the PC: the report goes to the console when one
 ; is open, and always into M51TestLog$ for the window.
-Global M51TestLog$, M51TestConsole.i, M51TestTimerFreq.q
+Global M51TestLog$, M51TestConsole.i
 
 Procedure Say(t.s)
   M51TestLog$ + t
@@ -24,12 +24,7 @@ Procedure Eol()
   Say(#LF$)
 EndProcedure
 Procedure.i Micros()
-  Protected now.q
-  If M51TestTimerFreq = 0
-    QueryPerformanceFrequency_(@M51TestTimerFreq)
-  EndIf
-  QueryPerformanceCounter_(@now)
-  ProcedureReturn now * 1000000 / M51TestTimerFreq
+  ProcedureReturn GL_Micros()                ; (the engine's monotonic clock)
 EndProcedure
 Procedure UsbSerialTask()
 EndProcedure
