@@ -9,6 +9,11 @@ second on a 480x320 ST7796 panel, with both Pico cores at work, and a
 **desktop version for Windows and Linux** with a debugger. Everything here was measured on
 real boards.
 
+> **Note:** the PM51 demo uses PureMetal Forge's classic string library, so it
+> needs a compiler newer than the 2026-10-25 release (compiler a3098475d or
+> later). It can't be built with the current public release. The next release,
+> which has it, is being prepared.
+
 ![The desktop version running the PM51 demo](docs/desktop-demo.png)
 
 ## Features
@@ -225,6 +230,11 @@ py -3 tools/embed_program.py path\to\program.bin     # writes machine/pm51_progr
 the PM51 board; the demo is the worked example. `py -3 demo/make_demo.py`
 writes `demo/pm51_demo.pm51` from `demo/pm51_demo.template` (its tables are
 generated), and
+
+> **Note:** building the demo needs PureMetal Forge newer than the 2026-10-25
+> release (compiler a3098475d or later), because it uses the classic string
+> library. The current public release can't build it; the next release is
+> being prepared.
 
 ```powershell
 PureMetalForge.exe --compile demo\pm51_demo.pm51 -S -o demo\pm51_demo.hex
