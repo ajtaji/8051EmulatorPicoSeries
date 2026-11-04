@@ -230,7 +230,9 @@ generated), and
 PureMetalForge.exe --compile demo\pm51_demo.pm51 -S -o demo\pm51_demo.hex
 ```
 
-writes `pm51_demo.hex` and `pm51_demo.bin`. Assembly programs work too:
+writes `pm51_demo.hex` and `pm51_demo.bin`. The demo's message is a string,
+made into bytes once at start-up with Mid and Asc, so the demo starts about
+0.8 s (48 frames) later. Assembly programs work too:
 `machine/examples/board_test.asm` and `desktop/examples/speed_loop.asm` are
 assembled with SDCC's `sdas8051` and `sdld`.
 

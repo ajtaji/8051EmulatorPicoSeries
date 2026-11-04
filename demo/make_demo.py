@@ -56,7 +56,10 @@ def rainbow(i, n=32):
 
 # Where the tables live: the board's free XDATA RAM (the program reads them
 # with PeekA). One constant PokeA per byte is the smallest code that sets one.
-T_LEAD, T_BASS, T_DRUM, T_FREQ, T_RAINBOW, T_MSG = 0xE000, 0xE040, 0xE080, 0xE100, 0xE200, 0xE300
+T_LEAD, T_BASS, T_DRUM, T_FREQ, T_RAINBOW = 0xE000, 0xE040, 0xE080, 0xE100, 0xE200
+# The message is a string in the source; MsgBytes makes it bytes at $E300,
+# taking it apart in 4 x 52 characters.
+assert len(MESSAGE) == 208
 
 
 def main():
@@ -74,16 +77,15 @@ def main():
         data[T_FREQ + 2 * m + 1] = f >> 8
     for i in range(32):
         data[T_RAINBOW + i] = rainbow(i)
-    for i, ch in enumerate(MESSAGE):
-        data[T_MSG + i] = ord(ch)
     # The DataSection, in InitTables' order: lead, bass, drums, the 256-byte
-    # frequency table, the rainbow, the message.
+    # frequency table, the rainbow. The message is a string in the source.
     blob = []
-    for base, n in ((T_LEAD, 64), (T_BASS, 64), (T_DRUM, 64), (T_FREQ, 256), (T_RAINBOW, 32), (T_MSG, len(MESSAGE))):
+    for base, n in ((T_LEAD, 64), (T_BASS, 64), (T_DRUM, 64), (T_FREQ, 256), (T_RAINBOW, 32)):
         blob += [data.get(base + i, 0) for i in range(n)]
     lines = ['  Data.a ' + ','.join(str(v) for v in blob[i:i + 32]) for i in range(0, len(blob), 32)]
     src = (HERE / 'pm51_demo.template').read_text()
-    src = src.replace('@@MSGLEN@@', str(len(MESSAGE))).replace('@@TABLES@@', '\n'.join(lines))
+    src = src.replace('@@MSGLEN@@', str(len(MESSAGE))).replace('@@MSGSIZE@@', str(len(MESSAGE) + 1))
+    src = src.replace('@@MSG@@', MESSAGE).replace('@@TABLES@@', '\n'.join(lines))
     (HERE / 'pm51_demo.pm51').write_text(src, newline='\n')
     print('demo/pm51_demo.pm51 written,', len(blob), 'table bytes')
 

@@ -5,14 +5,18 @@
 ; The board (README, "The PM51 display board"): bitmap $8000, text $D000,
 ; text colour $D200, sprites $D400, sprite patterns $D800, line colours $DC00,
 ; I/O $F000. The frame starts with INT0 (ProcedureInterrupt EXT0); the tables
-; are a DataSection in code memory, copied into XDATA by Read at start.
+; are a DataSection in code memory, copied into XDATA by Read at start. The
+; message is a string, turned into bytes once by MsgBytes.
 EnableExplicit
 
 Global frame.w, steps.w, tick.w, i.w, x.w, y.w, c.w, v.w, a.w, k.w
 Global buttons.w, lastButtons.w, direction.w, muted.w, scroll.w, scrollPos.w
 Global leadVol.w, bassVol.w, drumVol.w, drumKind.w, b.a, frameReady.a
+; The message: the title is characters 5-18, row 14 scrolls through it.
+Global msg.s{@@MSGSIZE@@} = "@@MSG@@"
 ; The tables, in XDATA RAM (copied there by InitTables): notes as MIDI numbers
-; (0 hold, 1 rest), a frequency for each MIDI note, drums, colours, the message.
+; (0 hold, 1 rest), a frequency for each MIDI note, drums, colours; and the
+; message as bytes (MsgBytes).
 #T_LEAD = $E000
 #T_BASS = $E040
 #T_DRUM = $E080
@@ -47,7 +51,29 @@ EnableInterrupts
   CopyData(#T_DRUM, 64)
   CopyData(#T_FREQ, 256)
   CopyData(#T_RAINBOW, 32)
-  CopyData(#T_MSG, @@MSGLEN@@)
+EndProcedure
+
+; The message into #T_MSG, a byte a character, once at the start (after INT0
+; is on, as the tables are). Mid walks its source from the first character,
+; so the message is taken apart in pieces - 52 characters, then 13, then
+; one - and no Mid walks far.
+Procedure MsgBytes()
+  Protected big.s{53}, part.s{14}, p.w, q.w, r.w
+  p = 0
+  While p < @@MSGLEN@@
+    big = Mid(msg, p + 1, 52)
+    q = 0
+    While q < 52
+      part = Mid(big, q + 1, 13)
+      r = 0
+      While r < 13
+        PokeA(#T_MSG + p + q + r, Asc(Mid(part, r + 1, 1)))
+        r = r + 1
+      Wend
+      q = q + 13
+    Wend
+    p = p + 52
+  Wend
 EndProcedure
 
 Procedure.w Rainbow(n.w)
@@ -263,6 +289,7 @@ PokeA($F006, 0)
 PokeA($F007, 0)
 PokeA($F004, 0)
 InitTables()
+MsgBytes()
 ; INT0 edge-triggered and enabled (SFRs are reached from an ASM block), then EA.
 ASM
   setb it0

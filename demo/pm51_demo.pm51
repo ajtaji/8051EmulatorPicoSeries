@@ -5,14 +5,18 @@
 ; The board (README, "The PM51 display board"): bitmap $8000, text $D000,
 ; text colour $D200, sprites $D400, sprite patterns $D800, line colours $DC00,
 ; I/O $F000. The frame starts with INT0 (ProcedureInterrupt EXT0); the tables
-; are a DataSection in code memory, copied into XDATA by Read at start.
+; are a DataSection in code memory, copied into XDATA by Read at start. The
+; message is a string, turned into bytes once by MsgBytes.
 EnableExplicit
 
 Global frame.w, steps.w, tick.w, i.w, x.w, y.w, c.w, v.w, a.w, k.w
 Global buttons.w, lastButtons.w, direction.w, muted.w, scroll.w, scrollPos.w
 Global leadVol.w, bassVol.w, drumVol.w, drumKind.w, b.a, frameReady.a
+; The message: the title is characters 5-18, row 14 scrolls through it.
+Global msg.s{209} = "     PUREMETAL 8051 ON THE PM51 BOARD ... COMPILED BY PUREMETAL FORGE, RUN BY A COMPUTED-GOTO MCS-51 CORE ON A RASPBERRY PI PICO ... ARROWS STEER THE FIRST BALL, A TURNS THE SCROLL, B MUTES THE MUSIC ...     "
 ; The tables, in XDATA RAM (copied there by InitTables): notes as MIDI numbers
-; (0 hold, 1 rest), a frequency for each MIDI note, drums, colours, the message.
+; (0 hold, 1 rest), a frequency for each MIDI note, drums, colours; and the
+; message as bytes (MsgBytes).
 #T_LEAD = $E000
 #T_BASS = $E040
 #T_DRUM = $E080
@@ -47,7 +51,29 @@ EnableInterrupts
   CopyData(#T_DRUM, 64)
   CopyData(#T_FREQ, 256)
   CopyData(#T_RAINBOW, 32)
-  CopyData(#T_MSG, 208)
+EndProcedure
+
+; The message into #T_MSG, a byte a character, once at the start (after INT0
+; is on, as the tables are). Mid walks its source from the first character,
+; so the message is taken apart in pieces - 52 characters, then 13, then
+; one - and no Mid walks far.
+Procedure MsgBytes()
+  Protected big.s{53}, part.s{14}, p.w, q.w, r.w
+  p = 0
+  While p < 208
+    big = Mid(msg, p + 1, 52)
+    q = 0
+    While q < 52
+      part = Mid(big, q + 1, 13)
+      r = 0
+      While r < 13
+        PokeA(#T_MSG + p + q + r, Asc(Mid(part, r + 1, 1)))
+        r = r + 1
+      Wend
+      q = q + 13
+    Wend
+    p = p + 52
+  Wend
 EndProcedure
 
 Procedure.w Rainbow(n.w)
@@ -263,6 +289,7 @@ PokeA($F006, 0)
 PokeA($F007, 0)
 PokeA($F004, 0)
 InitTables()
+MsgBytes()
 ; INT0 edge-triggered and enabled (SFRs are reached from an ASM block), then EA.
 ASM
   setb it0
@@ -322,11 +349,4 @@ DemoTables:
   Data.a 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
   Data.a 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
   Data.a 224,228,232,240,244,252,220,188,124,92,28,28,28,29,30,31,31,27,19,15,7,3,3,67,99,163,195,227,226,226,225,224
-  Data.a 32,32,32,32,32,80,85,82,69,77,69,84,65,76,32,56,48,53,49,32,79,78,32,84,72,69,32,80,77,53,49,32
-  Data.a 66,79,65,82,68,32,46,46,46,32,67,79,77,80,73,76,69,68,32,66,89,32,80,85,82,69,77,69,84,65,76,32
-  Data.a 70,79,82,71,69,44,32,82,85,78,32,66,89,32,65,32,67,79,77,80,85,84,69,68,45,71,79,84,79,32,77,67
-  Data.a 83,45,53,49,32,67,79,82,69,32,79,78,32,65,32,82,65,83,80,66,69,82,82,89,32,80,73,32,80,73,67,79
-  Data.a 32,46,46,46,32,65,82,82,79,87,83,32,83,84,69,69,82,32,84,72,69,32,70,73,82,83,84,32,66,65,76,76
-  Data.a 44,32,65,32,84,85,82,78,83,32,84,72,69,32,83,67,82,79,76,76,44,32,66,32,77,85,84,69,83,32,84,72
-  Data.a 69,32,77,85,83,73,67,32,46,46,46,32,32,32,32,32
 EndDataSection
